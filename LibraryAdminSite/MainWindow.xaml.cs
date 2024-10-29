@@ -4,6 +4,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
+using System.Xml.Linq;
 
 namespace LibraryAdminSite
 {
@@ -17,6 +18,7 @@ namespace LibraryAdminSite
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             LoadBook();
+            LoadGenres();
         }
 
         private void LoadBook()
@@ -29,7 +31,9 @@ namespace LibraryAdminSite
                 Publisher = x.Publisher.Pname,
                 Author = x.Author,
                 PublishDate = x.PublishDate.Value.ToString("dd/MM/yyyy"),
-                Image = x.Image // Assuming this is a relative path to the image
+                Image = x.Image ,// Assuming this is a relative path to the image
+                Quantity = x.Quantity,
+                Status = x.Status == 1 ? "Còn sách" : "Hết sách"
             }).ToList();
 
             lvDisplay.ItemsSource = books;
@@ -113,6 +117,53 @@ namespace LibraryAdminSite
                 Owner = this // Thiết lập cửa sổ chính là chủ sở hữu
             };
             addBookWindow.ShowDialog();
+        }
+
+        private void LoadGenres()
+        {
+            // Giả sử bạn có một danh sách thể loại từ cơ sở dữ liệu
+            var genres = LMS_PRN221Context.Ins.Categories.Select(x => x.Cname).ToList();
+            cbxGenre.ItemsSource = genres;
+
+        }
+        private Book getBook()
+        {
+            try
+            {
+                // Lấy giá trị từ các điều khiển
+                int id = int.Parse(txtId.Text); // ID sách
+                string name = txtName.Text; // Tên sách
+                string author = txtAuthor.Text; // Tác giả sách (nếu có)
+                string genreId = LMS_PRN221Context.Ins.Categories.FirstOrDefault(x => x.Cname.Equals(cbxGenre.SelectedItem.ToString()))?.Id; // Lấy Id thể loại
+                DateTime publishDate = dpPublishDate.SelectedDate.Value; // Ngày xuất bản
+                string imagePath = txtImagePath.Text; // Đường dẫn hình ảnh (có thể thêm TextBox để nhập đường dẫn này)
+                int quantity = int.Parse(txtQuantity.Text); // Số lượng
+                int status = (bool)rdbAvailable.IsChecked ? 1 : 0; // Trạng thái sách (còn hay hết)
+
+                // Trả về một đối tượng Book
+                return new Book()
+                {
+                    Id = id,
+                    Bname = name,
+                    Author = author,
+                    Cid = genreId, // ID thể loại
+                    PublishDate = publishDate,
+                    Image = imagePath,
+                    Quantity = quantity,
+                    Status = status // Trạng thái
+                };
+            }
+            catch (Exception ex)
+            {
+                // Xử lý ngoại lệ nếu có
+                MessageBox.Show($"Lỗi: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return null;
+            }
+        }
+
+        private void UpdateBook(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

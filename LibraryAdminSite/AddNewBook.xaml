@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LibraryAdminSite"
         mc:Ignorable="d"
-        Title="Thêm Sách Mới" Height="570" Width="500"
+        Title="Thêm Sách Mới" Height="620" Width="500"
         WindowStartupLocation="CenterOwner"
         Background="#f9f9f9">
 
