@@ -34,7 +34,18 @@ namespace LibraryAdminSite
 
             lvDisplay.ItemsSource = books;
         }
-
+        private void LoadUser()
+        {
+            var users = LMS_PRN221Context.Ins.Users.Select(x => new
+            {
+                Id = x.Uid,
+                FullName = x.FullName,
+                Phone = x.Phone,
+                Email = x.Email,
+                Role = x.Role,
+            }).ToList();
+            lvDisplay.ItemsSource = users;
+        }
         private void lvDisplay_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var selectedBook = lvDisplay.SelectedItem as dynamic;
@@ -113,6 +124,23 @@ namespace LibraryAdminSite
                 Owner = this // Thiết lập cửa sổ chính là chủ sở hữu
             };
             addBookWindow.ShowDialog();
+        }
+
+        private void btnUserManage_Click(object sender, RoutedEventArgs e)
+        {
+            //UserManage userManage = new UserManage();
+            //userManage.ShowDialog();
+            //this.Hide();
+            txtTitle.Text = "Quản lý người dùng";
+            txtSearch.Text = "Nhập tên người dùng...";
+            LoadUser();
+        }
+
+        private void btnBookManage_Click(object sender, RoutedEventArgs e)
+        {
+            txtTitle.Text = "Quản lý sách";
+            txtSearch.Text = "Nhập tên sách...";
+            LoadBook();
         }
     }
 }
