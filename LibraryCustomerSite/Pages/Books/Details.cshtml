@@ -3,60 +3,270 @@
 
 @{
     ViewData["Title"] = "Details";
-    Layout = "~/Pages/Shared/_Layout.cshtml";
 }
 
-<h1>Details</h1>
 
-<div>
-    <h4>Book</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Book.Bname)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Book.Bname)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Book.Author)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Book.Author)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Book.Quantity)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Book.Quantity)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Book.Image)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Book.Image)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Book.Price)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Book.Price)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Book.Status)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Book.Status)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Book.CidNavigation)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Book.CidNavigation.Id)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-page="./Edit" asp-route-id="@Model.Book?.Id">Edit</a> |
-    <a asp-page="./Index">Back to List</a>
-</div>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Detail</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        /* Product Images */
+        .product-images {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .main-image {
+            width: 100%;
+            aspect-ratio: 1;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .thumbnail-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+
+        .thumbnail {
+            width: 100%;
+            aspect-ratio: 1;
+            object-fit: cover;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        /* Product Info */
+        .product-info {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .badge-favorite {
+            display: inline-block;
+            background-color: #ee4d2d;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+
+        .product-title {
+            font-size: 20px;
+            font-weight: bold;
+            line-height: 1.4;
+        }
+
+        .rating-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin: 10px 0;
+        }
+
+        .stars {
+            color: #ee4d2d;
+            font-size: 14px;
+        }
+
+        .review-count {
+            color: #666;
+        }
+
+        .report-link {
+            color: #ee4d2d;
+            text-decoration: none;
+            margin-left: auto;
+        }
+
+        .price-card {
+            background-color: #fafafa;
+            /* padding: 15px; */
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .current-price {
+            color: #ee4d2d;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .original-price {
+            color: #666;
+            text-decoration: line-through;
+            margin-left: 10px;
+        }
+
+        .discount-badge {
+            background-color: #fff0f0;
+            color: #ee4d2d;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+
+        .info-row {
+            display: flex;
+            gap: 15px;
+            margin: 15px 0;
+            font-size: 14px;
+        }
+
+        .info-label {
+            width: 110px;
+            color: #666;
+        }
+
+        .shipping-badge {
+            background-color: #00bfa5;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .location-select {
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: white;
+            cursor: pointer;
+        }
+
+        .color-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+        }
+
+        .color-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .color-option img {
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px 20px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-outline {
+            background-color: white;
+            border: 1px solid #ee4d2d;
+            color: #ee4d2d;
+        }
+
+        .btn-primary {
+            background-color: #ee4d2d;
+            color: white;
+        }
+        .btn-secondaryy {
+            background-color: blue;
+            color: white;
+        }
+        
+    </style>
+</head>
+<body>
+    <button class="btn btn-primary">
+        <a style="color: white;
+    text-decoration: none;" href="/Books">Back to List</a>
+    </button>
+    <div class="container">
+        <div class="product-grid">
+            <!-- Product Images -->
+            <div class="product-images">
+                <img src="~/images/@Model.Book.Image" alt="@Model.Book.Bname" class="main-image">
+            </div>
+            <!-- Product Info -->
+            <div class="product-info">
+                <div>
+                    <span class="badge-favorite">Yêu Thích</span>
+                    <h1 class="product-title">Tên sách: @Model.Book.Bname</h1>
+                    <p>Tác giả: @Model.Book.Author</p>
+                    <div class="rating-section">
+                        
+                    </div>
+                </div>
+                <div class="price-card">
+                    <span class="current-price">Giá bán: @Model.Book.Price</span>
+                </div>
+
+                <div class="info-row">
+                    <span class="info-label">Số lượng còn lại: </span>
+                    <div>
+                        <span>@Model.Book.Quantity</span>
+                    </div>
+                </div>
+
+                <div class="info-row">
+                    <span class="info-label">Trạng thái:</span>
+                    <div>
+                    @if (Model.Book.Status == true)
+                    {
+                        <span class="shipping-badge">Available</span>
+                    }
+                    else
+                    {
+                        <span style="color: red;">Not available</span>
+                    }
+                    </div>
+                </div>
+                <div class="action-buttons">
+                    <button class="btn btn-outline">Thêm Vào WishList</button>
+                    <button class="btn btn-primary">Mượn Ngay</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
