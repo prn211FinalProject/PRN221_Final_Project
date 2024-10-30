@@ -57,7 +57,7 @@ namespace LibraryAdminSite
                     Cid = cmbGenre.SelectedIndex + 1, // Điều chỉnh theo ID thực tế nếu có
                     PublisherId = 1, // Gán ID nhà xuất bản mặc định, có thể thay đổi theo dữ liệu của bạn
                     Image = imageFileName, // Lưu tên file ảnh vào cơ sở dữ liệu
-                    Status = 1, // Giả sử sách mới thêm vào sẽ ở trạng thái khả dụng
+                    Status = true, // Giả sử sách mới thêm vào sẽ ở trạng thái khả dụng
                     Quantity = 1,  // Số lượng mặc định là 1, có thể thay đổi nếu cần
                     Price = 100000 // Giá mặc định, điều chỉnh theo nhu cầu
                 };

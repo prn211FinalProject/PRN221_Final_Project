@@ -33,33 +33,21 @@ namespace LibraryAdminSite
                 PublishDate = x.PublishDate.Value.ToString("dd/MM/yyyy"),
                 Image = x.Image ,// Assuming this is a relative path to the image
                 Quantity = x.Quantity,
-                Status = x.Status == 1 ? "Còn sách" : "Hết sách"
+                Status = x.Status == true ? "Còn sách" : "Hết sách"
             }).ToList();
 
-            lvDisplay.ItemsSource = books;
+            //lvDisplay.ItemsSource = books;
         }
-        private void LoadUser()
-        {
-            var users = LMS_PRN221Context.Ins.Users.Select(x => new
-            {
-                Id = x.Uid,
-                FullName = x.FullName,
-                Phone = x.Phone,
-                Email = x.Email,
-                Role = x.Role,
-            }).ToList();
-            lvDisplay.ItemsSource = users;
-        }
-        private void lvDisplay_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            var selectedBook = lvDisplay.SelectedItem as dynamic;
+        //private void lvDisplay_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        //{
+        //    var selectedBook = lvDisplay.SelectedItem as dynamic;
 
-            if (selectedBook != null)
-            {
-                // Hiển thị thông tin sách
-                imgBookCover.Source = ConvertToImage(selectedBook.Image);
-            }
-        }
+        //    if (selectedBook != null)
+        //    {
+        //        // Hiển thị thông tin sách
+        //        imgBookCover.Source = ConvertToImage(selectedBook.Image);
+        //    }
+        //}
 
         public static BitmapImage ConvertToImage(string relativeImagePath)
         {
@@ -85,27 +73,27 @@ namespace LibraryAdminSite
         private void btnUpload_Click(object sender, RoutedEventArgs e)
         {
             // Tạo một hộp thoại chọn tệp
-            Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
-            openFileDialog.Filter = "Image Files (*.jpg;*.jpeg;*.png)|*.jpg;*.jpeg;*.png"; // Chỉ cho phép chọn tệp hình ảnh
-            openFileDialog.Title = "Chọn Ảnh";
+            //Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
+            //openFileDialog.Filter = "Image Files (*.jpg;*.jpeg;*.png)|*.jpg;*.jpeg;*.png"; // Chỉ cho phép chọn tệp hình ảnh
+            //openFileDialog.Title = "Chọn Ảnh";
 
-            if (openFileDialog.ShowDialog() == true)
-            {
-                // Lấy đường dẫn tệp đã chọn
-                string selectedFilePath = openFileDialog.FileName;
+            //if (openFileDialog.ShowDialog() == true)
+            //{
+            //    // Lấy đường dẫn tệp đã chọn
+            //    string selectedFilePath = openFileDialog.FileName;
 
-                // Lấy sách được chọn
-                var selectedBook = lvDisplay.SelectedItem as dynamic;
+            //    // Lấy sách được chọn
+            //    var selectedBook = lvDisplay.SelectedItem as dynamic;
 
-                if (selectedBook != null)
-                {
-                    // Cập nhật hình ảnh trong cơ sở dữ liệu
-                    UpdateBookImage(selectedBook.Id, selectedFilePath);
+            //    if (selectedBook != null)
+            //    {
+            //        // Cập nhật hình ảnh trong cơ sở dữ liệu
+            //        UpdateBookImage(selectedBook.Id, selectedFilePath);
 
-                    // Hiển thị hình ảnh mới
-                    imgBookCover.Source = ConvertToImage(selectedFilePath); // Cập nhật hình ảnh ngay lập tức
-                }
-            }
+            //        // Hiển thị hình ảnh mới
+            //        imgBookCover.Source = ConvertToImage(selectedFilePath); // Cập nhật hình ảnh ngay lập tức
+            //    }
+            //}
         }
 
 
@@ -132,44 +120,42 @@ namespace LibraryAdminSite
 
         private void LoadGenres()
         {
-            // Giả sử bạn có một danh sách thể loại từ cơ sở dữ liệu
-            var genres = LMS_PRN221Context.Ins.Categories.Select(x => x.Cname).ToList();
-            cbxGenre.ItemsSource = genres;
+            //// Giả sử bạn có một danh sách thể loại từ cơ sở dữ liệu
+            //var genres = LMS_PRN221Context.Ins.Categories.Select(x => x.Cname).ToList();
+            //cbxGenre.ItemsSource = genres;
 
         }
         private Book getBook()
         {
-            try
-            {
-                // Lấy giá trị từ các điều khiển
-                int id = int.Parse(txtId.Text); // ID sách
-                string name = txtName.Text; // Tên sách
-                string author = txtAuthor.Text; // Tác giả sách (nếu có)
-                string genreId = LMS_PRN221Context.Ins.Categories.FirstOrDefault(x => x.Cname.Equals(cbxGenre.SelectedItem.ToString()))?.Id; // Lấy Id thể loại
-                DateTime publishDate = dpPublishDate.SelectedDate.Value; // Ngày xuất bản
-                string imagePath = txtImagePath.Text; // Đường dẫn hình ảnh (có thể thêm TextBox để nhập đường dẫn này)
-                int quantity = int.Parse(txtQuantity.Text); // Số lượng
-                int status = (bool)rdbAvailable.IsChecked ? 1 : 0; // Trạng thái sách (còn hay hết)
-
-                // Trả về một đối tượng Book
-                return new Book()
-                {
-                    Id = id,
-                    Bname = name,
-                    Author = author,
-                    Cid = genreId, // ID thể loại
-                    PublishDate = publishDate,
-                    Image = imagePath,
-                    Quantity = quantity,
-                    Status = status // Trạng thái
-                };
-            }
-            catch (Exception ex)
-            {
-                // Xử lý ngoại lệ nếu có
-                MessageBox.Show($"Lỗi: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return null;
-            }
+            //try
+            //{
+            //    int id = int.Parse(txbID.Text); // Tên điều khiển là txbID
+            //    string name = txbBName.Text; // Tên điều khiển là txbBName
+            //    string author = txbAuthor.Text; // Tên điều khiển là txbAuthor
+            //    DateTime? publishDate = dpkPdate.SelectedDate; // Tên điều khiển là dpkPdate
+            //    int? genreID = LMS_PRN221Context.Ins.Categories
+            //        .FirstOrDefault(x => x.Cname.Equals(cbxGenre.SelectedItem.ToString()))?.Id;
+            //    int quantity = int.Parse(txbQuantity.Text); // Tên điều khiển là txbQuantity
+            //    int? pID = LMS_PRN221Context.Ins.Publishers
+            //        .FirstOrDefault(x => x.Pname.Equals(cbxNXB.SelectedItem.ToString()))?.Id;
+            //    bool status = cbxStatus.SelectedValue.ToString() == "Còn hàng"; // Tên điều khiển là cbxStatus
+            //    return new Book()
+            //    {
+            //        Id = id,
+            //        Bname = name,
+            //        Author = author,
+            //        PublishDate = publishDate ?? DateTime.Now, // Sử dụng giá trị hiện tại nếu không có ngày xuất bản
+            //        PublisherId = pID,
+            //        Cid = genreID,
+            //        Quantity = quantity,
+            //        Status = status
+            //    };
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show($"Có lỗi xảy ra: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                return null; // Trả về null nếu có lỗi
+            //}
         }
 
         private void UpdateBook(object sender, RoutedEventArgs e)
@@ -179,19 +165,15 @@ namespace LibraryAdminSite
 
         private void btnUserManage_Click(object sender, RoutedEventArgs e)
         {
-            //UserManage userManage = new UserManage();
-            //userManage.ShowDialog();
-            //this.Hide();
-            txtTitle.Text = "Quản lý người dùng";
-            txtSearch.Text = "Nhập tên người dùng...";
-            LoadUser();
+            var userManageControl = new UserManage();
+
+            // Load the UserManage control into the ContentControl
+            MainContentControl.Content = userManageControl;
         }
 
         private void btnBookManage_Click(object sender, RoutedEventArgs e)
         {
-            txtTitle.Text = "Quản lý sách";
-            txtSearch.Text = "Nhập tên sách...";
-            LoadBook();
+
         }
     }
 }
