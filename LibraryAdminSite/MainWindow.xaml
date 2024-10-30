@@ -4,9 +4,130 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LibraryAdminSite"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="MainWindow" Height="830" Width="1400" Loaded="Window_Loaded">
+    <Grid Background="#f0f0f0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="60"/>
+            <ColumnDefinition Width="*"/>
 
+        </Grid.ColumnDefinitions>
+
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Background="#FF0CADD1"  >
+            <TextBlock Text="Library Management System" FontSize="30" VerticalAlignment="Center" Margin="350,0" FontWeight="Bold" Foreground="White"/>
+        </StackPanel>
+
+        <!-- Sidebar -->
+        <StackPanel Grid.Row="1" Grid.Column="0" Background="#2c3e50" Margin="0,10,0,0">
+            <Button Content="🏠" Foreground="White" FontSize="24" Background="Transparent" BorderBrush="Transparent" Margin="5,10" />
+            <Button Content="📚" Foreground="White" FontSize="24" Background="Transparent" BorderBrush="Transparent" Margin="5,10" />
+            <Button Content="👥" Foreground="White" FontSize="24" Background="Transparent" BorderBrush="Transparent" Margin="5,10" />
+            <Button Content="⚙️" Foreground="White" FontSize="24" Background="Transparent" BorderBrush="Transparent" Margin="5,10" />
+        </StackPanel>
+
+        <!-- Main Content -->
+        <StackPanel Grid.Row="1" Grid.Column="1" Margin="20">
+            <StackPanel Orientation="Horizontal" Background="BlanchedAlmond">
+                <Border Width="300" Background="White" BorderBrush="#bdc3c7" BorderThickness="1" Padding="10" CornerRadius="10">
+                    <StackPanel >
+                        <Image Name="imgBookCover" Width="200" Height="275" Margin="0,0,0,10" Stretch="UniformToFill"/>
+                        <Button Name="btnUpload" Background="#3498db" Foreground="White" Content="Upload Ảnh" Margin="0,0,0,5" Click="btnUpload_Click"/>
+
+                        <!-- Id Field -->
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                            <Label Content="Mã số:" Width="80"/>
+                            <TextBox Name="txbID" Text="{Binding ElementName=lvDisplay, Path=SelectedItem.Id, Mode=OneWay}" Width="175"/>
+                        </StackPanel>
+
+                        <!-- Name Field -->
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                            <Label Content="Tên sách:" Width="80"/>
+                            <TextBox Name="txbBName" Text="{Binding ElementName=lvDisplay, Path=SelectedItem.Name, Mode=OneWay}" Width="175"/>
+                        </StackPanel>
+
+                        <!-- Genre Field -->
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                            <Label Content="Thể loại:" Width="80"/>
+                            <ComboBox x:Name="cbxGenre" Width="175" SelectedValue="{Binding ElementName=lvDisplay, Path=SelectedItem.Genre, Mode=OneWay}"/>
+                        </StackPanel>
+
+                        <!-- Author Field -->
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                            <Label Content="Tác giả:" Width="80"/>
+                            <TextBox Name="txbAuthor" Text="{Binding ElementName=lvDisplay, Path=SelectedItem.Author, Mode=OneWay}" Width="175"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                            <Label Content="Giá:" Width="80"/>
+                            <TextBox Name="txbprice" Text="{Binding ElementName=lvDisplay, Path=SelectedItem.Price, Mode=OneWay}" Width="175"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                            <Label Content="Nhà Xuất bản:" Width="80"/>
+                            <ComboBox x:Name="cbxNXB" Width="175" SelectedValue="{Binding ElementName=lvDisplay, Path=SelectedItem.Publisher, Mode=OneWay}"/>
+                        </StackPanel>
+
+                        <!-- Publish Date Field -->
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                            <Label Content="Ngày XB:" Width="80"/>
+                            <DatePicker Name="dpkPdate" SelectedDate="{Binding ElementName=lvDisplay, Path=SelectedItem.PublishDate, Mode=OneWay}" Width="175"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                            <Label Content="Số Lượng:" Width="80"/>
+                            <TextBox Name="txbQuantity" Text="{Binding ElementName=lvDisplay, Path=SelectedItem.Quantity, Mode=OneWay}" Width="175"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                            <!--<Label Content="Trạng Thái:" Width="80"/>-->
+                            <Label Content="Trạng Thái:" Width="80"/>
+                            <ComboBox x:Name="cbxStatus" Width="175" Height="30" />
+                        </StackPanel>
+
+                        <!-- Buttons -->
+                        <StackPanel Orientation="Vertical" Margin="0,10,0,0">
+                            <Button Background="#27ae60" Foreground="White" Content="Cập nhật" Margin="0,0,0,5" Click="UpdateBook"/>
+                            <Button Background="#e74c3c" Foreground="White" Content="Xóa" Margin="0,0,0,5" Click="Delete"/>
+                            <Button Background="#2ecc71" Foreground="White" Content="Thêm mới" Click="Button_Click"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <Border Background="White" Margin="20" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" BorderBrush="#bdc3c7" BorderThickness="1" Padding="10" CornerRadius="10">
+                    <StackPanel>
+                        <TextBlock Text="Book Management" HorizontalAlignment="Center" FontSize="25"></TextBlock>
+
+                        <TextBox Text="Nhập tên sách..." Margin="0,0,0,20"/>
+
+                        <ListView Name="lvDisplay" Margin="0,0,0,20" SelectionChanged="lvDisplay_SelectionChanged">
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Header="Mã số" DisplayMemberBinding="{Binding Id}" Width="40"/>
+                                    <GridViewColumn Header="Tên sách" DisplayMemberBinding="{Binding Name}" Width="120"/>
+                                    <GridViewColumn Header="Thể loại" DisplayMemberBinding="{Binding Genre}" Width="70"/>
+                                    <GridViewColumn Header="NXB" DisplayMemberBinding="{Binding Publisher}" Width="100"/>
+                                    <GridViewColumn Header="Tác giả" DisplayMemberBinding="{Binding Author}" Width="100"/>
+                                    <GridViewColumn Header="Ngày XB" DisplayMemberBinding="{Binding PublishDate}" Width="100"/>
+                                    <GridViewColumn Header="Số Lượng" DisplayMemberBinding="{Binding Quantity}" Width="100"/>
+                                    <GridViewColumn Header="Giá" DisplayMemberBinding="{Binding Price}" Width="100"/>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                    </StackPanel>
+                </Border>
+
+                <Border Background="White" Margin="20" VerticalAlignment="Stretch" BorderBrush="#bdc3c7" BorderThickness="1" Padding="10" CornerRadius="10" Width="168">
+                    <StackPanel>
+                        <Label Content="Thể Loại:" Width="80"/>
+                        <ComboBox  Width="175" SelectedValue="{Binding ElementName=lvDisplay, Path=SelectedItem.Publisher, Mode=OneWay}"/>
+
+                        <Label Content="Thể Loại:" Width="80"/>
+                        <ComboBox  Width="175" SelectedValue="{Binding ElementName=lvDisplay, Path=SelectedItem.Publisher, Mode=OneWay}"/>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </StackPanel>
     </Grid>
 </Window>
