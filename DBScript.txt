@@ -14,7 +14,8 @@ CREATE TABLE [User] (
     Email NVARCHAR(255) UNIQUE,
     Phone NVARCHAR(20),
     Status BIT,
-    RoleId INT FOREIGN KEY REFERENCES Role(Id)
+    RoleId INT FOREIGN KEY REFERENCES Role(Id),
+    Password VARCHAR(20)
 );
 
 -- Bảng Category (thể loại sách)
@@ -33,6 +34,7 @@ CREATE TABLE Book (
     Quantity INT,
     Image NVARCHAR(255),
     Price DECIMAL(10, 2),
+    Hide BIT,
     Status BIT
 );
 
