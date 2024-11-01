@@ -238,16 +238,62 @@
         .product-card__rating-star {
             color: #ee4d2d;
         }
+
+        .cart-icon {
+            background-color: #FF5733;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+            .cart-icon svg {
+                width: 24px;
+                height: 24px;
+                fill: white;
+            }
     </style>
+    <script>
+        // Thời gian hết hạn phiên (phải khớp với thời gian cấu hình trong mã phía máy chủ)
+        // const sessionTimeout = 15 * 1000; // 15s
+        const sessionTimeout = 15 * 60 * 1000; // 30 phút = 30p * 60s * 1000 milisecond
+
+        // Kiểm tra thời gian hết hạn phiên
+        setTimeout(() => {
+            alert("Your session has expired. You will be redirected to the login page.");
+            window.location.href = '/Books/SignUp'; // Chuyển hướng đến trang đăng nhập
+        }, sessionTimeout);
+    </script>
 </head>
 <body>
     <!-- Top Navigation -->
     <div class="top-nav">
         <div class="container top-nav__container">
             <div class="top-nav__links">
-                <a href="/Books/SignUp">Đăng Ký</a>
-                <a href="/Books/Login">Đăng Nhập</a>
+                <div class="cart-icon">
+                    <a href="@(string.IsNullOrEmpty(HttpContext.Session.GetString("UserEmail")) ? "/Books/SignUp" : "/Books/WishList")">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z" />
+                    </svg>
+                    </a>
+                </div>
+                @if (string.IsNullOrEmpty(HttpContext.Session.GetString("UserEmail")))
+                {
+                    <a href="/Books/SignUp">Đăng Ký</a>
+                    <a href="/Books/SignUp">Đăng Nhập</a>
+                }
+                else
+                {
+                    <span>Xin chào, @HttpContext.Session.GetString("UserEmail")</span>
+                    <form method="post" asp-page-handler="Logout" style="display: inline;">
+                        @* <input type="hidden" name="FormAction" value="Logout" /> *@
+                        <button class="btn btn-primary" type="submit">Đăng Xuất</button>
+                    </form>
+                }
             </div>
+            
         </div>
     </div>
     <!-- Main Content -->
@@ -260,13 +306,20 @@
                 <form method="get">
                     <div class="filter-group">
                         <h3 class="filter-group__title">Theo Danh Mục</h3>
-                        @foreach (var category in Model.Categories)
+                        @if (Model.Categories != null)
                         {
-                            <label class="filter-group__item">
-                                <input type="checkbox" name="categoryIds" value="@category.Id"
-                                @(Request.Query["categoryIds"].Contains(category.Id.ToString()) ? "checked" : "")>
-                                @category.Cname (@category.Books.Count)
-                            </label>
+                            @foreach (var category in Model.Categories)
+                            {
+                                <label class="filter-group__item">
+                                    <input type="checkbox" name="categoryIds" value="@category.Id"
+                                    @(Request.Query["categoryIds"].Contains(category.Id.ToString()) ? "checked" : "")>
+                                    @category.Cname (@category.Books.Count)
+                                </label>
+                            }
+                        }
+                        else
+                        {
+                            <p>No categories available.</p>
                         }
                     </div>
                     <button type="submit" class="btn btn-primary">Lọc</button>
@@ -280,13 +333,14 @@
                     <div class="sort-buttons">
                         <span>Sắp xếp theo</span>
                         <a asp-page="./Index" asp-route-sortOrder="name" class="sort-button @(Request.Query["sortOrder"] == "name" ? "sort-button--active" : "")">Tên sách</a>
-                        <a asp-page="./Index" asp-route-sortOrder="price" class="sort-button @(Request.Query["sortOrder"] == "price" ? "sort-button--active" : "")">Giá bán</a>
                         <a asp-page="./Index" asp-route-sortOrder="quantity" class="sort-button @(Request.Query["sortOrder"] == "quantity" ? "sort-button--active" : "")">Số lượng</a>
                         <a asp-page="./Index" asp-route-sortOrder="status" class="sort-button @(Request.Query["sortOrder"] == "status" ? "sort-button--active" : "")">Trạng thái</a>
                     </div>
                 </div>
 
                 <div class="products__grid">
+                    @if (Model.Book != null)
+                    {
                     @foreach (var book in Model.Book)
                     {
                         <a asp-page="./Details" asp-route-id="@book.Id" class="product-card-link" style="text-decoration: none">
@@ -295,7 +349,6 @@
                                 <div class="product-card__content" style="text-decoration: none">
                                 <h3 class="product-card__title">@book.Bname</h3>
                                 <div class="product-card__price">@book.Author</div>
-                                <div class="product-card__price">@book.Price</div>
                                 <div class="product-card__discount">@book.Quantity</div>
                                 <div class="product-card__status">
                                     @if (book.Status == true)
@@ -310,6 +363,11 @@
                             </div>
                         </div>
                         </a>
+                    }
+                    }
+                    else
+                    {
+                        <p>No books available.</p>
                     }
                 </div>
             </div>

@@ -21,6 +21,11 @@ namespace LibraryCustomerSite.Pages.Books
 
         public IList<Book> Book { get;set; } = default!;
         public IList<Category> Categories { get; set; } = new List<Category>();
+        public IActionResult OnPostLogout()
+        {
+            HttpContext.Session.Clear(); // Xóa toàn bộ session
+            return RedirectToPage("/Books/Index"); 
+        }
         public async Task OnGetAsync(List<int> categoryIds, string sortOrder)
         {
             IQueryable<Book> bookQuery = _context.Books
@@ -35,9 +40,6 @@ namespace LibraryCustomerSite.Pages.Books
             {
                 case "name":
                     bookQuery = bookQuery.OrderBy(b => b.Bname);
-                    break;
-                case "price":
-                    bookQuery = bookQuery.OrderBy(b => b.Price);
                     break;
                 case "quantity":
                     bookQuery = bookQuery.OrderBy(b => b.Quantity);
