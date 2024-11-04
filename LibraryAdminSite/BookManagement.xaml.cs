@@ -356,12 +356,11 @@ namespace LibraryAdminSite
                 if (result == MessageBoxResult.Yes)
                 {
                     var existingBook = LMS_PRN221Context.Ins.BookTitles
-                        .Include(b => b.BookCopies) // Bao gồm BookCopies để kiểm tra
-                        .FirstOrDefault(b => b.Id == book.Id); // Tìm BookTitle
+                        .Include(b => b.BookCopies) 
+                        .FirstOrDefault(b => b.Id == book.Id); 
 
                     if (existingBook != null)
                     {
-                        // Kiểm tra xem có BookCopy nào có status == false không
                         bool hasNotAvailableCopies = existingBook.BookCopies.Any(bc => bc.Status == false);
                         if (hasNotAvailableCopies)
                         {
@@ -369,7 +368,7 @@ namespace LibraryAdminSite
                         }
                         else
                         {
-                            existingBook.Hide = true; // Ẩn sách thay vì xóa
+                            existingBook.Hide = true; 
                             LMS_PRN221Context.Ins.SaveChanges();
                             MessageBox.Show("Xóa sách thành công!");
                             LoadBook();
@@ -438,7 +437,6 @@ namespace LibraryAdminSite
             Book book = getBook();
             if (book != null)
             {
-                // Mở cửa sổ BookCopyWindow với ID của sách hiện tại
                 var bookCopyWindow = new CopyManagement(book.Id);
                 bookCopyWindow.ShowDialog();
             }
