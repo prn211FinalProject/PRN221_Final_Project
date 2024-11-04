@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace LibraryCustomerSite.Models
 {
-    public partial class LibraryManagementContext : DbContext
+    public partial class LMS_PRN221Context : DbContext
     {
-        public static LibraryManagementContext Ins = new LibraryManagementContext();
+        public static LMS_PRN221Context Ins = new LMS_PRN221Context();
 
-        public LibraryManagementContext()
+        public LMS_PRN221Context()
         {
             if (Ins == null)
             {
@@ -17,16 +17,18 @@ namespace LibraryCustomerSite.Models
             }
         }
 
-        public LibraryManagementContext(DbContextOptions<LibraryManagementContext> options)
+        public LMS_PRN221Context(DbContextOptions<LMS_PRN221Context> options)
             : base(options)
         {
         }
 
         public virtual DbSet<Blog> Blogs { get; set; } = null!;
-        public virtual DbSet<Book> Books { get; set; } = null!;
+        public virtual DbSet<BookCopy> BookCopies { get; set; } = null!;
+        public virtual DbSet<BookTitle> BookTitles { get; set; } = null!;
         public virtual DbSet<BorrowInformation> BorrowInformations { get; set; } = null!;
         public virtual DbSet<Category> Categories { get; set; } = null!;
         public virtual DbSet<Feedback> Feedbacks { get; set; } = null!;
+        public virtual DbSet<Publisher> Publishers { get; set; } = null!;
         public virtual DbSet<Role> Roles { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; } = null!;
         public virtual DbSet<Wishlist> Wishlists { get; set; } = null!;
@@ -48,7 +50,7 @@ namespace LibraryCustomerSite.Models
             modelBuilder.Entity<Blog>(entity =>
             {
                 entity.HasKey(e => e.Bid)
-                    .HasName("PK__Blog__C6D111C9BB6BF98F");
+                    .HasName("PK__Blog__C6D111C9E02D2A51");
 
                 entity.ToTable("Blog");
 
@@ -59,12 +61,28 @@ namespace LibraryCustomerSite.Models
                 entity.HasOne(d => d.UidNavigation)
                     .WithMany(p => p.Blogs)
                     .HasForeignKey(d => d.Uid)
-                    .HasConstraintName("FK__Blog__Uid__403A8C7D");
+                    .HasConstraintName("FK__Blog__Uid__46E78A0C");
             });
 
-            modelBuilder.Entity<Book>(entity =>
+            modelBuilder.Entity<BookCopy>(entity =>
             {
-                entity.ToTable("Book");
+                entity.ToTable("BookCopy");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Note).HasMaxLength(255);
+
+                entity.HasOne(d => d.BookTitle)
+                    .WithMany(p => p.BookCopies)
+                    .HasForeignKey(d => d.BookTitleId)
+                    .HasConstraintName("FK__BookCopy__BookTi__32E0915F");
+            });
+
+            modelBuilder.Entity<BookTitle>(entity =>
+            {
+                entity.ToTable("BookTitle");
 
                 entity.Property(e => e.Author).HasMaxLength(255);
 
@@ -74,20 +92,29 @@ namespace LibraryCustomerSite.Models
 
                 entity.Property(e => e.Cid).HasColumnName("CId");
 
+                entity.Property(e => e.Description).HasMaxLength(255);
+
                 entity.Property(e => e.Image).HasMaxLength(255);
 
                 entity.Property(e => e.Price).HasColumnType("decimal(10, 2)");
 
+                entity.Property(e => e.PublishDate).HasColumnType("datetime");
+
                 entity.HasOne(d => d.CidNavigation)
-                    .WithMany(p => p.Books)
+                    .WithMany(p => p.BookTitles)
                     .HasForeignKey(d => d.Cid)
-                    .HasConstraintName("FK__Book__CId__2C3393D0");
+                    .HasConstraintName("FK__BookTitle__CId__2E1BDC42");
+
+                entity.HasOne(d => d.Publisher)
+                    .WithMany(p => p.BookTitles)
+                    .HasForeignKey(d => d.PublisherId)
+                    .HasConstraintName("FK__BookTitle__Publi__300424B4");
             });
 
             modelBuilder.Entity<BorrowInformation>(entity =>
             {
                 entity.HasKey(e => e.Oid)
-                    .HasName("PK__BorrowIn__CB3E4F31B4D0125B");
+                    .HasName("PK__BorrowIn__CB3E4F314B12AC52");
 
                 entity.ToTable("BorrowInformation");
 
@@ -100,19 +127,21 @@ namespace LibraryCustomerSite.Models
                 entity.HasOne(d => d.UidNavigation)
                     .WithMany(p => p.BorrowInformations)
                     .HasForeignKey(d => d.Uid)
-                    .HasConstraintName("FK__BorrowInfor__Uid__398D8EEE");
+                    .HasConstraintName("FK__BorrowInfor__Uid__403A8C7D");
 
                 entity.HasMany(d => d.Bids)
                     .WithMany(p => p.Oids)
                     .UsingEntity<Dictionary<string, object>>(
                         "BorrowDetail",
-                        l => l.HasOne<Book>().WithMany().HasForeignKey("Bid").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK__BorrowDetai__Bid__3D5E1FD2"),
-                        r => r.HasOne<BorrowInformation>().WithMany().HasForeignKey("Oid").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK__BorrowDetai__Oid__3C69FB99"),
+                        l => l.HasOne<BookCopy>().WithMany().HasForeignKey("Bid").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK__BorrowDetai__Bid__440B1D61"),
+                        r => r.HasOne<BorrowInformation>().WithMany().HasForeignKey("Oid").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK__BorrowDetai__Oid__4316F928"),
                         j =>
                         {
-                            j.HasKey("Oid", "Bid").HasName("PK__BorrowDe__47535E2D3474CB2B");
+                            j.HasKey("Oid", "Bid").HasName("PK__BorrowDe__47535E2D556A768F");
 
                             j.ToTable("BorrowDetail");
+
+                            j.IndexerProperty<string>("Bid").HasMaxLength(255).IsUnicode(false);
                         });
             });
 
@@ -134,12 +163,27 @@ namespace LibraryCustomerSite.Models
                 entity.HasOne(d => d.BidNavigation)
                     .WithMany(p => p.Feedbacks)
                     .HasForeignKey(d => d.Bid)
-                    .HasConstraintName("FK__Feedback__Bid__2F10007B");
+                    .HasConstraintName("FK__Feedback__Bid__35BCFE0A");
 
                 entity.HasOne(d => d.UidNavigation)
                     .WithMany(p => p.Feedbacks)
                     .HasForeignKey(d => d.Uid)
-                    .HasConstraintName("FK__Feedback__Uid__300424B4");
+                    .HasConstraintName("FK__Feedback__Uid__36B12243");
+            });
+
+            modelBuilder.Entity<Publisher>(entity =>
+            {
+                entity.ToTable("Publisher");
+
+                entity.Property(e => e.Address).HasMaxLength(255);
+
+                entity.Property(e => e.Email).HasMaxLength(255);
+
+                entity.Property(e => e.Phone).HasMaxLength(20);
+
+                entity.Property(e => e.Pname)
+                    .HasMaxLength(255)
+                    .HasColumnName("PName");
             });
 
             modelBuilder.Entity<Role>(entity =>
@@ -152,16 +196,24 @@ namespace LibraryCustomerSite.Models
             modelBuilder.Entity<User>(entity =>
             {
                 entity.HasKey(e => e.Uid)
-                    .HasName("PK__User__C5B69A4A190D22E9");
+                    .HasName("PK__User__C5B69A4A115E9514");
 
                 entity.ToTable("User");
 
-                entity.HasIndex(e => e.Email, "UQ__User__A9D1053420587E18")
+                entity.HasIndex(e => e.Email, "UQ__User__A9D10534EA466FD2")
                     .IsUnique();
 
                 entity.Property(e => e.Email).HasMaxLength(255);
 
                 entity.Property(e => e.FullName).HasMaxLength(255);
+
+                entity.Property(e => e.Image)
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Password)
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Phone).HasMaxLength(20);
 
@@ -178,23 +230,23 @@ namespace LibraryCustomerSite.Models
                 entity.HasOne(d => d.UidNavigation)
                     .WithMany(p => p.Wishlists)
                     .HasForeignKey(d => d.Uid)
-                    .HasConstraintName("FK__Wishlist__Uid__32E0915F");
+                    .HasConstraintName("FK__Wishlist__Uid__398D8EEE");
 
                 entity.HasMany(d => d.Bids)
                     .WithMany(p => p.Wids)
                     .UsingEntity<Dictionary<string, object>>(
                         "WishlistItem",
-                        l => l.HasOne<Book>().WithMany().HasForeignKey("Bid").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK__WishlistIte__BId__36B12243"),
-                        r => r.HasOne<Wishlist>().WithMany().HasForeignKey("Wid").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK__WishlistIte__WId__35BCFE0A"),
+                        l => l.HasOne<BookCopy>().WithMany().HasForeignKey("Bid").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK__WishlistIte__BId__3D5E1FD2"),
+                        r => r.HasOne<Wishlist>().WithMany().HasForeignKey("Wid").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK__WishlistIte__WId__3C69FB99"),
                         j =>
                         {
-                            j.HasKey("Wid", "Bid").HasName("PK__Wishlist__D75A85F58AE6D559");
+                            j.HasKey("Wid", "Bid").HasName("PK__Wishlist__D75A85F5C82E816D");
 
                             j.ToTable("WishlistItem");
 
                             j.IndexerProperty<int>("Wid").HasColumnName("WId");
 
-                            j.IndexerProperty<int>("Bid").HasColumnName("BId");
+                            j.IndexerProperty<string>("Bid").HasMaxLength(255).IsUnicode(false).HasColumnName("BId");
                         });
             });
 

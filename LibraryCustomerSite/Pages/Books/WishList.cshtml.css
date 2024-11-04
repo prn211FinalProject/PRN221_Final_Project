@@ -1,0 +1,134 @@
+﻿* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+.cart-container {
+    max-width: 1200px;
+    margin: 20px auto;
+    background: #fff;
+    border-radius: 3px;
+    box-shadow: 0 1px 2px 0 rgba(0,0,0,0.13);
+}
+
+.cart-header {
+    display: grid;
+    grid-template-columns: 40px 400px 200px 150px 150px 100px;
+    padding: 15px;
+    background: #fff;
+    border-bottom: 1px solid #f5f5f5;
+}
+
+.cart-item {
+    display: grid;
+    grid-template-columns: 40px 400px 200px 150px 150px 100px;
+    padding: 15px;
+    align-items: center;
+    border-bottom: 1px solid #f5f5f5;
+}
+
+.shop-name {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.shop-badge {
+    background: #ee4d2d;
+    color: white;
+    padding: 2px 4px;
+    border-radius: 2px;
+    font-size: 12px;
+    margin-right: 5px;
+}
+
+.product-info {
+    display: flex;
+    gap: 10px;
+}
+
+.product-image {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border: 1px solid #f5f5f5;
+}
+
+.product-details {
+    flex: 1;
+}
+
+.product-name {
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.product-variant {
+    color: #757575;
+    font-size: 13px;
+}
+
+.price {
+    color: #ee4d2d;
+    font-size: 14px;
+}
+
+.original-price {
+    color: #757575;
+    text-decoration: line-through;
+    font-size: 12px;
+}
+
+.quantity-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.quantity-btn {
+    width: 30px;
+    height: 30px;
+    border: 1px solid #e8e8e8;
+    background: white;
+    cursor: pointer;
+}
+
+.quantity-input {
+    width: 50px;
+    height: 30px;
+    text-align: center;
+    border: 1px solid #e8e8e8;
+}
+
+.actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.action-btn {
+    border: none;
+    background: none;
+    color: #757575;
+    cursor: pointer;
+    font-size: 13px;
+    text-align: left;
+    padding: 0;
+}
+
+    .action-btn:hover {
+        color: #ee4d2d;
+    }
+
+.promotion-tag {
+    display: inline-block;
+    border: 1px solid #ee4d2d;
+    color: #ee4d2d;
+    padding: 2px 4px;
+    font-size: 12px;
+    border-radius: 2px;
+    margin-top: 5px;
+}

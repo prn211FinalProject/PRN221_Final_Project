@@ -218,8 +218,7 @@
 </head>
 <body>
     <button class="btn btn-primary">
-        <a style="color: white;
-    text-decoration: none;" href="/Books">Back to List</a>
+        <a style="color: white; text-decoration: none;" href="/Books">Back to List</a>
     </button>
     <div class="container">
         <div class="product-grid">
@@ -233,8 +232,9 @@
                     <span class="badge-favorite">Yêu Thích</span>
                     <h1 class="product-title">Tên sách: @Model.Book.Bname</h1>
                     <p>Tác giả: @Model.Book.Author</p>
+                    <p>Mô tả: @Model.Book.Description</p>
+                    <div>Ngày xuất bản: @(Model.Book.PublishDate.HasValue ? Model.Book.PublishDate.Value.ToString("dd/MM/yyyy") : "N/A")</div>
                     <div class="rating-section">
-                        
                     </div>
                 </div>
                 <div class="info-row">
@@ -247,22 +247,65 @@
                 <div class="info-row">
                     <span class="info-label">Trạng thái:</span>
                     <div>
-                    @if (Model.Book.Status == true)
-                    {
-                        <span class="shipping-badge">Available</span>
-                    }
-                    else
-                    {
-                        <span style="color: red;">Not available</span>
-                    }
+                        @if (Model.Book.Quantity >= 1)
+                        {
+                            <span class="shipping-badge">Còn Hàng</span>
+                        }
+                        else
+                        {
+                            <span style="color: red;">Hết Hàng</span>
+                        }
                     </div>
                 </div>
                 <div class="action-buttons">
-                    <button class="btn btn-outline">Thêm Vào WishList</button>
-                    <button class="btn btn-primary">Mượn Ngay</button>
+                    @if (string.IsNullOrEmpty(HttpContext.Session.GetString("UserEmail")))
+                    {
+                        <a href="/Books/SignUp">
+                            <button class="btn btn-outline">Thêm vào WishList</button>
+                        </a>
+                        <a href="/Books/SignUp">
+                            <button class="btn btn-primary">Mượn Ngay</button>
+                        </a>
+                    }
+                    else
+                    {
+                        <form method="post" asp-page-handler="AddToWishlist">
+                            <input type="hidden" name="id" value="@Model.Book.Id" />
+                            <button type="submit" class="btn btn-outline">Thêm Vào WishList</button>
+                        </form>
+                        <form method="get" asp-page="/Books/Borrow" asp-page-handler="Post">
+                            <input type="hidden" name="id" value="@Model.Book.Id" />
+                            <button type="submit" class="btn btn-primary">Mượn Ngay</button>
+                        </form>
+
+                    }
                 </div>
             </div>
         </div>
     </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div id="success-message" style="display:none;">@TempData["SuccessMessage"]</div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div id="error-message" style="display:none;">@TempData["ErrorMessage"]</div>
+    }
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var successMessage = document.getElementById("success-message");
+            if (successMessage) {
+                alert(successMessage.innerText);
+            }
+
+            var errorMessage = document.getElementById("error-message");
+            if (errorMessage) {
+                alert(errorMessage.innerText);
+            }
+        });
+    </script>
 </body>
 </html>

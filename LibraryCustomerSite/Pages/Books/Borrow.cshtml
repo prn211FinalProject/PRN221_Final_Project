@@ -1,0 +1,178 @@
+﻿@page
+@model LibraryCustomerSite.Pages.Books.BorrowModel
+@{
+    ViewData["Title"] = "Thông tin mượn sách";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #e91e63 0%, #5c2d91 100%);
+        }
+
+        .page-container {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .contact-form {
+            background: rgba(33, 33, 33, 0.95);
+            padding: 40px;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-title {
+            color: white;
+            text-align: center;
+            font-size: 28px;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .name-group {
+            display: flex;
+            gap: 15px;
+        }
+
+        .form-label {
+            display: block;
+            color: white;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .required {
+            color: #e91e63;
+            margin-left: 3px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            background: #f5f5f5;
+            font-size: 14px;
+        }
+
+        .form-textarea {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            background: #f5f5f5;
+            font-size: 14px;
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            background: #e91e63;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+            .submit-btn:hover {
+                background: #d81557;
+            }
+
+        .form-input:focus,
+        .form-textarea:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(233, 30, 99, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success">
+                @TempData["SuccessMessage"]
+            </div>
+        }
+        <form class="contact-form" method="post">
+            <h1 class="form-title">Thông tin mượn sách</h1>
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="form-group">
+                    <div class="alert alert-danger">
+                        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                        {
+                            <p>@error.ErrorMessage</p>
+                        }
+                    </div>
+                </div>
+            }
+            <div class="form-group">
+                <label class="form-label">
+                    Họ và Tên<span class="required">*</span>
+                </label>
+                <div class="form-group">
+                    <div>
+                        <input type="text" class="form-input" value="@Model.UserName" readonly>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">
+                    Email<span class="required">*</span>
+                </label>
+                <input type="email" class="form-input" value="@Model.Email" readonly>
+            </div>
+            <div class="form-group">
+                <label class="form-label">
+                    Tên sách<span class="required">*</span>
+                </label>
+                <input type="text" class="form-input" value="@Model.BookName" readonly>
+            </div>
+            <div class="form-group">
+                <label class="form-label">
+                    Ngày mượn<span class="required">*</span>
+                </label>
+                <input type="date" class="form-input" asp-for="BorrowInformation.BorrowDate" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">
+                    Ngày trả<span class="required">*</span>
+                </label>
+                <input type="date" class="form-input" asp-for="BorrowInformation.DueDate" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">
+                    Ghi chú<span class="required">*</span>
+                </label>
+                <textarea class="form-textarea" asp-for="BorrowInformation.Note" required></textarea>
+            </div>
+            <div style="display: flex; justify-content: space-between; flex-direction: row-reverse;">
+                <a href="/Books" style="width:30rem; text-decoration:none" class="submit-btn">Quay về</a>
+                <button type="submit" class="submit-btn" style="margin-right: 12rem; width:30rem">Mượn ngay</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

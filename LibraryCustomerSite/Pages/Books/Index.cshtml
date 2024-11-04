@@ -11,7 +11,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shopee Clone</title>
+    <title>Book Library</title>
     <style>
         :root {
             --primary: #ee4d2d;
@@ -256,10 +256,9 @@
             }
     </style>
     <script>
-        // Thời gian hết hạn phiên (phải khớp với thời gian cấu hình trong mã phía máy chủ)
+        // time for session to expire
         // const sessionTimeout = 15 * 1000; // 15s
         const sessionTimeout = 15 * 60 * 1000; // 30 phút = 30p * 60s * 1000 milisecond
-
         // Kiểm tra thời gian hết hạn phiên
         setTimeout(() => {
             alert("Your session has expired. You will be redirected to the login page.");
@@ -296,6 +295,12 @@
             
         </div>
     </div>
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
     <!-- Main Content -->
     <main class="main">
         <div class="container main__container">
@@ -313,7 +318,7 @@
                                 <label class="filter-group__item">
                                     <input type="checkbox" name="categoryIds" value="@category.Id"
                                     @(Request.Query["categoryIds"].Contains(category.Id.ToString()) ? "checked" : "")>
-                                    @category.Cname (@category.Books.Count)
+                                    @category.Cname (@category.BookTitles.Count)
                                 </label>
                             }
                         }
@@ -351,13 +356,13 @@
                                 <div class="product-card__price">@book.Author</div>
                                 <div class="product-card__discount">@book.Quantity</div>
                                 <div class="product-card__status">
-                                    @if (book.Status == true)
+                                    @if (book.Quantity >= 1)
                                     {
-                                        <span style="color: green;">Available</span>
+                                        <span style="color: green;">Còn Hàng</span>
                                     }
                                     else
                                     {
-                                        <span style="color: red;">Not available</span>
+                                        <span style="color: red;">Hết Hàng</span>
                                     }
                                 </div>
                             </div>
