@@ -1,6 +1,6 @@
 ﻿-- Tạo cơ sở dữ liệu LibraryManagement
 --CREATE DATABASE LMS_PRN221;
---DROP DATABASE LibraryManagement;
+--DROP DATABASE LMS_PRN221;
 
 -- Sử dụng cơ sở dữ liệu LibraryManagement
 USE LMS_PRN221;
@@ -22,6 +22,8 @@ CREATE TABLE [User] (
     Status BIT,
     RoleId INT FOREIGN KEY REFERENCES Role(Id),
     Password VARCHAR(20)
+	Gender BIT,
+    RoleId INT FOREIGN KEY REFERENCES Role(Id)
 );
 
 -- Bảng Category (thể loại sách)
@@ -50,7 +52,8 @@ CREATE TABLE Book (
     Quantity INT,
     Image NVARCHAR(255),
     Price DECIMAL(10, 2),
-    Status int,
+	[Description] nvarchar(255),
+    Status BIT,
 	[Hide] BIT NOT NULL DEFAULT 0,
     PublisherId INT FOREIGN KEY REFERENCES Publisher(Id),
     PublishDate DATETIME
@@ -111,7 +114,6 @@ INSERT INTO Role (Name, Status)
 VALUES 
     (N'Admin', 1),
     (N'Member', 1),
-    (N'Librarian', 1);
 
 -- Thêm dữ liệu vào bảng User
 INSERT INTO [User] (FullName, Email, Phone, Status, RoleId)

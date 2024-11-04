@@ -10,63 +10,47 @@
         <!-- Main Content -->
         <StackPanel Grid.Row="1" Grid.Column="1">
             <StackPanel Orientation="Horizontal" Background="BlanchedAlmond">
-                <Border Width="300" Background="White" BorderBrush="#bdc3c7" BorderThickness="1" Padding="10" CornerRadius="10">
+                <Border Width="367" Background="White" BorderBrush="#bdc3c7" BorderThickness="1" Padding="10" CornerRadius="10" Height="704">
                     <StackPanel >
-                        <Image Name="imgBookCover" Width="200" Height="275" Margin="0,0,0,10" Stretch="UniformToFill"/>
-                        <Button Name="btnUpload" Background="#3498db" Foreground="White" Content="Upload Ảnh" Margin="0,0,0,5" Click="btnUpload_Click"/>
 
                         <!-- Id Field -->
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                            <Label Content="Mã số:" Width="80"/>
-                            <TextBox Name="txbID" Text="{Binding ElementName=lvDisplay, Path=SelectedItem.Id, Mode=OneWay}" Width="175"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,20,0,5">
+                            <Label Content="Mã số:" Width="100"/>
+                            <TextBox Name="txbID" Text="{Binding ElementName=lvDisplay, Path=SelectedItem.Id, Mode=OneWay}" Width="175" IsEnabled="False"/>
                         </StackPanel>
 
                         <!-- Name Field -->
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                            <Label Content="Tên sách:" Width="80"/>
-                            <TextBox Name="txbBName" Text="{Binding ElementName=lvDisplay, Path=SelectedItem.Name, Mode=OneWay}" Width="175"/>
+                            <Label Content="Tên người dùng:" Width="100"/>
+                            <TextBox Name="txbBName" Text="{Binding ElementName=lvDisplay, Path=SelectedItem.FullName, Mode=OneWay}" Width="175"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                            <Label Content="Giới tính:" Width="100"/>
+                            <RadioButton Name="rdbMale" VerticalAlignment="Center"   />
+                            <Label Content="Male" Margin="0,0,30,0"/>
+                            <RadioButton Name="rdbFemale"  VerticalAlignment="Center"   />
+                            <Label Content="Female"/>
                         </StackPanel>
 
-                        <!-- Genre Field -->
+                        <!--  Field -->
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                            <Label Content="Thể loại:" Width="80"/>
-                            <ComboBox x:Name="cbxGenre" Width="175" SelectedValue="{Binding ElementName=lvDisplay, Path=SelectedItem.Genre, Mode=OneWay}"/>
-                        </StackPanel>
-
-                        <!-- Author Field -->
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                            <Label Content="Tác giả:" Width="80"/>
-                            <TextBox Name="txbAuthor" Text="{Binding ElementName=lvDisplay, Path=SelectedItem.Author, Mode=OneWay}" Width="175"/>
+                            <Label Content="Số điện thoại:" Width="100"/>
+                            <TextBox Name="txbPhone" Text="{Binding ElementName=lvDisplay, Path=SelectedItem.Phone, Mode=OneWay}" Width="175"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                            <Label Content="Giá:" Width="80"/>
-                            <TextBox Name="txbprice" Text="{Binding ElementName=lvDisplay, Path=SelectedItem.Price, Mode=OneWay}" Width="175"/>
+                            <Label Content="Email:" Width="100"/>
+                            <TextBox Name="txbEmail" Text="{Binding ElementName=lvDisplay, Path=SelectedItem.Email, Mode=OneWay}" Width="175"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                            <Label Content="Nhà Xuất bản:" Width="80"/>
-                            <ComboBox x:Name="cbxNXB" Width="175" SelectedValue="{Binding ElementName=lvDisplay, Path=SelectedItem.Publisher, Mode=OneWay}"/>
-                        </StackPanel>
-
-                        <!-- Publish Date Field -->
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                            <Label Content="Ngày XB:" Width="80"/>
-                            <DatePicker Name="dpkPdate" SelectedDate="{Binding ElementName=lvDisplay, Path=SelectedItem.PublishDate, Mode=OneWay}" Width="175"/>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                            <Label Content="Số Lượng:" Width="80"/>
-                            <TextBox Name="txbQuantity" Text="{Binding ElementName=lvDisplay, Path=SelectedItem.Quantity, Mode=OneWay}" Width="175"/>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                            <!--<Label Content="Trạng Thái:" Width="80"/>-->
-                            <Label Content="Trạng Thái:" Width="80"/>
-                            <ComboBox x:Name="cbxStatus" Width="175" Height="30" />
+                            <Label Content="Vai trò:" Width="100"/>
+                            <ComboBox x:Name="cbxRole" Width="175" SelectedValue="{Binding ElementName=lvDisplay, Path=SelectedItem.Role, Mode=OneWay}"/>
                         </StackPanel>
 
                         <!-- Buttons -->
                         <StackPanel Orientation="Vertical" Margin="0,10,0,0">
-                            <Button Background="#27ae60" Foreground="White" Content="Cập nhật" Margin="0,0,0,5" Click="UpdateBook"/>
-                            <Button Background="#e74c3c" Foreground="White" Content="Xóa" Margin="0,0,0,5"/>
-                            <Button Background="#2ecc71" Foreground="White" Content="Thêm mới" Click="Button_Click"/>
+                            <Button Background="#27ae60" Foreground="White" Content="Cập nhật" Margin="0,0,0,5" Click="updateUser"/>
+                            <Button Background="#e74c3c" Foreground="White" Content="Xóa" Margin="0,0,0,5" Name="btnDelete" Click="btnDelete_Click"/>
+                            <Button Background="#2ecc71" Foreground="White" Content="Thêm mới" Name="btnAddNew" Click="btnAddNew_Click"/>
                         </StackPanel>
                     </StackPanel>
                 </Border>
@@ -80,11 +64,11 @@
                             <ListView.View>
                                 <GridView>
                                     <GridViewColumn Header="Mã số" DisplayMemberBinding="{Binding Id}" Width="40"/>
-                                    <GridViewColumn Header="Tên sách" DisplayMemberBinding="{Binding FullName}" Width="120"/>
-                                    <GridViewColumn Header="Thể loại" DisplayMemberBinding="{Binding Genre}" Width="70"/>
-                                    <GridViewColumn Header="NXB" DisplayMemberBinding="{Binding Phone}" Width="100"/>
-                                    <GridViewColumn Header="Tác giả" DisplayMemberBinding="{Binding Email}" Width="100"/>
-                                    <GridViewColumn Header="Ngày XB" DisplayMemberBinding="{Binding Role}" Width="100"/>
+                                    <GridViewColumn Header="Tên người dùng" DisplayMemberBinding="{Binding FullName}" Width="150"/>
+                                    <GridViewColumn Header="Số điện thoại" DisplayMemberBinding="{Binding Phone}" Width="100"/>
+                                    <GridViewColumn Header="Email" DisplayMemberBinding="{Binding Email}" Width="150"/>
+                                    <GridViewColumn Header="Giới tính" DisplayMemberBinding="{Binding Gender}" Width="100"/>
+                                    <GridViewColumn Header="Vai trò" DisplayMemberBinding="{Binding Role}" Width="100"/>
                                 </GridView>
                             </ListView.View>
                         </ListView>

@@ -18,7 +18,6 @@
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
 
-        <!-- Phần bảng và biểu đồ đầu tiên -->
         <Border Grid.Row="0" Grid.Column="0" Background="White" BorderBrush="#bdc3c7" BorderThickness="1" Padding="20" CornerRadius="10" Margin="10">
             <StackPanel>
                 <TextBlock Text="Báo cáo thống kê mượn sách theo thể loại" FontSize="25" FontWeight="Bold" Margin="0,0,0,10"/>
@@ -46,13 +45,12 @@
         <Border Grid.Row="0" Grid.Column="1" Background="White" BorderBrush="#bdc3c7" BorderThickness="1" Padding="20" CornerRadius="10" Margin="10">
             <StackPanel>
                 <TextBlock HorizontalAlignment="Center" Margin="0,10,0,0" TextWrapping="Wrap" Text="Biểu Đồ Thể Hiện Tỉ Lệ Thể Loại Được Mượn" FontWeight="Bold" FontSize="16"/>
-                <lvc:PieChart x:Name="pieChart1" Series="{Binding PieSeriesCollection1}" Margin="10" Width="338" Height="313">
+                <lvc:PieChart x:Name="pieChart1" Series="{Binding PieSeriesCollection}" Margin="10" Width="338" Height="313">
                     <lvc:PieChart.LegendLocation>Right</lvc:PieChart.LegendLocation>
                 </lvc:PieChart>
             </StackPanel>
         </Border>
 
-        <!-- Phần bảng và biểu đồ thứ hai -->
         <Border Grid.Row="1" Grid.Column="0" Background="White" BorderBrush="#bdc3c7" BorderThickness="1" Padding="20" CornerRadius="10" Margin="10,10,10,10" Grid.ColumnSpan="2">
             <StackPanel>
                 <TextBlock Text="Báo cáo thống kê Số Sách Mượn Nhiều Nhất" FontSize="16" FontWeight="Bold"/>
