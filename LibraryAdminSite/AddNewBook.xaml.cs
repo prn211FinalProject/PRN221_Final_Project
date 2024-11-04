@@ -49,7 +49,7 @@ namespace LibraryAdminSite
                 string imageFileName = SaveImageToDirectory(_selectedImagePath);
 
                 // Tạo đối tượng Book mới và gán các giá trị từ giao diện người dùng
-                var newBook = new Book
+                var newBook = new BookTitle
                 {
                     Bname = txtBookName.Text,
                     Author = txtAuthor.Text,
@@ -63,7 +63,7 @@ namespace LibraryAdminSite
                 };
 
                 // Thêm sách vào cơ sở dữ liệu
-                _context.Books.Add(newBook);
+                _context.BookTitles.Add(newBook);
                 _context.SaveChanges();
 
                 MessageBox.Show("Thêm sách thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
