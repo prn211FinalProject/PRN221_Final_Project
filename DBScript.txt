@@ -20,9 +20,9 @@ CREATE TABLE [User] (
     Email NVARCHAR(255) UNIQUE,
     Phone NVARCHAR(20),
     Status BIT,
-    RoleId INT FOREIGN KEY REFERENCES Role(Id),
-    Password VARCHAR(20)
 	Gender BIT,
+	[Password] varchar(255),
+	[Image] varchar(255),
     RoleId INT FOREIGN KEY REFERENCES Role(Id)
 );
 
@@ -44,12 +44,13 @@ CREATE TABLE Publisher (
 );
 
 -- Bảng Book (sách)
-CREATE TABLE Book (
+CREATE TABLE BookTitle (
     Id INT PRIMARY KEY IDENTITY,
     CId INT FOREIGN KEY REFERENCES Category(Id),
     BName NVARCHAR(255),
     Author NVARCHAR(255),
     Quantity INT,
+	UnitInStock int,
     Image NVARCHAR(255),
     Price DECIMAL(10, 2),
 	[Description] nvarchar(255),
@@ -58,11 +59,17 @@ CREATE TABLE Book (
     PublisherId INT FOREIGN KEY REFERENCES Publisher(Id),
     PublishDate DATETIME
 );
-
+CREATE TABLE BookCopy (
+    Id varchar(255) primary key,
+    BookTitleId INT,
+    Status bit,
+    Note NVARCHAR(255),
+    FOREIGN KEY (BookTitleId) REFERENCES BookTitle(Id),
+);
 -- Bảng Feedback (đánh giá sách)
 CREATE TABLE Feedback (
     Id INT PRIMARY KEY IDENTITY,
-    Bid INT FOREIGN KEY REFERENCES Book(Id),
+    Bid INT FOREIGN KEY REFERENCES BookTitle(Id),
     Uid INT FOREIGN KEY REFERENCES [User](Uid),
     Content NVARCHAR(MAX),
     CreatedDate DATETIME,
@@ -78,7 +85,7 @@ CREATE TABLE Wishlist (
 -- Bảng WishlistItem (mục trong danh sách yêu thích)
 CREATE TABLE WishlistItem (
     WId INT FOREIGN KEY REFERENCES Wishlist(Id),
-    BId INT FOREIGN KEY REFERENCES Book(Id),
+    BId varchar(255) FOREIGN KEY REFERENCES BookCopy(Id),
     PRIMARY KEY (WId, BId)
 );
 
@@ -87,16 +94,18 @@ CREATE TABLE BorrowInformation (
     Oid INT PRIMARY KEY IDENTITY,
     Uid INT FOREIGN KEY REFERENCES [User](Uid),
     BorrowDate DATETIME,
+	CheckoutDate DateTime,
     DueDate DATETIME,
+	ReturnDate DATETIME,
     TotalAmount DECIMAL(10, 2),
     Note NVARCHAR(MAX),
-    Status BIT
+    Status int
 );
 
 -- Bảng Borrow Detail (chi tiết mượn sách)
 CREATE TABLE BorrowDetail (
     Oid INT FOREIGN KEY REFERENCES BorrowInformation(Oid),
-    Bid INT FOREIGN KEY REFERENCES Book(Id),
+    Bid varchar(255) FOREIGN KEY REFERENCES BookCopy(Id),
     PRIMARY KEY (Oid, Bid)
 );
 
@@ -109,76 +118,92 @@ CREATE TABLE Blog (
     Status BIT,
 	Uid INT FOREIGN KEY REFERENCES [User](Uid)
 );
--- Thêm dữ liệu vào bảng Role
+--- Thêm dữ liệu vào bảng Role (vai trò của user)
 INSERT INTO Role (Name, Status)
 VALUES 
     (N'Admin', 1),
-    (N'Member', 1),
+    (N'Customer', 1);
 
--- Thêm dữ liệu vào bảng User
-INSERT INTO [User] (FullName, Email, Phone, Status, RoleId)
-VALUES 
-    (N'Nguyễn Văn A', 'nguyenvana@example.com', '0123456789', 1, 1),
-    (N'Trần Thị B', 'tranthib@example.com', '0987654321', 1, 2),
-    (N'Lê Văn C', 'levanc@example.com', '0912345678', 1, 3);
+-- Thêm dữ liệu vào bảng User (người dùng)
+INSERT INTO [User] (FullName, Email, Phone, Status, Gender, [Password], [Image], RoleId)
+VALUES
+    (N'Alice Smith', 'alice@example.com', '1234567890', 1, 1, 'password123', 'alice.jpg', 1),  -- Admin
+    (N'Bob Johnson', 'bob@example.com', '0987654321', 1, 0, 'password456', 'bob.jpg', 2);       -- Customer
 
--- Thêm dữ liệu vào bảng Category
+-- Thêm dữ liệu vào bảng Category (thể loại sách)
 INSERT INTO Category (CName, Status)
-VALUES 
+VALUES
     (N'Fiction', 1),
     (N'Non-Fiction', 1),
-    (N'Science', 1),
-    (N'History', 1);
+    (N'Science Fiction', 1),
+    (N'Biography', 1);
 
--- Thêm dữ liệu vào bảng Publisher
+-- Thêm dữ liệu vào bảng Publisher (nhà xuất bản)
 INSERT INTO Publisher (PName, Address, Phone, Email, Status)
-VALUES 
-    (N'Nhà Xuất Bản Kim Đồng', N'Hà Nội', '023456789', 'kimdong@example.com', 1),
-    (N'Nhà Xuất Bản Trẻ', N'TP HCM', '034567890', 'nxbtre@example.com', 1),
-    (N'Nhà Xuất Bản Giáo Dục', N'Đà Nẵng', '045678901', 'nxbgiaoduc@example.com', 1);
+VALUES
+    (N'Penguin Books', N'123 Book St', '1112223333', 'contact@penguin.com', 1),
+    (N'HarperCollins', N'456 Publisher Ave', '4445556666', 'info@harpercollins.com', 1);
 
--- Thêm dữ liệu vào bảng Book
-INSERT INTO Book (CId, BName, Author, Quantity, Image, Price, Status, PublisherId, PublishDate)
-VALUES 
-    (1, N'Nhà Giả Kim', N'Paulo Coelho', 10, 'image1.jpg', 120000, 1, 1, '2010-05-01'),
-    (2, N'Lược Sử Thời Gian', N'Stephen Hawking', 5, 'image2.jpg', 150000, 1, 2, '2012-07-10'),
-    (3, N'Lập Trình Python', N'Nguyễn Văn D', 7, 'image3.jpg', 200000, 1, 3, '2015-01-15');
+-- Thêm dữ liệu vào bảng BookTitle (sách)
+INSERT INTO BookTitle (CId, BName, Author, Quantity, UnitInStock, Image, Price, [Description], Status, [Hide], PublisherId, PublishDate)
+VALUES
+    (1, N'To Kill a Mockingbird', N'Harper Lee', 10, 5, 'mockingbird.jpg', 15.99, N'A classic novel.', 1, 0, 1, '1960-07-11'),
+    (3, N'Dune', N'Frank Herbert', 5, 3, 'dune.jpg', 22.50, N'Science fiction novel.', 1, 0, 2, '1965-08-01');
 
--- Thêm dữ liệu vào bảng Feedback
+-- Thêm dữ liệu vào bảng BookCopy (bản sao của sách)
+INSERT INTO BookCopy (Id, BookTitleId, Status, Note)
+VALUES
+    ('BC001', 1, 1, N'Good condition'),
+    ('BC002', 1, 0, N'Checked out'),
+    ('BC003', 2, 1, N'New arrival');
+
+-- Thêm dữ liệu vào bảng Feedback (đánh giá sách)
 INSERT INTO Feedback (Bid, Uid, Content, CreatedDate, Status)
-VALUES 
-    (1, 1, N'Sách rất hay và ý nghĩa!', '2023-01-15', 1),
-    (2, 2, N'Sách khoa học dễ hiểu.', '2023-03-12', 1),
-    (3, 3, N'Hữu ích cho người học lập trình.', '2023-05-10', 1);
+VALUES
+    (1, 2, N'Great read, highly recommend!', '2024-01-01', 1),
+    (2, 2, N'Amazing storyline and world-building.', '2024-02-15', 1);
 
--- Thêm dữ liệu vào bảng Wishlist
+-- Thêm dữ liệu vào bảng Wishlist (danh sách yêu thích của người dùng)
 INSERT INTO Wishlist (Uid)
-VALUES 
-    (1),
-    (2);
+VALUES
+    (2);  -- Thêm danh sách yêu thích cho khách hàng (User ID 2)
 
--- Thêm dữ liệu vào bảng WishlistItem
+-- Thêm dữ liệu vào bảng WishlistItem (mục trong danh sách yêu thích)
 INSERT INTO WishlistItem (WId, BId)
-VALUES 
-    (1, 1),
-    (1, 2),
-    (2, 3);
+VALUES
+    (1, 'BC001'),  -- Thêm bản sao "To Kill a Mockingbird" vào danh sách yêu thích
+    (1, 'BC003');  -- Thêm bản sao "Dune" vào danh sách yêu thích
 
--- Thêm dữ liệu vào bảng BorrowInformation
-INSERT INTO BorrowInformation (Uid, BorrowDate, DueDate, TotalAmount, Note, Status)
-VALUES 
-    (1, '2023-08-01', '2023-08-15', 50000, N'Mượn sách về phát triển bản thân', 1),
-    (2, '2023-09-05', '2023-09-20', 30000, N'Mượn sách khoa học', 1);
-
--- Thêm dữ liệu vào bảng BorrowDetail
+-- Thêm dữ liệu vào bảng BorrowInformation (thông tin mượn sách)
+INSERT INTO BorrowInformation (Uid, BorrowDate, CheckoutDate, DueDate, TotalAmount, Note, Status)
+VALUES
+    (2, '2024-03-01', '2024-03-02', '2024-03-15', 15.99, N'First-time borrow', 1);
+	INSERT INTO BorrowInformation (Uid, BorrowDate, CheckoutDate, DueDate, TotalAmount, Note, Status)
+VALUES
+    (1, '2024-03-01', '2024-03-02', '2024-03-15', 15.99, N'First-time borrow', 1);
+-- Thêm dữ liệu vào bảng BorrowDetail (chi tiết mượn sách)
 INSERT INTO BorrowDetail (Oid, Bid)
-VALUES 
-    (1, 1),
-    (1, 2),
-    (2, 3);
-
--- Thêm dữ liệu vào bảng Blog
+VALUES
+    (1, 'BC001');  -- Bản sao "To Kill a Mockingbird" trong chi tiết mượn sách
+INSERT INTO BorrowDetail (Oid, Bid)
+VALUES
+    (1, 'BC003'); 
+-- Thêm dữ liệu vào bảng Blog (blog về sách hoặc hệ thống)
 INSERT INTO Blog (Title, Content, CreatedDate, Status, Uid)
-VALUES 
-    (N'Cách đọc sách hiệu quả', N'Bài viết chia sẻ cách đọc sách hiệu quả...', '2023-07-01', 1, 1),
-    (N'Giới thiệu sách hay năm 2023', N'Bài viết giới thiệu các cuốn sách nên đọc trong năm 2023...', '2023-08-15', 1, 2);
+VALUES
+    (N'Book Review: To Kill a Mockingbird', N'This book is a profound story...', '2024-04-01', 1, 1),
+    (N'Science Fiction Spotlight', N'A review of the Dune series...', '2024-04-15', 1, 2);
+
+-- Xác minh dữ liệu đã được thêm
+SELECT * FROM Role;
+SELECT * FROM [User];
+SELECT * FROM Category;
+SELECT * FROM Publisher;
+SELECT * FROM BookTitle;
+SELECT * FROM BookCopy;
+SELECT * FROM Feedback;
+SELECT * FROM Wishlist;
+SELECT * FROM WishlistItem;
+SELECT * FROM BorrowInformation;
+SELECT * FROM BorrowDetail;
+SELECT * FROM Blog;
