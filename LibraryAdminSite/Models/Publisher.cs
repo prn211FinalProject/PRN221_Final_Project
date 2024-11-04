@@ -7,7 +7,7 @@ namespace LibraryAdminSite.Models
     {
         public Publisher()
         {
-            Books = new HashSet<Book>();
+            BookTitles = new HashSet<BookTitle>();
         }
 
         public int Id { get; set; }
@@ -17,6 +17,6 @@ namespace LibraryAdminSite.Models
         public string? Email { get; set; }
         public bool? Status { get; set; }
 
-        public virtual ICollection<Book> Books { get; set; }
+        public virtual ICollection<BookTitle> BookTitles { get; set; }
     }
 }
