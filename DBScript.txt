@@ -20,7 +20,8 @@ CREATE TABLE [User] (
     Email NVARCHAR(255) UNIQUE,
     Phone NVARCHAR(20),
     Status BIT,
-    RoleId INT FOREIGN KEY REFERENCES Role(Id)
+    RoleId INT FOREIGN KEY REFERENCES Role(Id),
+    Password VARCHAR(20)
 );
 
 -- Bảng Category (thể loại sách)

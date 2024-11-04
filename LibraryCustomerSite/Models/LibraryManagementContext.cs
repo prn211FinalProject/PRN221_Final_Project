@@ -8,6 +8,7 @@ namespace LibraryCustomerSite.Models
     public partial class LibraryManagementContext : DbContext
     {
         public static LibraryManagementContext Ins = new LibraryManagementContext();
+
         public LibraryManagementContext()
         {
             if (Ins == null)
@@ -32,11 +33,11 @@ namespace LibraryCustomerSite.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-//            if (!optionsBuilder.IsConfigured)
-//            {
-//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-//                optionsBuilder.UseSqlServer("Data Source=HUNGNGO\\HUNGNGO;Initial Catalog=PRN211_1; Trusted_Connection=SSPI;Encrypt=false;TrustServerCertificate=true");
-//            }
+            //            if (!optionsBuilder.IsConfigured)
+            //            {
+            //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+            //                optionsBuilder.UseSqlServer("Data Source=HUNGNGO\\HUNGNGO;Initial Catalog=PRN211_1; Trusted_Connection=SSPI;Encrypt=false;TrustServerCertificate=true");
+            //            }
             var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
 
             if (!optionsBuilder.IsConfigured) { optionsBuilder.UseSqlServer(config.GetConnectionString("value")); }
@@ -47,7 +48,7 @@ namespace LibraryCustomerSite.Models
             modelBuilder.Entity<Blog>(entity =>
             {
                 entity.HasKey(e => e.Bid)
-                    .HasName("PK__Blog__C6D111C9839E5F84");
+                    .HasName("PK__Blog__C6D111C9BB6BF98F");
 
                 entity.ToTable("Blog");
 
@@ -86,7 +87,7 @@ namespace LibraryCustomerSite.Models
             modelBuilder.Entity<BorrowInformation>(entity =>
             {
                 entity.HasKey(e => e.Oid)
-                    .HasName("PK__BorrowIn__CB3E4F31D5176BCC");
+                    .HasName("PK__BorrowIn__CB3E4F31B4D0125B");
 
                 entity.ToTable("BorrowInformation");
 
@@ -109,7 +110,7 @@ namespace LibraryCustomerSite.Models
                         r => r.HasOne<BorrowInformation>().WithMany().HasForeignKey("Oid").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK__BorrowDetai__Oid__3C69FB99"),
                         j =>
                         {
-                            j.HasKey("Oid", "Bid").HasName("PK__BorrowDe__47535E2D8C38A2C8");
+                            j.HasKey("Oid", "Bid").HasName("PK__BorrowDe__47535E2D3474CB2B");
 
                             j.ToTable("BorrowDetail");
                         });
@@ -151,11 +152,11 @@ namespace LibraryCustomerSite.Models
             modelBuilder.Entity<User>(entity =>
             {
                 entity.HasKey(e => e.Uid)
-                    .HasName("PK__User__C5B69A4A0B50A538");
+                    .HasName("PK__User__C5B69A4A190D22E9");
 
                 entity.ToTable("User");
 
-                entity.HasIndex(e => e.Email, "UQ__User__A9D10534D97C7DF4")
+                entity.HasIndex(e => e.Email, "UQ__User__A9D1053420587E18")
                     .IsUnique();
 
                 entity.Property(e => e.Email).HasMaxLength(255);
@@ -187,7 +188,7 @@ namespace LibraryCustomerSite.Models
                         r => r.HasOne<Wishlist>().WithMany().HasForeignKey("Wid").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK__WishlistIte__WId__35BCFE0A"),
                         j =>
                         {
-                            j.HasKey("Wid", "Bid").HasName("PK__Wishlist__D75A85F59E94BDE6");
+                            j.HasKey("Wid", "Bid").HasName("PK__Wishlist__D75A85F58AE6D559");
 
                             j.ToTable("WishlistItem");
 
