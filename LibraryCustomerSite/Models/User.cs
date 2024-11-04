@@ -1,7 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace LibraryCustomerSite.Models
 {
@@ -16,17 +14,15 @@ namespace LibraryCustomerSite.Models
         }
 
         public int Uid { get; set; }
-        [Required]
         public string? FullName { get; set; }
-        [Required]
-        [EmailAddress]
         public string? Email { get; set; }
-        [Required]
-        [Phone]
         public string? Phone { get; set; }
         public bool? Status { get; set; }
-        public int? RoleId { get; set; }
+        public bool? Gender { get; set; }
         public string? Password { get; set; }
+        public string? Image { get; set; }
+        public int? RoleId { get; set; }
+
         public virtual Role? Role { get; set; }
         public virtual ICollection<Blog> Blogs { get; set; }
         public virtual ICollection<BorrowInformation> BorrowInformations { get; set; }

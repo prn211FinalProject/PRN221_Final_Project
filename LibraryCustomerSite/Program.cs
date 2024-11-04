@@ -3,7 +3,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
-builder.Services.AddDbContext<LibraryManagementContext>();
+builder.Services.AddDbContext<LMS_PRN221Context>();
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(15); // Thời gian hết hạn session
@@ -27,5 +27,15 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapRazorPages();
-
+app.Use(async (context, next) =>
+{
+    if (context.Request.Path == "/")
+    {
+        context.Response.Redirect("/Books");
+    }
+    else
+    {
+        await next();
+    }
+});
 app.Run();

@@ -1,4 +1,5 @@
-﻿using LibraryCustomerSite.Models;
+﻿//using LibraryCustomerSite.Models;
+using LibraryCustomerSite.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Linq;
@@ -8,9 +9,9 @@ namespace LibraryCustomerSite.Pages.Books
 {
     public class SignUpModel : PageModel
     {
-        private readonly LibraryManagementContext _context;
+        private readonly LMS_PRN221Context _context;
 
-        public SignUpModel(LibraryManagementContext context)
+        public SignUpModel(LMS_PRN221Context context)
         {
             _context = context;
         }
@@ -44,6 +45,7 @@ namespace LibraryCustomerSite.Pages.Books
                 if (user != null)
                 {
                     HttpContext.Session.SetString("UserEmail", user.Email); // Lưu email vào session (đã đăng nhập thành công)
+                    HttpContext.Session.SetString("UserName", user.FullName); // Lưu UserName vào session (đã đăng nhập thành công) 
                     HttpContext.Session.SetInt32("UserId", user.Uid); // Lưu UserId vào session (đã đăng nhập thành công)
                     return RedirectToPage("/Books/Index");
                 }

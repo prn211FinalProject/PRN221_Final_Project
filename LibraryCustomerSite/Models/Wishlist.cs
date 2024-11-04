@@ -7,7 +7,7 @@ namespace LibraryCustomerSite.Models
     {
         public Wishlist()
         {
-            Bids = new HashSet<Book>();
+            Bids = new HashSet<BookCopy>();
         }
 
         public int Id { get; set; }
@@ -15,6 +15,6 @@ namespace LibraryCustomerSite.Models
 
         public virtual User? UidNavigation { get; set; }
 
-        public virtual ICollection<Book> Bids { get; set; }
+        public virtual ICollection<BookCopy> Bids { get; set; }
     }
 }

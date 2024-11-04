@@ -7,7 +7,7 @@ namespace LibraryCustomerSite.Models
     {
         public BorrowInformation()
         {
-            Bids = new HashSet<Book>();
+            Bids = new HashSet<BookCopy>();
         }
 
         public int Oid { get; set; }
@@ -20,6 +20,6 @@ namespace LibraryCustomerSite.Models
 
         public virtual User? UidNavigation { get; set; }
 
-        public virtual ICollection<Book> Bids { get; set; }
+        public virtual ICollection<BookCopy> Bids { get; set; }
     }
 }

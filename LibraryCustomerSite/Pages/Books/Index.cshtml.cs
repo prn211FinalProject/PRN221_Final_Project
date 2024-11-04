@@ -12,14 +12,14 @@ namespace LibraryCustomerSite.Pages.Books
 {
     public class IndexModel : PageModel
     {
-        private readonly LibraryCustomerSite.Models.LibraryManagementContext _context;
+        private readonly LMS_PRN221Context _context;
 
-        public IndexModel(LibraryCustomerSite.Models.LibraryManagementContext context)
+        public IndexModel(LMS_PRN221Context context)
         {
             _context = context;
         }
 
-        public IList<Book> Book { get;set; } = default!;
+        public IList<BookTitle> Book { get;set; } = default!;
         public IList<Category> Categories { get; set; } = new List<Category>();
         public IActionResult OnPostLogout()
         {
@@ -28,7 +28,7 @@ namespace LibraryCustomerSite.Pages.Books
         }
         public async Task OnGetAsync(List<int> categoryIds, string sortOrder)
         {
-            IQueryable<Book> bookQuery = _context.Books
+            IQueryable<BookTitle> bookQuery = _context.BookTitles
                 .Where(b => b.Hide == false);
 
             if (categoryIds != null && categoryIds.Any())

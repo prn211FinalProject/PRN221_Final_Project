@@ -1,5 +1,83 @@
 ﻿@page
 @model LibraryCustomerSite.Pages.Books.WishListModel
 @{
+    ViewData["Title"] = "Danh sách yêu thích";
 }
-<h1>HELLO WORLDS!!</h1>
+<h1>Danh sách yêu thích</h1>
+<div class="cart-container">
+    <div class="cart-header">
+        <input type="checkbox">
+        <div>Sản Phẩm</div>
+        <div>Tác giả</div>
+        <div>Số Lượng còn lại</div>
+        <div>Trạng thái</div>
+        <div>Thao Tác</div>
+    </div>
+
+    @foreach (var bookCopy in Model.BookCopies)
+    {
+        <div class="cart-item">
+            <input type="checkbox">
+            <div>
+                <div class="shop-name">
+                    @bookCopy.BookTitle.Bname
+                </div>
+                <div class="product-info">
+                    <a asp-page="./Details" asp-route-id="@bookCopy.BookTitle.Id" class="product-card-link" style="text-decoration: none">
+                        <img src="~/images/@bookCopy.BookTitle.Image" style="width: 40%" alt="Product" class="product-image">
+                    </a>
+                </div>
+            </div>
+
+            <div>
+                <div class="price">@bookCopy.BookTitle.Author</div>
+            </div>
+
+            <div class="quantity-controls">
+                <input type="text" value="@bookCopy.BookTitle.Quantity" class="quantity-input" readonly>
+            </div>
+
+            <div class="price">
+                @if (bookCopy.BookTitle.Status == true)
+                {
+                    <span class="shipping-badge">Còn Hàng</span>
+                }
+                else
+                {
+                    <span style="color: red;">Hết Hàng</span>
+                }
+            </div>
+
+            <div class="actions">
+                <form method="post" asp-page-handler="RemoveFromWishlist">
+                    <input type="hidden" name="id" value="@bookCopy.BookTitleId" />
+                    <button type="submit" class="action-btn">Xóa khỏi WishList</button>
+                </form>
+                <button type="button" class="action-btn">Mượn Ngay</button>
+            </div>
+        </div>
+    }
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div id="success-message" style="display:none;">@TempData["SuccessMessage"]</div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div id="error-message" style="display:none;">@TempData["ErrorMessage"]</div>
+    }
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var successMessage = document.getElementById("success-message");
+            if (successMessage) {
+                alert(successMessage.innerText);
+            }
+
+            var errorMessage = document.getElementById("error-message");
+            if (errorMessage) {
+                alert(errorMessage.innerText);
+            }
+        });
+    </script>
+</div>

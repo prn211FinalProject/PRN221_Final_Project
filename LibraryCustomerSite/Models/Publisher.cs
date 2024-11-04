@@ -3,15 +3,18 @@ using System.Collections.Generic;
 
 namespace LibraryCustomerSite.Models
 {
-    public partial class Category
+    public partial class Publisher
     {
-        public Category()
+        public Publisher()
         {
             BookTitles = new HashSet<BookTitle>();
         }
 
         public int Id { get; set; }
-        public string? Cname { get; set; }
+        public string? Pname { get; set; }
+        public string? Address { get; set; }
+        public string? Phone { get; set; }
+        public string? Email { get; set; }
         public bool? Status { get; set; }
 
         public virtual ICollection<BookTitle> BookTitles { get; set; }

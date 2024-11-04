@@ -3,13 +3,12 @@ using System.Collections.Generic;
 
 namespace LibraryCustomerSite.Models
 {
-    public partial class Book
+    public partial class BookTitle
     {
-        public Book()
+        public BookTitle()
         {
+            BookCopies = new HashSet<BookCopy>();
             Feedbacks = new HashSet<Feedback>();
-            Oids = new HashSet<BorrowInformation>();
-            Wids = new HashSet<Wishlist>();
         }
 
         public int Id { get; set; }
@@ -17,15 +16,18 @@ namespace LibraryCustomerSite.Models
         public string? Bname { get; set; }
         public string? Author { get; set; }
         public int? Quantity { get; set; }
+        public int? UnitInStock { get; set; }
         public string? Image { get; set; }
         public decimal? Price { get; set; }
-        public bool? Hide { get; set; }
+        public string? Description { get; set; }
         public bool? Status { get; set; }
+        public bool Hide { get; set; }
+        public int? PublisherId { get; set; }
+        public DateTime? PublishDate { get; set; }
 
         public virtual Category? CidNavigation { get; set; }
+        public virtual Publisher? Publisher { get; set; }
+        public virtual ICollection<BookCopy> BookCopies { get; set; }
         public virtual ICollection<Feedback> Feedbacks { get; set; }
-
-        public virtual ICollection<BorrowInformation> Oids { get; set; }
-        public virtual ICollection<Wishlist> Wids { get; set; }
     }
 }
