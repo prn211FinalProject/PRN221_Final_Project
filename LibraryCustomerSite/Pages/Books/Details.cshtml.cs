@@ -22,19 +22,11 @@ namespace LibraryCustomerSite.Pages.Books
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null || _context.Books == null)
-            {
-                return NotFound();
-            }
+            Book = await _context.Books.FindAsync(id);
 
-            var book = await _context.Books.FirstOrDefaultAsync(m => m.Id == id);
-            if (book == null)
+            if (Book == null)
             {
                 return NotFound();
-            }
-            else 
-            {
-                Book = book;
             }
             return Page();
         }

@@ -1,0 +1,101 @@
+﻿@page
+@model LibraryCustomerSite.Pages.Books.SignUpModel
+@{
+    ViewData["Title"] = "Sign Up and Login";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sign Up and Login</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <div class="container" style="left : 11rem">
+        @if (!string.IsNullOrEmpty(Model.Message))
+        {
+            <p class="message">@Model.Message</p>
+        }
+        <input type="checkbox" id="flip">
+        <div class="cover">
+            <div class="front">
+                <div class="text">
+                    <span class="text-1">Every new friend is a <br> new adventure</span>
+                    <span class="text-2">Let's get connected</span>
+                </div>
+            </div>
+            <div class="back">
+                <div class="text">
+                    <span class="text-1">Complete miles of journey <br> with one step</span>
+                    <span class="text-2">Let's get started</span>
+                </div>
+            </div>
+        </div>
+        <div class="forms">
+            <div class="form-content">
+                <!-- Login Form -->
+                <div class="login-form">
+                    <div class="title">Login</div>
+                    <form method="post">
+                        <input type="hidden" name="FormAction" value="Login" />
+                        <div class="input-boxes">
+                            <div class="input-box">
+                                <i class="fas fa-envelope"></i>
+                                <input name="Email" type="text" placeholder="Enter your email" value="@Model.Email" required>
+                            </div>
+                            <div class="input-box">
+                                <i class="fas fa-lock"></i>
+                                <input name="Password" type="password" placeholder="Enter your password" value="@Model.Password" required>
+                            </div>
+                            <div class="text"><a href="#">Forgot password?</a></div>
+                            <div class="button input-box">
+                                <input type="submit" value="Login">
+                            </div>
+                            <div class="text sign-up-text">Don't have an account? <label for="flip">Signup now</label></div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Signup Form -->
+                <div class="signup-form">
+                    <div class="title">Signup</div>
+                    <form method="post">
+                        <input type="hidden" name="FormAction" value="SignUp" />
+                        <div class="input-boxes">
+                            <div class="input-box">
+                                <i class="fas fa-user"></i>
+                                <input name="NewUser.FullName" type="text" placeholder="Enter your name" value="@Model.NewUser.FullName" required>
+                            </div>
+                            <div class="input-box">
+                                <i class="fas fa-envelope"></i>
+                                <input name="NewUser.Email" type="text" placeholder="Enter your email" value="@Model.NewUser.Email" required>
+                            </div>
+                            <div class="input-box">
+                                <i class="fas fa-phone"></i>
+                                <input name="NewUser.Phone" type="text" placeholder="Enter your phone number" value="@Model.NewUser.Phone" required>
+                            </div>
+                            <div class="input-box">
+                                <i class="fas fa-lock"></i>
+                                <input name="NewUser.Password" type="password" placeholder="Enter your password" value="@Model.NewUser.Password" required>
+                            </div>
+                            <div class="button input-box">
+                                <input type="submit" value="Sign Up">
+                            </div>
+                            <div class="text sign-up-text">Already have an account? <label for="flip">Login now</label></div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<style>
+    .message {
+        color: red; /* hoặc style theo ý bạn */
+        font-weight: bold;
+        margin-bottom: 1rem;
+    }
+</style>
+</html>

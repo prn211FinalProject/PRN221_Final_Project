@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using LibraryCustomerSite.Models;
+using Microsoft.Data.SqlClient;
 
 namespace LibraryCustomerSite.Pages.Books
 {
@@ -19,14 +20,42 @@ namespace LibraryCustomerSite.Pages.Books
         }
 
         public IList<Book> Book { get;set; } = default!;
-
-        public async Task OnGetAsync()
+        public IList<Category> Categories { get; set; } = new List<Category>();
+        public IActionResult OnPostLogout()
         {
-            if (_context.Books != null)
-            {
-                Book = await _context.Books
-                .Include(b => b.CidNavigation).ToListAsync();
-            }
+            HttpContext.Session.Clear(); // Xóa toàn bộ session
+            return RedirectToPage("/Books/Index"); 
         }
+        public async Task OnGetAsync(List<int> categoryIds, string sortOrder)
+        {
+            IQueryable<Book> bookQuery = _context.Books
+                .Where(b => b.Hide == false);
+
+            if (categoryIds != null && categoryIds.Any())
+            {
+                // Lọc sách theo các category được chọn
+                bookQuery = bookQuery.Where(b => categoryIds.Contains(b.Cid ?? 0));
+            }
+            switch (sortOrder)
+            {
+                case "name":
+                    bookQuery = bookQuery.OrderBy(b => b.Bname);
+                    break;
+                case "quantity":
+                    bookQuery = bookQuery.OrderBy(b => b.Quantity);
+                    break;
+                case "status":
+                    bookQuery = bookQuery.OrderBy(b => b.Status);
+                    break;
+                default:
+                    bookQuery = bookQuery.OrderBy(b => b.Bname); // Mặc định sắp xếp theo tên
+                    break;
+            }
+            Book = await bookQuery.ToListAsync();
+            Categories = await _context.Categories
+                .Where(c => c.Status == true)
+                .ToListAsync();
+        }
+
     }
 }

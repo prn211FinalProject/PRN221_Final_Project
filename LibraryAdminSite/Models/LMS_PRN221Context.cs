@@ -117,6 +117,8 @@ namespace LibraryAdminSite.Models
 
                 entity.Property(e => e.BorrowDate).HasColumnType("datetime");
 
+                entity.Property(e => e.CheckoutDate).HasColumnType("datetime");
+
                 entity.Property(e => e.DueDate).HasColumnType("datetime");
 
                 entity.Property(e => e.TotalAmount).HasColumnType("decimal(10, 2)");

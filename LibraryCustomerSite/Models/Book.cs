@@ -19,6 +19,7 @@ namespace LibraryCustomerSite.Models
         public int? Quantity { get; set; }
         public string? Image { get; set; }
         public decimal? Price { get; set; }
+        public bool? Hide { get; set; }
         public bool? Status { get; set; }
 
         public virtual Category? CidNavigation { get; set; }

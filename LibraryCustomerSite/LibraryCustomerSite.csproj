@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Session" Version="2.1.1" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.35">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -16,6 +17,7 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
+		<PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="6.0.2" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
 		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.18" />
 	</ItemGroup>
@@ -27,6 +29,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Image\" />
+	  <Folder Include="wwwroot\images\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="wwwroot\images\453292365_1542626573128749_6681107019617422834_n.jpg" />
 	</ItemGroup>
 </Project>

@@ -1,0 +1,70 @@
+﻿<Window x:Class="LibraryAdminSite.CopyManagement"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LibraryAdminSite"
+        mc:Ignorable="d"
+        Title="CopyManagement" Height="450" Width="800">
+    <Grid>
+        <StackPanel Orientation="Horizontal" Background="BlanchedAlmond" Margin="10,0,-96,-67">
+            <Border Width="300" Background="White" BorderBrush="#bdc3c7" BorderThickness="1" Padding="10" CornerRadius="10" Height="470">
+                <StackPanel Margin="0,22,0,45" >
+                    <!-- Id Field -->
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                        <Label Content="Mã số:" Width="80"/>
+                        <TextBox IsReadOnly="True" Name="txbID" Text="{Binding ElementName=lvDisplay, Path=SelectedItem.Id, Mode=OneWay}" Width="175"/>
+                    </StackPanel>
+
+                    <!-- Name Field -->
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                        <Label Content="Tên Sách:" Width="80"/>
+                        <TextBox IsReadOnly="True" Name="txbBName" Text="{Binding ElementName=lvDisplay, Path=SelectedItem.Name, Mode=OneWay}" Width="175"/>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                        <Label Content="Ghi Chú:" Width="80"/>
+                        <TextBox Name="txbNote" Text="{Binding ElementName=lvDisplay, Path=SelectedItem.Note, Mode=OneWay}" Width="175"/>
+                    </StackPanel>
+
+
+                    <!-- Genre Field -->
+
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                        <!--<Label Content="Trạng Thái:" Width="80"/>-->
+                        <Label Content="Trạng Thái:" Width="80"/>
+                        <ComboBox x:Name="cbxStatus" Width="175" Height="30" />
+                    </StackPanel>
+
+                    <!-- Buttons -->
+                    <StackPanel Orientation="Vertical" Margin="0,10,0,0">
+                        <Button Background="#27ae60" Foreground="White" Content="Cập nhật" Margin="0,0,0,5" Click="Button_Click"  />
+                        <Button Background="Red" Foreground="White" Content="Xóa " Margin="0,0,0,5" Click="Button_Click_1"  />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <Border Background="White" Margin="20" VerticalAlignment="Stretch" BorderBrush="#bdc3c7" BorderThickness="1" Padding="10" CornerRadius="10" Width="531">
+                <StackPanel Width="711">
+
+
+                    <TextBlock Text="Quản Lý Sách" FontSize="25" Margin="150,0,0,0"/>
+
+
+                    <ListView SelectionChanged="lvDisplay_SelectionChanged_1" x:Name="lvDisplay" Margin="0,0,0,20" >
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Mã số" DisplayMemberBinding="{Binding Id}" Width="100"/>
+                                <GridViewColumn Header="Tên Sách" DisplayMemberBinding="{Binding Name}" Width="120"/>
+                                <GridViewColumn Header="Trạng Thái" DisplayMemberBinding="{Binding Status}" Width="100"/>
+                                <GridViewColumn Header="Ghi Chú" DisplayMemberBinding="{Binding Note}" Width="70"/>
+
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
+    </Grid>
+</Window>
