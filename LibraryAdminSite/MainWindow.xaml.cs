@@ -18,6 +18,8 @@ namespace LibraryAdminSite
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            var thongkeSachCate = new ThongKeSachMuon();
+            MainContentControl.Content = thongkeSachCate;
         }
 
 

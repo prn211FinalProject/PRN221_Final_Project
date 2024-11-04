@@ -354,9 +354,9 @@
                                 <div class="product-card__content" style="text-decoration: none">
                                 <h3 class="product-card__title">@book.Bname</h3>
                                 <div class="product-card__price">@book.Author</div>
-                                <div class="product-card__discount">@book.Quantity</div>
+                                <div class="product-card__discount">@book.UnitInStock</div>
                                 <div class="product-card__status">
-                                    @if (book.Quantity >= 1)
+                                            @if (book.UnitInStock >= 1)
                                     {
                                         <span style="color: green;">Còn Hàng</span>
                                     }

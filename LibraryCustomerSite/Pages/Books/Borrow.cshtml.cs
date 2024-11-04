@@ -43,7 +43,7 @@ namespace LibraryCustomerSite.Pages.Books
             BorrowInformation = new BorrowInformation
             {
                 Uid = userId,
-                BorrowDate = DateTime.Now,
+                CheckoutDate = DateTime.Now,
                 DueDate = DateTime.Now.AddDays(7), // Giả sử thời hạn mượn sách là 14 ngày
                 Status = true,
             };
@@ -76,33 +76,36 @@ namespace LibraryCustomerSite.Pages.Books
             BorrowInformation.Status = true; // Đặt giá trị mặc định cho Status
 
             // Lấy ID lớn nhất hiện có trong bảng BookCopies
-            var lastBookCopy = _context.BookCopies.OrderByDescending(bc => bc.Id).FirstOrDefault();
-            int nextIdNumber = 1;
-            if (lastBookCopy != null)
-            {
-                // Lấy phần số từ ID cuối cùng và tăng lên 1
-                string lastId = lastBookCopy.Id.Substring(2); // Bỏ "BC"
-                nextIdNumber = int.Parse(lastId) + 1;
-            }
-            string newId = "BC" + nextIdNumber.ToString("D3"); // Định dạng thành "BC" + số với 3 chữ số
+            //var lastBookCopy = _context.BookCopies.OrderByDescending(bc => bc.Id).FirstOrDefault();
+            //int nextIdNumber = 1;
+            //if (lastBookCopy != null)
+            //{
+            //    // Lấy phần số từ ID cuối cùng và tăng lên 1
+            //    string lastId = lastBookCopy.Id.Substring(2); // Bỏ "BC"
+            //    nextIdNumber = int.Parse(lastId) + 1;
+            //}
+            string newId = "BC"+book.Id; // Định dạng thành "BC" + số với 3 chữ số
 
             // Tạo một bản sao của sách và lưu vào cơ sở dữ liệu để tạo Id
-            var bookCopy = new BookCopy
+            //var bookCopy = new BookCopy
+            //{
+            //    Id = newId,
+            //    BookTitleId = book.Id,
+            //    Status = true,
+            //    Note = "OK"
+            //};
+            var bookCopy = _context.BookCopies.Where(x=>x.Status == true).FirstOrDefault(x => x.Id.Contains(newId));
+            if (bookCopy != null)
             {
-                Id = newId,
-                BookTitleId = book.Id,
-                Status = 1,
-                Note = "OK"
-            };
-            _context.BookCopies.Add(bookCopy);
-            _context.SaveChanges();
+                bookCopy.Status = false;
+            }
 
             // Thêm bản sao sách vào thông tin mượn
             BorrowInformation.Bids.Add(bookCopy);
             _context.BorrowInformations.Add(BorrowInformation);
 
             // Giảm số lượng sách
-            book.Quantity -= 1;
+            book.UnitInStock -= 1;
             _context.BookTitles.Update(book);
 
             _context.SaveChanges();

@@ -13,7 +13,7 @@ namespace LibraryCustomerSite.Models
 
         public string Id { get; set; } = null!;
         public int? BookTitleId { get; set; }
-        public int? Status { get; set; }
+        public bool? Status { get; set; }
         public string? Note { get; set; }
 
         public virtual BookTitle? BookTitle { get; set; }

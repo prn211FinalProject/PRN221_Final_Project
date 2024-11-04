@@ -13,6 +13,7 @@ namespace LibraryCustomerSite.Models
         public int Oid { get; set; }
         public int? Uid { get; set; }
         public DateTime? BorrowDate { get; set; }
+        public DateTime? CheckoutDate { get; set; }
         public DateTime? DueDate { get; set; }
         public decimal? TotalAmount { get; set; }
         public string? Note { get; set; }

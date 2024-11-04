@@ -16,125 +16,182 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace LibraryAdminSite
 {
-	/// <summary>
-	/// Interaction logic for BorrowManage.xaml
-	/// </summary>
-	public partial class BorrowManage : UserControl
-	{
-		public BorrowManage()
-		{
-			InitializeComponent();
-		}
-		private void UserControl_Loaded(object sender, RoutedEventArgs e)
-		{
-			LoadBorrowInfor();
-		}
-		private void LoadBorrowInfor()
-		{
-			var borrow = LMS_PRN221Context.Ins.BorrowInformations.Include(x => x.UidNavigation).Select(x => new
-			{
-				Id = x.Oid,
-				Uid = x.Uid,
-				FullName = x.UidNavigation.FullName,
-				Email = x.UidNavigation.Email,
-				CheckoutDate = x.CheckoutDate,
-				BorrowDate = x.BorrowDate,
-				DueDate = x.DueDate,
-				Status = x.Status == true ? "Đã mượn" : "Chưa mượn",
-				Phone = x.UidNavigation.Phone,
-				bookCopy = x.Bids
-			}).ToList();
-			lvDisplay.ItemsSource = borrow;
-		}
-		private ObservableCollection<object> bookDisplayList = new ObservableCollection<object>();
-		private void lvDisplay_SelectionChanged(object sender, SelectionChangedEventArgs e)
-		{
-			bookDisplayList.Clear();
-			var selectedItem = lvDisplay.SelectedItem;
-			if (selectedItem != null)
-			{
-				var bookCopies = (ICollection<BookCopy>)selectedItem.GetType().GetProperty("bookCopy").GetValue(selectedItem);
-				List<string> bids = bookCopies.Select(bookCopy => bookCopy.Id).ToList();
-				foreach (var bid in bids)
-				{
-					LoadBook(bid);
-				}
-			}
-		}
+    /// <summary>
+    /// Interaction logic for BorrowManage.xaml
+    /// </summary>
+    public partial class BorrowManage : UserControl
+    {
+        public BorrowManage()
+        {
+            InitializeComponent();
+        }
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            LoadBorrowInfor();
+            cbxFilterStatus.Items.Add("Tất cả");
+            cbxFilterStatus.Items.Add("Đã mượn");
+            cbxFilterStatus.Items.Add("Chưa mượn");
+        }
+        private void LoadBorrowInfor()
+        {
+            var borrow = LMS_PRN221Context.Ins.BorrowInformations.Include(x => x.UidNavigation).Select(x => new
+            {
+                Id = x.Oid,
+                Uid = x.Uid,
+                FullName = x.UidNavigation.FullName,
+                Email = x.UidNavigation.Email,
+                CheckoutDate = x.CheckoutDate,
+                BorrowDate = x.BorrowDate,
+                DueDate = x.DueDate,
+                Status = x.Status == false ? "Đã mượn" : "Chưa mượn",
+                Phone = x.UidNavigation.Phone,
+                bookCopy = x.Bids
+            }).ToList();
+            lvDisplay.ItemsSource = borrow;
+        }
+        private ObservableCollection<object> bookDisplayList = new ObservableCollection<object>();
+        private void lvDisplay_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
 
-		private void LoadBook(string Bid)
-		{
-			var book = LMS_PRN221Context.Ins.BookCopies.Include(x => x.BookTitle).Where(x => x.Id == Bid)
-				.Select(x => new
-				{
-					Bid = x.Id,
-					Name = x.BookTitle.Bname,
-					Status = x.Status == true ? "Đang sử dụng" : "Có thể sử dụng",
-					Note = x.Note
-				}).ToList();
+            bookDisplayList.Clear();
+            var selectedItem = lvDisplay.SelectedItem;
+            if (selectedItem != null)
+            {
+                var bookCopies = (ICollection<BookCopy>)selectedItem.GetType().GetProperty("bookCopy").GetValue(selectedItem);
+                List<string> bids = bookCopies.Select(bookCopy => bookCopy.Id).ToList();
+                foreach (var bid in bids)
+                {
+                    LoadBook(bid);
+                }
+                var status = (string)selectedItem.GetType().GetProperty("Status").GetValue(selectedItem);
+                rdbBorrowed.IsChecked = status.Equals("Đã mượn");
+                rdbNotBorrow.IsChecked = status.Equals("Chưa mượn");
+                if (status.Equals("Đã mượn"))
+                {
+                    rdbNotBorrow.IsEnabled = false;
+                    rdbBorrowed.IsEnabled = false;
+                    stackChangeStatus.Visibility = Visibility.Hidden;
+                }
+                else
+                {
+                    stackChangeStatus.Visibility = Visibility.Visible;
+                }
+            }
+        }
 
-			// Nếu ItemsSource chưa được khởi tạo, gán nó
-			if (lvDisplayBook.ItemsSource == null)
-			{
-				lvDisplayBook.ItemsSource = bookDisplayList;
-			}
+        private void LoadBook(string Bid)
+        {
+            var book = LMS_PRN221Context.Ins.BookCopies.Include(x => x.BookTitle).Where(x => x.Id == Bid)
+                .Select(x => new
+                {
+                    Bid = x.Id,
+                    Name = x.BookTitle.Bname,
+                    Status = x.Status == true ? "Đang sử dụng" : "Có thể sử dụng",
+                    Note = x.Note
+                }).ToList();
 
-			// Thêm các mục mới vào ObservableCollection
-			foreach (var item in book)
-			{
-				bookDisplayList.Add(item);
-			}
-		}
+            if (lvDisplayBook.ItemsSource == null)
+            {
+                lvDisplayBook.ItemsSource = bookDisplayList;
+            }
 
-		private void lvDisplayBook_SelectionChanged(object sender, SelectionChangedEventArgs e)
-		{
-			stackStatus.Visibility = Visibility.Visible;
-			stackBtn.Visibility = Visibility.Visible;
-			var bookCopy = lvDisplayBook.SelectedItem;
-			if (bookCopy != null)
-			{
-				string status = (string)bookCopy.GetType().GetProperty("Status").GetValue(bookCopy);
+            foreach (var item in book)
+            {
+                bookDisplayList.Add(item);
+            }
+        }
 
-				rdbInUse.IsChecked = status.Equals("Đang sử dụng") ? true : false;
-				rdbCanUse.IsChecked = status.Equals("Có thể sử dụng") ? true : false;
-			}
-		}
+        private void lvDisplayBook_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+        }
 
-		private void Button_Click(object sender, RoutedEventArgs e)
-		{
-			try
-			{
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
 
-				var selectedItem = lvDisplayBook.SelectedItem;
-				if (selectedItem != null)
-				{
-					string Bid = (string)selectedItem.GetType().GetProperty("Bid").GetValue(selectedItem);
-					var bookCopy = LMS_PRN221Context.Ins.BookCopies.FirstOrDefault(x => x.Id == Bid);
-					if (bookCopy != null)
-					{
-						bookCopy.Status = rdbInUse.IsChecked;
-						LMS_PRN221Context.Ins.SaveChanges();
-						bookDisplayList.Clear();
-						var selectedItem2 = lvDisplay.SelectedItem;
-						if (selectedItem2 != null)
-						{
-							var bookCopies = (ICollection<BookCopy>)selectedItem2.GetType().GetProperty("bookCopy").GetValue(selectedItem2);
-							List<string> bids = bookCopies.Select(bookCopy => bookCopy.Id).ToList();
-							foreach (var bid in bids)
-							{
-								LoadBook(bid);
-							}
-						}
-					}
-				}
-			}
-			catch(Exception ex)
-			{
-				throw new Exception(ex.Message);
-			}
-		}
-	}
+            var selectedItem = lvDisplay.SelectedItem;
+            if (selectedItem != null)
+            {
+                var borrowId = (int)selectedItem.GetType().GetProperty("Id").GetValue(selectedItem);
+                var borrow = LMS_PRN221Context.Ins.BorrowInformations.FirstOrDefault(x => x.Oid == borrowId);
+                borrow.Status = rdbNotBorrow.IsChecked;
+                borrow.BorrowDate = DateTime.Now;
+                LMS_PRN221Context.Ins.SaveChanges();
+                LoadBorrowInfor();
+            }
+
+
+        }
+        private void Filter()
+        {
+            var query = LMS_PRN221Context.Ins.BorrowInformations.Include(x => x.UidNavigation).AsQueryable();
+            string searchTerm = txbSearch.Text.Trim();
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                query = query.Where(x => x.UidNavigation.FullName.Contains(searchTerm) || x.UidNavigation.Email.Contains(searchTerm));
+            }
+            if (searchTerm.Equals(""))
+            {
+                LoadBorrowInfor();
+            }
+            if (dpFromDate.SelectedDate.HasValue)
+            {
+                query = query.Where(x=> x.BorrowDate >= dpFromDate.SelectedDate.Value
+                    || x.DueDate >= dpFromDate.SelectedDate.Value
+                    || x.CheckoutDate >= dpFromDate.SelectedDate.Value);
+            }
+            if (dpToDate.SelectedDate.HasValue)
+            {
+                query = query.Where(x => x.BorrowDate <= dpToDate.SelectedDate.Value
+                    || x.DueDate <= dpToDate.SelectedDate.Value
+                    || x.CheckoutDate <= dpToDate.SelectedDate.Value);
+            }
+            if(cbxFilterStatus.SelectedIndex != null)
+            {
+                if(!cbxFilterStatus.SelectedItem.Equals("Tất cả"))
+                {
+                    var selectedStatus = cbxFilterStatus.SelectedItem.Equals("Chưa mượn") ? true : false;
+                    query = query.Where(x => x.Status == selectedStatus);
+                }
+
+            }
+            var query1 = query.Select(x => new
+            {
+                Id = x.Oid,
+                Uid = x.Uid,
+                FullName = x.UidNavigation.FullName,
+                Email = x.UidNavigation.Email,
+                CheckoutDate = x.CheckoutDate,
+                BorrowDate = x.BorrowDate,
+                DueDate = x.DueDate,
+                Status = x.Status == false ? "Đã mượn" : "Chưa mượn",
+                Phone = x.UidNavigation.Phone,
+                bookCopy = x.Bids
+            }).ToList();
+            lvDisplay.ItemsSource = query1;
+        }
+        private void txbSearch_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            Filter();
+        }
+
+        private void dpFromDate_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            
+            Filter();
+        }
+
+        private void dpToDate_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Filter();
+        }
+
+        private void cbxFilterStatus_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Filter();
+        }
+    }
 }

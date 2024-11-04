@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:LibraryAdminSite"
-             mc:Ignorable="d" Height="734" Width="1234" Loaded="UserControl_Loaded" HorizontalAlignment="Left">
+             mc:Ignorable="d" Height="792" Width="1887" Loaded="UserControl_Loaded" HorizontalAlignment="Left">
     <Grid Background="#f0f0f0" Margin="0,0,-96,0">
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
@@ -38,7 +38,7 @@
                             <Label Content="Email:" Width="100"/>
                             <TextBox Name="txbEmail" Text="{Binding ElementName=lvDisplay, Path=SelectedItem.Email, Mode=OneWay}" Width="175" IsEnabled="False"/>
                         </StackPanel>
-                        <StackPanel Height="267">
+                        <StackPanel Height="241">
                             <TextBlock Text="Thông tin sách" HorizontalAlignment="Center" FontSize="25" Margin="0 0 0 10"></TextBlock>
                             <ListView x:Name="lvDisplayBook" SelectionChanged="lvDisplayBook_SelectionChanged">
                                 <ListView.View>
@@ -50,27 +50,28 @@
                                     </GridView>
                                 </ListView.View>
                             </ListView>
-                            <StackPanel Name="stackStatus" Orientation="Horizontal" Visibility="Collapsed">
+                        </StackPanel>
+                        <StackPanel x:Name="stackChangeStatus" Visibility="Hidden">
+                            <TextBlock Text="Trạng thái mượn sách" HorizontalAlignment="Center" FontSize="25" Margin="0 0 0 10"></TextBlock>
+                            <StackPanel Name="stackStatus" Orientation="Horizontal" >
 
                                 <Label x:Name="label" Content="Trạng thái:  "/>
-                                <RadioButton Name="rdbInUse" VerticalAlignment="Center"/>
-                                <Label Content="Đang sử dụng" Margin="0,0,30,0"/>
-                                <RadioButton Name="rdbCanUse"  VerticalAlignment="Center"/>
-                                <Label Content="Có thể sử dụng"/>
+                                <RadioButton Name="rdbNotBorrow" VerticalAlignment="Center"/>
+                                <Label Content="Chưa mượn" Margin="0,0,30,0"/>
+                                <RadioButton Name="rdbBorrowed"  VerticalAlignment="Center"/>
+                                <Label Content="Đã mượn"/>
                             </StackPanel>
-
-                        </StackPanel>
-                        <!-- Buttons -->
-                        <StackPanel Name="stackBtn" Orientation="Vertical" Margin="0,10,0,0" Height="30" >
-                            <Button Background="#27ae60" Foreground="White" Content="Cập nhật" Margin="0,0,0,5" Click="Button_Click" />
+                            <!-- Buttons -->
+                            <StackPanel Name="stackBtn" Orientation="Vertical" Margin="0,10,0,0" Height="30" >
+                                <Button Background="#27ae60" Foreground="White" Content="Cập nhật" Margin="0,0,0,5" Click="Button_Click" />
+                            </StackPanel>
                         </StackPanel>
                     </StackPanel>
                 </Border>
 
                 <Border Background="White" Margin="20" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" BorderBrush="#bdc3c7" BorderThickness="1" Padding="10" CornerRadius="10">
                     <StackPanel>
-                        <TextBlock x:Name="txtTitle" Text="Quản lý mượn sách" HorizontalAlignment="Center" FontSize="25"></TextBlock>
-                        <TextBox x:Name="txtSearch" Text="Nhập tên người dùng..." Margin="0,0,0,20"/>
+                        <TextBlock x:Name="txtTitle" Text="Quản lý mượn sách" HorizontalAlignment="Center" FontSize="25" Margin="0 0 0 20"></TextBlock>
 
                         <ListView Name="lvDisplay" Margin="0,0,0,20" SelectionChanged="lvDisplay_SelectionChanged">
                             <ListView.View>
@@ -85,6 +86,24 @@
                                 </GridView>
                             </ListView.View>
                         </ListView>
+                    </StackPanel>
+                </Border>
+                <Border Background="White" BorderBrush="#bdc3c7" BorderThickness="1" Padding="10" CornerRadius="10" Width="216" Height="721">
+                    <StackPanel>
+                        <TextBlock Text="Lọc" HorizontalAlignment="Center" FontWeight="Bold" FontSize="16"/>
+                        <Label Content="Tìm theo tên người dùng, Email" Width="198" Margin="0 0 0 0"/>
+                        <TextBox x:Name="txbSearch" TextChanged="txbSearch_TextChanged" Width="179"/>
+
+                        <WrapPanel Margin="10 0 0 0">
+                            <Label Content="Từ Ngày:" Width="100" Margin="-10 0 0 0"/>
+                            <DatePicker  x:Name="dpFromDate" Width="150" SelectedDateChanged="dpFromDate_SelectedDateChanged"/>
+                        </WrapPanel>
+                        <WrapPanel Margin="10,10,0,10">
+                            <Label Content="Đến Ngày:" Width="100" Margin="-10 0 0 0"/>
+                            <DatePicker  x:Name="dpToDate" Width="150" SelectedDateChanged="dpToDate_SelectedDateChanged"/>
+                        </WrapPanel>
+                        <Label Content="Trạng thái:"/>
+                        <ComboBox Name="cbxFilterStatus" Width="169" SelectionChanged="cbxFilterStatus_SelectionChanged"/>
                     </StackPanel>
                 </Border>
             </StackPanel>

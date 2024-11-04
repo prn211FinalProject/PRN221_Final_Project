@@ -7,7 +7,7 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:uc="clr-namespace:LibraryAdminSite"
         mc:Ignorable="d"
-        Title="MainWindow" Height="830" Width="1400" Loaded="Window_Loaded">
+        Title="MainWindow" Height="830" Width="1400" Loaded="Window_Loaded" WindowState="Maximized">
 
     <Grid Background="#f0f0f0">
         <Grid.RowDefinitions>

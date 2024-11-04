@@ -74,7 +74,7 @@ namespace LibraryAdminSite
 
             for (int i = 1; i <= newBook.Quantity; i++)
             {
-                string copyId = $"CP{newBook.Id}-{i:D3}"; // Tạo ID cho bản sao
+                string copyId = $"BC{newBook.Id}-{i:D3}"; // Tạo ID cho bản sao
                 BookCopy newCopy = new BookCopy
                 {
                     Id = copyId,

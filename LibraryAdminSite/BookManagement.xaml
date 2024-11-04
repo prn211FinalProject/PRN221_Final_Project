@@ -4,9 +4,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:LibraryAdminSite"
-             mc:Ignorable="d" Height="699" Width="1107" Loaded="Window_Loaded">
+             mc:Ignorable="d" Height="781" Width="1454" Loaded="Window_Loaded" HorizontalAlignment="Left">
     <Grid>
-        <StackPanel Orientation="Horizontal" Background="BlanchedAlmond" Margin="-100,0,-273,-74">
+        <StackPanel Orientation="Horizontal" Background="BlanchedAlmond" Margin="0,0,0,-74">
             <ContentControl x:Name="MainContentControl" />
             <Border Width="294" Background="White" BorderBrush="#bdc3c7" BorderThickness="1" Padding="10" CornerRadius="10">
                 <StackPanel >
@@ -97,7 +97,6 @@
                 </StackPanel>
             </Border>
             <Border Background="White" BorderBrush="#bdc3c7" BorderThickness="1" Padding="10" CornerRadius="10" Width="216">
-
                 <StackPanel>
                     <TextBlock Text="Lọc Các Loại Sách" HorizontalAlignment="Center" FontWeight="Bold" FontSize="16"/>
                     <Label Content="Tìm Theo Tên Sách , Tác Giả:" Width="166"/>
