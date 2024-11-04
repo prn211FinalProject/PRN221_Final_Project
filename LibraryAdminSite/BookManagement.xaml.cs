@@ -156,7 +156,7 @@ namespace LibraryAdminSite
 
         private void UpdateBook(object sender, RoutedEventArgs e)
         {
-            Book book = getBook();
+            BookTitle book = getBook();
             if (book != null)
             {
                 var existingBook = LMS_PRN221Context.Ins.BookTitles.Find(book.Id);
@@ -310,7 +310,7 @@ namespace LibraryAdminSite
         }
 
 
-        private Book getBook()
+        private BookTitle getBook()
         {
             try
             {
@@ -324,7 +324,7 @@ namespace LibraryAdminSite
                 int? pID = LMS_PRN221Context.Ins.Publishers
                     .FirstOrDefault(x => x.Pname.Equals(cbxNXB.SelectedItem.ToString()))?.Id;
                 bool status = cbxStatus.SelectedValue.ToString() == "Còn hàng"; 
-                return new Book()
+                return new BookTitle()
                 {
                     Id = id,
                     Bname = name,
@@ -345,7 +345,7 @@ namespace LibraryAdminSite
 
         private void Delete(object sender, RoutedEventArgs e)
         {
-            Book book = getBook();
+			BookTitle book = getBook();
             if (book != null)
             {
                 var result = MessageBox.Show("Bạn có chắc chắn muốn xóa cuốn sách : " + book.Bname,
@@ -435,7 +435,7 @@ namespace LibraryAdminSite
 
         private void btnViewCopy_Click(object sender, RoutedEventArgs e)
         {
-            Book book = getBook();
+			BookTitle book = getBook();
             if (book != null)
             {
                 // Mở cửa sổ BookCopyWindow với ID của sách hiện tại

@@ -74,5 +74,11 @@ namespace LibraryAdminSite
             // Load the UserManage control into the ContentControl
             MainContentControl.Content = thongkeSachCate;
         }
-    }
+
+		private void btnBorrowManage_Click(object sender, RoutedEventArgs e)
+		{
+            var borrowManage = new BorrowManage();
+            MainContentControl.Content = borrowManage;
+		}
+	}
 }

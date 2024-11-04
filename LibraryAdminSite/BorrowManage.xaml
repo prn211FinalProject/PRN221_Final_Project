@@ -62,7 +62,7 @@
                         </StackPanel>
                         <!-- Buttons -->
                         <StackPanel Name="stackBtn" Orientation="Vertical" Margin="0,10,0,0" Height="30" >
-                            <Button Background="#27ae60" Foreground="White" Content="Cập nhật" Margin="0,0,0,5" Click="Button_Click" Visibility="Collapsed"/>
+                            <Button Background="#27ae60" Foreground="White" Content="Cập nhật" Margin="0,0,0,5" Click="Button_Click" />
                         </StackPanel>
                     </StackPanel>
                 </Border>
