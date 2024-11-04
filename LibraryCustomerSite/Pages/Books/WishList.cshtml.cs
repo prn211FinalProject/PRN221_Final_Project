@@ -18,7 +18,7 @@ namespace LibraryCustomerSite.Pages.Books
 
         public IList<BookCopy> BookCopies { get; set; } = new List<BookCopy>();
 
-        public async Task<RedirectToPageResult> OnGetAsync()
+        public async Task<IActionResult> OnGetAsync()
         {
             var userId = HttpContext.Session.GetInt32("UserId");
             if (userId == null)
@@ -36,8 +36,9 @@ namespace LibraryCustomerSite.Pages.Books
             {
                 BookCopies = wishlist.SelectMany(w => w.Bids).ToList();
             }
-            return RedirectToPage("/Books/WishList");
+            return Page();
         }
+
         public async Task<IActionResult> OnPostRemoveFromWishlistAsync(int id)
         {
             var userId = HttpContext.Session.GetInt32("UserId");
@@ -65,7 +66,7 @@ namespace LibraryCustomerSite.Pages.Books
             await _context.SaveChangesAsync();
 
             TempData["SuccessMessage"] = "Xóa thành công sách khỏi Wishlist";
-            return RedirectToPage(new { id = id });
+            return RedirectToPage();
         }
     }
 }

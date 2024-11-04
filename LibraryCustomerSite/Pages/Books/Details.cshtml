@@ -240,14 +240,14 @@
                 <div class="info-row">
                     <span class="info-label">Số lượng còn lại: </span>
                     <div>
-                        <span>@Model.Book.Quantity</span>
+                        <span>@Model.Book.UnitInStock</span>
                     </div>
                 </div>
 
                 <div class="info-row">
                     <span class="info-label">Trạng thái:</span>
                     <div>
-                        @if (Model.Book.Quantity >= 1)
+                        @if (Model.Book.UnitInStock >= 1)
                         {
                             <span class="shipping-badge">Còn Hàng</span>
                         }

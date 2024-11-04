@@ -33,7 +33,7 @@ namespace LibraryCustomerSite.Pages.Books
 
             if (categoryIds != null && categoryIds.Any())
             {
-                // Lọc sách theo các category được chọn
+                // Lọc category được chọn
                 bookQuery = bookQuery.Where(b => categoryIds.Contains(b.Cid ?? 0));
             }
             switch (sortOrder)
@@ -41,14 +41,14 @@ namespace LibraryCustomerSite.Pages.Books
                 case "name":
                     bookQuery = bookQuery.OrderBy(b => b.Bname);
                     break;
-                case "quantity":
-                    bookQuery = bookQuery.OrderBy(b => b.Quantity);
+                case "UnitInStock":
+                    bookQuery = bookQuery.OrderBy(b => b.UnitInStock);
                     break;
                 case "status":
                     bookQuery = bookQuery.OrderBy(b => b.Status);
                     break;
                 default:
-                    bookQuery = bookQuery.OrderBy(b => b.Bname); // Mặc định sắp xếp theo tên
+                    bookQuery = bookQuery.OrderBy(b => b.Bname); 
                     break;
             }
             Book = await bookQuery.ToListAsync();
