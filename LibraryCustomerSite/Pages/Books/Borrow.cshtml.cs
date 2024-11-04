@@ -18,7 +18,6 @@ namespace LibraryCustomerSite.Pages.Books
         public string UserName { get; set; }
         public string Email { get; set; }
         public string BookName { get; set; }
-
         public IActionResult OnGet(int id)
         {
             var userId = HttpContext.Session.GetInt32("UserId");
@@ -36,12 +35,16 @@ namespace LibraryCustomerSite.Pages.Books
             {
                 return NotFound();
             }
-
+            if (book.Quantity <= 0)
+            {
+                TempData["ErrorMessage"] = "Sách này hiện không có sẵn.";
+                return RedirectToPage("/Books/Details", new { id = id });
+            }
             BorrowInformation = new BorrowInformation
             {
                 Uid = userId,
                 BorrowDate = DateTime.Now,
-                DueDate = DateTime.Now.AddDays(14), // Giả sử thời hạn mượn sách là 14 ngày
+                DueDate = DateTime.Now.AddDays(7), // Giả sử thời hạn mượn sách là 14 ngày
                 Status = true,
             };
 

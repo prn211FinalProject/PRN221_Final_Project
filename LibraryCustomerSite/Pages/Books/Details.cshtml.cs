@@ -83,7 +83,7 @@ namespace LibraryCustomerSite.Pages.Books
             // Kiểm tra xem sách đã tồn tại trong wishlist chưa
             if (wishlist.Bids.Any(bc => bc.Id == bookCopy.Id))
             {
-                TempData["ErrorMessage"] = "This book is already in the wishlist";
+                TempData["ErrorMessage"] = "Cuốn sách này đã ở trong wishlist";
                 return RedirectToPage(new { id = id });
             }
 
@@ -91,7 +91,7 @@ namespace LibraryCustomerSite.Pages.Books
 
             await _context.SaveChangesAsync();
 
-            TempData["SuccessMessage"] = "Book added to wishlist successfully!";
+            TempData["SuccessMessage"] = "Sách được thêm vào wishlist thành công";
             return RedirectToPage(new { id = id });
         }
         

@@ -64,7 +64,7 @@ namespace LibraryCustomerSite.Pages.Books
             wishlist.Bids.Remove(bookCopy);
             await _context.SaveChangesAsync();
 
-            TempData["SuccessMessage"] = "Book removed from wishlist successfully!";
+            TempData["SuccessMessage"] = "Xóa thành công sách khỏi Wishlist";
             return RedirectToPage(new { id = id });
         }
     }
