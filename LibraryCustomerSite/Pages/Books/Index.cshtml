@@ -338,7 +338,7 @@
                     <div class="sort-buttons">
                         <span>Sắp xếp theo</span>
                         <a asp-page="./Index" asp-route-sortOrder="name" class="sort-button @(Request.Query["sortOrder"] == "name" ? "sort-button--active" : "")">Tên sách</a>
-                        <a asp-page="./Index" asp-route-sortOrder="quantity" class="sort-button @(Request.Query["sortOrder"] == "quantity" ? "sort-button--active" : "")">Số lượng</a>
+                        <a asp-page="./Index" asp-route-sortOrder="UnitInStock" class="sort-button @(Request.Query["sortOrder"] == "UnitInStock" ? "sort-button--active" : "")">Số lượng</a>
                         <a asp-page="./Index" asp-route-sortOrder="status" class="sort-button @(Request.Query["sortOrder"] == "status" ? "sort-button--active" : "")">Trạng thái</a>
                     </div>
                 </div>
@@ -354,9 +354,9 @@
                                 <div class="product-card__content" style="text-decoration: none">
                                 <h3 class="product-card__title">@book.Bname</h3>
                                 <div class="product-card__price">@book.Author</div>
-                                <div class="product-card__discount">@book.Quantity</div>
+                                        <div class="product-card__discount">@book.UnitInStock</div>
                                 <div class="product-card__status">
-                                    @if (book.Quantity >= 1)
+                                            @if (book.UnitInStock >= 1)
                                     {
                                         <span style="color: green;">Còn Hàng</span>
                                     }

@@ -34,7 +34,7 @@
             </div>
 
             <div class="quantity-controls">
-                <input type="text" value="@bookCopy.BookTitle.Quantity" class="quantity-input" readonly>
+                <input type="text" value="@bookCopy.BookTitle.UnitInStock" class="quantity-input" readonly>
             </div>
 
             <div class="price">
@@ -53,7 +53,10 @@
                     <input type="hidden" name="id" value="@bookCopy.BookTitleId" />
                     <button type="submit" class="action-btn">Xóa khỏi WishList</button>
                 </form>
-                <button type="button" class="action-btn">Mượn Ngay</button>
+                <form method="get" asp-page="/Books/Borrow" asp-page-handler="Post">
+                    <input type="hidden" name="id" value="@bookCopy.BookTitleId" />
+                    <button type="submit" class="action-btn">Mượn Ngay</button>
+                </form>
             </div>
         </div>
     }

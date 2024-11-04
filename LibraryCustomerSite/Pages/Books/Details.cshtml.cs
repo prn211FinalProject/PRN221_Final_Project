@@ -41,7 +41,7 @@ namespace LibraryCustomerSite.Pages.Books
 
         public async Task<IActionResult> OnPostAddToWishlistAsync(int id)
         {
-            // Kiểm tra xem BookTitle có tồn tại không
+            // Kiểm tra BookTitle có tồn tại không
             var bookTitle = await _context.BookTitles
                 .FirstOrDefaultAsync(bt => bt.Id == id);
 

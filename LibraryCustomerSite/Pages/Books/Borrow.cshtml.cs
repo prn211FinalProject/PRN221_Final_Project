@@ -35,7 +35,7 @@ namespace LibraryCustomerSite.Pages.Books
             {
                 return NotFound();
             }
-            if (book.Quantity <= 0)
+            if (book.UnitInStock <= 0)
             {
                 TempData["ErrorMessage"] = "Sách này hiện không có sẵn.";
                 return RedirectToPage("/Books/Details", new { id = id });
@@ -44,7 +44,7 @@ namespace LibraryCustomerSite.Pages.Books
             {
                 Uid = userId,
                 BorrowDate = DateTime.Now,
-                DueDate = DateTime.Now.AddDays(7), // Giả sử thời hạn mượn sách là 14 ngày
+                DueDate = DateTime.Now.AddDays(7),
                 Status = true,
             };
 
@@ -66,14 +66,14 @@ namespace LibraryCustomerSite.Pages.Books
                 return NotFound();
             }
 
-            if (book.Quantity <= 0)
+            if (book.UnitInStock <= 0)
             {
                 ModelState.AddModelError(string.Empty, "Sách này hiện không có sẵn.");
                 return Page();
             }
 
             BorrowInformation.Uid = userId;
-            BorrowInformation.Status = true; // Đặt giá trị mặc định cho Status
+            BorrowInformation.Status = true; 
 
             // Lấy ID lớn nhất hiện có trong bảng BookCopies
             var lastBookCopy = _context.BookCopies.OrderByDescending(bc => bc.Id).FirstOrDefault();
