@@ -1,6 +1,6 @@
 ﻿-- Tạo cơ sở dữ liệu LibraryManagement
 --CREATE DATABASE LMS_PRN221;
---DROP DATABASE LibraryManagement;
+--DROP DATABASE LMS_PRN221;
 
 -- Sử dụng cơ sở dữ liệu LibraryManagement
 USE LMS_PRN221;
@@ -20,6 +20,8 @@ CREATE TABLE [User] (
     Email NVARCHAR(255) UNIQUE,
     Phone NVARCHAR(20),
     Status BIT,
+	Gender BIT,
+	[PassWord] varchar(255),
     RoleId INT FOREIGN KEY REFERENCES Role(Id)
 );
 
@@ -49,7 +51,8 @@ CREATE TABLE Book (
     Quantity INT,
     Image NVARCHAR(255),
     Price DECIMAL(10, 2),
-    Status int,
+	[Description] nvarchar(255),
+    Status BIT,
 	[Hide] BIT NOT NULL DEFAULT 0,
     PublisherId INT FOREIGN KEY REFERENCES Publisher(Id),
     PublishDate DATETIME
@@ -105,77 +108,71 @@ CREATE TABLE Blog (
     Status BIT,
 	Uid INT FOREIGN KEY REFERENCES [User](Uid)
 );
--- Thêm dữ liệu vào bảng Role
+--- Thêm dữ liệu vào bảng Role (vai trò của user)
 INSERT INTO Role (Name, Status)
 VALUES 
-    (N'Admin', 1),
-    (N'Member', 1),
-    (N'Librarian', 1);
+    (N'Staff', 1),
+    (N'Guest', 1);
 
--- Thêm dữ liệu vào bảng User
-INSERT INTO [User] (FullName, Email, Phone, Status, RoleId)
+-- Thêm dữ liệu vào bảng User (người dùng)
+INSERT INTO [User] (FullName, Email, Phone, Status, Gender, [PassWord], RoleId)
 VALUES 
-    (N'Nguyễn Văn A', 'nguyenvana@example.com', '0123456789', 1, 1),
-    (N'Trần Thị B', 'tranthib@example.com', '0987654321', 1, 2),
-    (N'Lê Văn C', 'levanc@example.com', '0912345678', 1, 3);
+    (N'Phạm Quang D', 'phamd@example.com', '0911111111', 1, 1, 'password123', 1),
+    (N'Hoàng Thị E', 'hoange@example.com', '0922222222', 1, 0, 'password456', 2),
+    (N'Nguyễn Văn F', 'nguyenf@example.com', '0933333333', 1, 1, 'password789', 3);
 
--- Thêm dữ liệu vào bảng Category
+-- Thêm dữ liệu vào bảng Category (thể loại sách)
 INSERT INTO Category (CName, Status)
 VALUES 
-    (N'Fiction', 1),
-    (N'Non-Fiction', 1),
-    (N'Science', 1),
-    (N'History', 1);
+    (N'Philosophy', 1),
+    (N'Children', 1);
 
--- Thêm dữ liệu vào bảng Publisher
+-- Thêm dữ liệu vào bảng Publisher (nhà xuất bản)
 INSERT INTO Publisher (PName, Address, Phone, Email, Status)
 VALUES 
-    (N'Nhà Xuất Bản Kim Đồng', N'Hà Nội', '023456789', 'kimdong@example.com', 1),
-    (N'Nhà Xuất Bản Trẻ', N'TP HCM', '034567890', 'nxbtre@example.com', 1),
-    (N'Nhà Xuất Bản Giáo Dục', N'Đà Nẵng', '045678901', 'nxbgiaoduc@example.com', 1);
+    (N'NXB Văn Học', N'Hà Nội', '0912345678', 'vanhoc@example.com', 1),
+    (N'NXB Tự Nhiên', N'TP HCM', '0923456789', 'tunhien@example.com', 1);
 
--- Thêm dữ liệu vào bảng Book
-INSERT INTO Book (CId, BName, Author, Quantity, Image, Price, Status, PublisherId, PublishDate)
+-- Thêm dữ liệu vào bảng Book (sách)
+INSERT INTO Book (CId, BName, Author, Quantity, Image, Price, [Description], Status, PublisherId, PublishDate)
 VALUES 
-    (1, N'Nhà Giả Kim', N'Paulo Coelho', 10, 'image1.jpg', 120000, 1, 1, '2010-05-01'),
-    (2, N'Lược Sử Thời Gian', N'Stephen Hawking', 5, 'image2.jpg', 150000, 1, 2, '2012-07-10'),
-    (3, N'Lập Trình Python', N'Nguyễn Văn D', 7, 'image3.jpg', 200000, 1, 3, '2015-01-15');
+    (4, N'Triết Học Tinh Hoa', N'Trần Văn Đ', 8, 'image4.jpg', 95000, N'Sách giới thiệu các triết lý nổi bật.', 1, 1, '2020-10-25'),
+    (5, N'Câu Chuyện Tuổi Thơ', N'Phạm Lan Hương', 15, 'image5.jpg', 50000, N'Sách dành cho trẻ em với hình ảnh sinh động.', 1, 2, '2019-03-14');
 
--- Thêm dữ liệu vào bảng Feedback
+-- Thêm dữ liệu vào bảng Feedback (đánh giá sách)
 INSERT INTO Feedback (Bid, Uid, Content, CreatedDate, Status)
 VALUES 
-    (1, 1, N'Sách rất hay và ý nghĩa!', '2023-01-15', 1),
-    (2, 2, N'Sách khoa học dễ hiểu.', '2023-03-12', 1),
-    (3, 3, N'Hữu ích cho người học lập trình.', '2023-05-10', 1);
+    (4, 1, N'Triết lý rất sâu sắc!', '2023-04-02', 1),
+    (5, 2, N'Sách này giúp trẻ em phát triển tư duy sáng tạo.', '2023-04-10', 1);
 
--- Thêm dữ liệu vào bảng Wishlist
+-- Thêm dữ liệu vào bảng Wishlist (danh sách yêu thích của người dùng)
 INSERT INTO Wishlist (Uid)
 VALUES 
-    (1),
-    (2);
+    (3),
+    (4);
 
--- Thêm dữ liệu vào bảng WishlistItem
+-- Thêm dữ liệu vào bảng WishlistItem (mục trong danh sách yêu thích)
 INSERT INTO WishlistItem (WId, BId)
 VALUES 
-    (1, 1),
-    (1, 2),
-    (2, 3);
+    (3, 4),
+    (3, 5),
+    (4, 1);
 
--- Thêm dữ liệu vào bảng BorrowInformation
+-- Thêm dữ liệu vào bảng BorrowInformation (thông tin mượn sách)
 INSERT INTO BorrowInformation (Uid, BorrowDate, DueDate, TotalAmount, Note, Status)
 VALUES 
-    (1, '2023-08-01', '2023-08-15', 50000, N'Mượn sách về phát triển bản thân', 1),
-    (2, '2023-09-05', '2023-09-20', 30000, N'Mượn sách khoa học', 1);
+    (3, '2023-07-15', '2023-07-30', 45000, N'Mượn sách triết học', 1),
+    (4, '2023-09-15', '2023-09-30', 30000, N'Mượn sách cho trẻ em', 1);
 
--- Thêm dữ liệu vào bảng BorrowDetail
+-- Thêm dữ liệu vào bảng BorrowDetail (chi tiết mượn sách)
 INSERT INTO BorrowDetail (Oid, Bid)
 VALUES 
-    (1, 1),
-    (1, 2),
-    (2, 3);
+    (3, 4),
+    (3, 5),
+    (4, 1);
 
--- Thêm dữ liệu vào bảng Blog
+-- Thêm dữ liệu vào bảng Blog (blog về sách hoặc hệ thống)
 INSERT INTO Blog (Title, Content, CreatedDate, Status, Uid)
 VALUES 
-    (N'Cách đọc sách hiệu quả', N'Bài viết chia sẻ cách đọc sách hiệu quả...', '2023-07-01', 1, 1),
-    (N'Giới thiệu sách hay năm 2023', N'Bài viết giới thiệu các cuốn sách nên đọc trong năm 2023...', '2023-08-15', 1, 2);
+    (N'Những sách triết học nên đọc', N'Bài viết chia sẻ về các sách triết học nên đọc...', '2023-06-15', 1, 3),
+    (N'Cuốn sách hay cho trẻ em', N'Giới thiệu sách giúp trẻ em phát triển toàn diện...', '2023-07-20', 1, 4);
