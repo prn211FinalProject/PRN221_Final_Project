@@ -7,12 +7,13 @@ namespace LibraryAdminSite.Models
     {
         public BorrowInformation()
         {
-            Bids = new HashSet<Book>();
+            Bids = new HashSet<BookCopy>();
         }
 
         public int Oid { get; set; }
         public int? Uid { get; set; }
         public DateTime? BorrowDate { get; set; }
+        public DateTime? CheckoutDate { get; set; }
         public DateTime? DueDate { get; set; }
         public decimal? TotalAmount { get; set; }
         public string? Note { get; set; }
@@ -20,6 +21,6 @@ namespace LibraryAdminSite.Models
 
         public virtual User? UidNavigation { get; set; }
 
-        public virtual ICollection<Book> Bids { get; set; }
+        public virtual ICollection<BookCopy> Bids { get; set; }
     }
 }

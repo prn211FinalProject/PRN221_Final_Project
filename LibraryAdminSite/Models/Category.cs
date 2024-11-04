@@ -7,13 +7,13 @@ namespace LibraryAdminSite.Models
     {
         public Category()
         {
-            Books = new HashSet<Book>();
+            BookTitles = new HashSet<BookTitle>();
         }
 
         public int Id { get; set; }
         public string? Cname { get; set; }
         public bool? Status { get; set; }
 
-        public virtual ICollection<Book> Books { get; set; }
+        public virtual ICollection<BookTitle> BookTitles { get; set; }
     }
 }

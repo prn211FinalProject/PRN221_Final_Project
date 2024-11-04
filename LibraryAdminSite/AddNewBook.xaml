@@ -20,8 +20,13 @@
             <TextBox x:Name="txtAuthor" Margin="0,0,0,10" Height="30" Padding="5" FontSize="14" BorderBrush="#ccc" BorderThickness="1"/>
             <TextBlock Text="Giá:" FontWeight="Medium" />
             <TextBox x:Name="txtPrice" Margin="0,0,0,10" Height="30" Padding="5" FontSize="14" BorderBrush="#ccc" BorderThickness="1"/>
+            <TextBlock Text="Số Lượng:" FontWeight="Medium" />
+           
+            <TextBox x:Name="txtQuantity" Margin="0,0,0,10" Height="30" Padding="5" FontSize="14" BorderBrush="#ccc" BorderThickness="1"/>
+           
             <TextBlock Text="Nhà xuất bản:" FontWeight="Medium" />
             <ComboBox x:Name="cbxNXB" Margin="0,0,0,10" Height="30" Padding="5" FontSize="14" BorderBrush="#ccc" BorderThickness="1"/>
+           
             <TextBlock Text="Thể Loại:" FontWeight="Medium" />
             <ComboBox x:Name="cmbGenre" Margin="0,0,0,10" Height="30" Padding="5" FontSize="14" BorderBrush="#ccc" BorderThickness="1"/>
 

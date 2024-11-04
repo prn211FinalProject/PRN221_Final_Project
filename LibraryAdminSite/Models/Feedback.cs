@@ -12,7 +12,7 @@ namespace LibraryAdminSite.Models
         public DateTime? CreatedDate { get; set; }
         public bool? Status { get; set; }
 
-        public virtual Book? BidNavigation { get; set; }
+        public virtual BookTitle? BidNavigation { get; set; }
         public virtual User? UidNavigation { get; set; }
     }
 }

@@ -2,16 +2,17 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.Extensions.Configuration;
 
 namespace LibraryAdminSite.Models
 {
     public partial class LMS_PRN221Context : DbContext
     {
-        public static LMS_PRN221Context Ins = new LMS_PRN221Context();  
+
+        public static LMS_PRN221Context Ins = new LMS_PRN221Context();
         public LMS_PRN221Context()
         {
             if (Ins == null) Ins = this;
-
         }
 
         public LMS_PRN221Context(DbContextOptions<LMS_PRN221Context> options)
@@ -20,7 +21,8 @@ namespace LibraryAdminSite.Models
         }
 
         public virtual DbSet<Blog> Blogs { get; set; } = null!;
-        public virtual DbSet<Book> Books { get; set; } = null!;
+        public virtual DbSet<BookCopy> BookCopies { get; set; } = null!;
+        public virtual DbSet<BookTitle> BookTitles { get; set; } = null!;
         public virtual DbSet<BorrowInformation> BorrowInformations { get; set; } = null!;
         public virtual DbSet<Category> Categories { get; set; } = null!;
         public virtual DbSet<Feedback> Feedbacks { get; set; } = null!;
@@ -31,11 +33,9 @@ namespace LibraryAdminSite.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if (!optionsBuilder.IsConfigured)
-            {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Data Source=TRONGYP;Initial Catalog=LMS_PRN221; Trusted_Connection=SSPI;Encrypt=false;TrustServerCertificate=true");
-            }
+            var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+
+            if (!optionsBuilder.IsConfigured) { optionsBuilder.UseSqlServer(config.GetConnectionString("value")); }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -43,7 +43,7 @@ namespace LibraryAdminSite.Models
             modelBuilder.Entity<Blog>(entity =>
             {
                 entity.HasKey(e => e.Bid)
-                    .HasName("PK__Blog__C6D111C9403064F6");
+                    .HasName("PK__Blog__C6D111C99695D9CF");
 
                 entity.ToTable("Blog");
 
@@ -54,12 +54,28 @@ namespace LibraryAdminSite.Models
                 entity.HasOne(d => d.UidNavigation)
                     .WithMany(p => p.Blogs)
                     .HasForeignKey(d => d.Uid)
-                    .HasConstraintName("FK__Blog__Uid__5629CD9C");
+                    .HasConstraintName("FK__Blog__Uid__59FA5E80");
             });
 
-            modelBuilder.Entity<Book>(entity =>
+            modelBuilder.Entity<BookCopy>(entity =>
             {
-                entity.ToTable("Book");
+                entity.ToTable("BookCopy");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Note).HasMaxLength(255);
+
+                entity.HasOne(d => d.BookTitle)
+                    .WithMany(p => p.BookCopies)
+                    .HasForeignKey(d => d.BookTitleId)
+                    .HasConstraintName("FK__BookCopy__BookTi__45F365D3");
+            });
+
+            modelBuilder.Entity<BookTitle>(entity =>
+            {
+                entity.ToTable("BookTitle");
 
                 entity.Property(e => e.Author).HasMaxLength(255);
 
@@ -69,6 +85,8 @@ namespace LibraryAdminSite.Models
 
                 entity.Property(e => e.Cid).HasColumnName("CId");
 
+                entity.Property(e => e.Description).HasMaxLength(255);
+
                 entity.Property(e => e.Image).HasMaxLength(255);
 
                 entity.Property(e => e.Price).HasColumnType("decimal(10, 2)");
@@ -76,24 +94,26 @@ namespace LibraryAdminSite.Models
                 entity.Property(e => e.PublishDate).HasColumnType("datetime");
 
                 entity.HasOne(d => d.CidNavigation)
-                    .WithMany(p => p.Books)
+                    .WithMany(p => p.BookTitles)
                     .HasForeignKey(d => d.Cid)
-                    .HasConstraintName("FK__Book__CId__412EB0B6");
+                    .HasConstraintName("FK__BookTitle__CId__412EB0B6");
 
                 entity.HasOne(d => d.Publisher)
-                    .WithMany(p => p.Books)
+                    .WithMany(p => p.BookTitles)
                     .HasForeignKey(d => d.PublisherId)
-                    .HasConstraintName("FK__Book__PublisherI__4222D4EF");
+                    .HasConstraintName("FK__BookTitle__Publi__4316F928");
             });
 
             modelBuilder.Entity<BorrowInformation>(entity =>
             {
                 entity.HasKey(e => e.Oid)
-                    .HasName("PK__BorrowIn__CB3E4F316513637D");
+                    .HasName("PK__BorrowIn__CB3E4F31F2D95EA4");
 
                 entity.ToTable("BorrowInformation");
 
                 entity.Property(e => e.BorrowDate).HasColumnType("datetime");
+
+                entity.Property(e => e.CheckoutDate).HasColumnType("datetime");
 
                 entity.Property(e => e.DueDate).HasColumnType("datetime");
 
@@ -102,19 +122,21 @@ namespace LibraryAdminSite.Models
                 entity.HasOne(d => d.UidNavigation)
                     .WithMany(p => p.BorrowInformations)
                     .HasForeignKey(d => d.Uid)
-                    .HasConstraintName("FK__BorrowInfor__Uid__4F7CD00D");
+                    .HasConstraintName("FK__BorrowInfor__Uid__534D60F1");
 
                 entity.HasMany(d => d.Bids)
                     .WithMany(p => p.Oids)
                     .UsingEntity<Dictionary<string, object>>(
                         "BorrowDetail",
-                        l => l.HasOne<Book>().WithMany().HasForeignKey("Bid").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK__BorrowDetai__Bid__534D60F1"),
-                        r => r.HasOne<BorrowInformation>().WithMany().HasForeignKey("Oid").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK__BorrowDetai__Oid__52593CB8"),
+                        l => l.HasOne<BookCopy>().WithMany().HasForeignKey("Bid").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK__BorrowDetai__Bid__571DF1D5"),
+                        r => r.HasOne<BorrowInformation>().WithMany().HasForeignKey("Oid").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK__BorrowDetai__Oid__5629CD9C"),
                         j =>
                         {
-                            j.HasKey("Oid", "Bid").HasName("PK__BorrowDe__47535E2DAE83CCA7");
+                            j.HasKey("Oid", "Bid").HasName("PK__BorrowDe__47535E2D8834CC1A");
 
                             j.ToTable("BorrowDetail");
+
+                            j.IndexerProperty<string>("Bid").HasMaxLength(255).IsUnicode(false);
                         });
             });
 
@@ -136,12 +158,12 @@ namespace LibraryAdminSite.Models
                 entity.HasOne(d => d.BidNavigation)
                     .WithMany(p => p.Feedbacks)
                     .HasForeignKey(d => d.Bid)
-                    .HasConstraintName("FK__Feedback__Bid__44FF419A");
+                    .HasConstraintName("FK__Feedback__Bid__48CFD27E");
 
                 entity.HasOne(d => d.UidNavigation)
                     .WithMany(p => p.Feedbacks)
                     .HasForeignKey(d => d.Uid)
-                    .HasConstraintName("FK__Feedback__Uid__45F365D3");
+                    .HasConstraintName("FK__Feedback__Uid__49C3F6B7");
             });
 
             modelBuilder.Entity<Publisher>(entity =>
@@ -169,16 +191,24 @@ namespace LibraryAdminSite.Models
             modelBuilder.Entity<User>(entity =>
             {
                 entity.HasKey(e => e.Uid)
-                    .HasName("PK__User__C5B69A4A5DC05AB8");
+                    .HasName("PK__User__C5B69A4AA458B07F");
 
                 entity.ToTable("User");
 
-                entity.HasIndex(e => e.Email, "UQ__User__A9D10534C5E19239")
+                entity.HasIndex(e => e.Email, "UQ__User__A9D105345C735A61")
                     .IsUnique();
 
                 entity.Property(e => e.Email).HasMaxLength(255);
 
                 entity.Property(e => e.FullName).HasMaxLength(255);
+
+                entity.Property(e => e.Image)
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Password)
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Phone).HasMaxLength(20);
 
@@ -195,23 +225,23 @@ namespace LibraryAdminSite.Models
                 entity.HasOne(d => d.UidNavigation)
                     .WithMany(p => p.Wishlists)
                     .HasForeignKey(d => d.Uid)
-                    .HasConstraintName("FK__Wishlist__Uid__48CFD27E");
+                    .HasConstraintName("FK__Wishlist__Uid__4CA06362");
 
                 entity.HasMany(d => d.Bids)
                     .WithMany(p => p.Wids)
                     .UsingEntity<Dictionary<string, object>>(
                         "WishlistItem",
-                        l => l.HasOne<Book>().WithMany().HasForeignKey("Bid").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK__WishlistIte__BId__4CA06362"),
-                        r => r.HasOne<Wishlist>().WithMany().HasForeignKey("Wid").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK__WishlistIte__WId__4BAC3F29"),
+                        l => l.HasOne<BookCopy>().WithMany().HasForeignKey("Bid").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK__WishlistIte__BId__5070F446"),
+                        r => r.HasOne<Wishlist>().WithMany().HasForeignKey("Wid").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK__WishlistIte__WId__4F7CD00D"),
                         j =>
                         {
-                            j.HasKey("Wid", "Bid").HasName("PK__Wishlist__D75A85F508B32E90");
+                            j.HasKey("Wid", "Bid").HasName("PK__Wishlist__D75A85F538E64B6C");
 
                             j.ToTable("WishlistItem");
 
                             j.IndexerProperty<int>("Wid").HasColumnName("WId");
 
-                            j.IndexerProperty<int>("Bid").HasColumnName("BId");
+                            j.IndexerProperty<string>("Bid").HasMaxLength(255).IsUnicode(false).HasColumnName("BId");
                         });
             });
 
