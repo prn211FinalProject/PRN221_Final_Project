@@ -5,10 +5,18 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LibraryAdminSite"
         mc:Ignorable="d"
-        Title="Login" Height="450" Width="800">
+        Title="Login" Height="560" Width="821">
     <Grid>
         <StackPanel>
-            <TextBlock Text="Hệ Thống Quản Lý Thư Viện " FontSize="30" VerticalAlignment="Center" Margin="450,0" FontWeight="Bold" Foreground="White"/>
+            <TextBlock Text="Hệ Thống Quản Lý Thư Viện " FontSize="30" FontWeight="Bold" Foreground="#FF3A4FFF" Width="399"/>
+        </StackPanel>
+        <TextBlock Text="Đăng Nhập" Margin="0,75,0,264" FontWeight="Bold" FontSize="24" HorizontalAlignment="Center"/>
+        <StackPanel Margin="194,134,224,57">
+            <Label Content="Email:" FontSize="20"  Margin="10"/>
+            <TextBox x:Name="txtEmail" Width="331" Height="35" FontSize="20" Margin="10"/>
+            <Label Content="Mật khẩu:" FontSize="20"  Margin="10"/>
+            <PasswordBox x:Name="txtPass" Width="331" Height="35" FontSize="20" Margin="10"/>
+            <Button x:Name="btnLogin" Content="Đăng nhập" Width="110" Height="36" FontSize="18" Background="#FFA9D6F9" Click="btnLogin_Click"/>
         </StackPanel>
     </Grid>
 </Window>

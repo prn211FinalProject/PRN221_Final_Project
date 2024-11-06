@@ -62,7 +62,7 @@ namespace LibraryCustomerSite.Pages.Books
                     return Page();
                 }
                 NewUser.Status = true; // Activate user
-                NewUser.RoleId = 1; // Đặt RoleId mặc định
+                NewUser.RoleId = 2; // Đặt RoleId mặc định
                 _context.Users.Add(NewUser);
                 await _context.SaveChangesAsync();
                 Message = "Sign up successful! You can now login.";

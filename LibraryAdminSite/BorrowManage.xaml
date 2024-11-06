@@ -51,15 +51,12 @@
                                 </ListView.View>
                             </ListView>
                         </StackPanel>
-                        <StackPanel x:Name="stackChangeStatus" Visibility="Hidden">
+                        <StackPanel x:Name="stackChangeStatus">
                             <TextBlock Text="Trạng thái mượn sách" HorizontalAlignment="Center" FontSize="25" Margin="0 0 0 10"></TextBlock>
                             <StackPanel Name="stackStatus" Orientation="Horizontal" >
 
-                                <Label x:Name="label" Content="Trạng thái:  "/>
-                                <RadioButton Name="rdbNotBorrow" VerticalAlignment="Center"/>
-                                <Label Content="Chưa mượn" Margin="0,0,30,0"/>
-                                <RadioButton Name="rdbBorrowed"  VerticalAlignment="Center"/>
-                                <Label Content="Đã mượn"/>
+                                <Label x:Name="label" Content="Trạng thái:  " Margin="0 0 30 0"/>
+                                <ComboBox Name="cbxChangeStatus" Width="182"/>
                             </StackPanel>
                             <!-- Buttons -->
                             <StackPanel Name="stackBtn" Orientation="Vertical" Margin="0,10,0,0" Height="30" >
@@ -74,6 +71,15 @@
                         <TextBlock x:Name="txtTitle" Text="Quản lý mượn sách" HorizontalAlignment="Center" FontSize="25" Margin="0 0 0 20"></TextBlock>
 
                         <ListView Name="lvDisplay" Margin="0,0,0,20" SelectionChanged="lvDisplay_SelectionChanged">
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListViewItem">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsOverDue}" Value="true">
+                                            <Setter Property="Background" Value="LightCoral"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ListView.ItemContainerStyle>
                             <ListView.View>
                                 <GridView>
                                     <GridViewColumn Header="Mã số" DisplayMemberBinding="{Binding Id}" Width="40"/>
@@ -81,6 +87,7 @@
                                     <GridViewColumn Header="Email" DisplayMemberBinding="{Binding Email}" Width="150"/>
                                     <GridViewColumn Header="Ngày đặt mượn" DisplayMemberBinding="{Binding CheckoutDate}" Width="100"/>
                                     <GridViewColumn Header="Ngày mượn" DisplayMemberBinding="{Binding BorrowDate}" Width="100"/>
+                                    <GridViewColumn Header="Ngày trả" DisplayMemberBinding="{Binding ReturnDate}" Width="100"/>
                                     <GridViewColumn Header="Hạn trả" DisplayMemberBinding="{Binding DueDate}" Width="100"/>
                                     <GridViewColumn Header="Trạng thái" DisplayMemberBinding="{Binding Status}" Width="100"/>
                                 </GridView>

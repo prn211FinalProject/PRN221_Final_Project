@@ -31,7 +31,7 @@
             <Button x:Name="btnBookManage" Content="📚" Foreground="White" FontSize="24" Background="Transparent" BorderBrush="Transparent" Margin="5,10" Click="btnBookManage_Click" />
             <Button x:Name="btnCateManage" Content="🏷️" Foreground="White" FontSize="24" Background="Transparent" BorderBrush="Transparent" Margin="5,10" Click="btnCateManage_Click" />
             <Button x:Name="btnUserManage" Content="👥" Foreground="White" FontSize="24" Background="Transparent" BorderBrush="Transparent" Margin="5,10" Click="btnUserManage_Click" />
-            <Button x:Name="btnBorrowManage" Content="👥" Foreground="White" FontSize="24" Background="Transparent" BorderBrush="Transparent" Margin="5,10" Click="btnBorrowManage_Click" />
+            <Button x:Name="btnBorrowManage" Content="🧾" Foreground="White" FontSize="24" Background="Transparent" BorderBrush="Transparent" Margin="5,10" Click="btnBorrowManage_Click" />
             <Button x:Name="btnBlogManage" Content="🔔" Foreground="White" FontSize="24" Background="Transparent" BorderBrush="Transparent" Margin="5,10" Click="btnBlogManage_Click" />
             <Button x:Name="btnNXBManage" Content="🖊️" Foreground="White" FontSize="24" Background="Transparent" BorderBrush="Transparent" Margin="5,10" Click="btnNXBManage_Click" />
             <Button x:Name="btnThongKeSachMuon" Content="📊" Foreground="White" FontSize="24" Background="Transparent" BorderBrush="Transparent" Margin="5,10" Click="btnThongKeSachMuon_Click" />

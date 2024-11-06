@@ -139,5 +139,28 @@ namespace LibraryAdminSite
             AddNewUser addNewUser = new AddNewUser();
             addNewUser.Show();
         }
+
+        private void txtSearch_SelectionChanged(object sender, RoutedEventArgs e)
+        {
+            string searchText = txtSearch.Text.Trim();
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                var users = LMS_PRN221Context.Ins.Users.Where(x => x.FullName.Contains(searchText) || x.Email.Contains(searchText))
+                    .Select(x => new
+                    {
+                        Id = x.Uid,
+                        FullName = x.FullName,
+                        Phone = x.Phone,
+                        Email = x.Email,
+                        Role = x.Role.Name,
+                        Gender = (bool)x.Gender ? "Nam" : "Nữ",
+                    }).ToList();
+                lvDisplay.ItemsSource = users;
+            }
+            else
+            {
+                LoadUser();
+            }
+        }
     }
 }

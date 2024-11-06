@@ -56,10 +56,10 @@
                 <TextBlock Text="Báo cáo thống kê Số Sách Mượn Nhiều Nhất" FontSize="16" FontWeight="Bold"/>
                 <WrapPanel Margin="0,10,0,20">
                     <Label Content="Từ Ngày:" Width="100" VerticalAlignment="Center"/>
-                    <DatePicker SelectedDateChanged="dpToDate_SelectedDateChanged" x:Name="dpFromDate2" Width="150" Margin="0,0,10,0"/>
+                    <DatePicker SelectedDateChanged="dpToDate_SelectedDateChanged2" x:Name="dpFromDate2" Width="150" Margin="0,0,10,0"/>
 
                     <Label Content="Đến Ngày:" Width="100" VerticalAlignment="Center"/>
-                    <DatePicker SelectedDateChanged="dpToDate_SelectedDateChanged" x:Name="dpToDate2" Width="150"/>
+                    <DatePicker SelectedDateChanged="dpToDate_SelectedDateChanged2" x:Name="dpToDate2" Width="150"/>
                 </WrapPanel>
                 <ListView x:Name="lvDisplay2" Margin="0,0,0,20" Height="200">
                     <ListView.View>
