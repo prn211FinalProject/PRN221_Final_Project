@@ -111,36 +111,55 @@ namespace LibraryAdminSite
         private void FilterThongKe()
         {
             var cateThongKe = LMS_PRN221Context.Ins.BookTitles
-        .Include(x => x.CidNavigation)
-        .Include(x => x.BookCopies)
-            .ThenInclude(x => x.Oids) // Liên kết với BorrowInformations
-        .Where(x => x.Hide == false && x.CidNavigation.Status == true)
-        .AsQueryable();
+      .Include(x => x.CidNavigation)
+      .Include(x => x.BookCopies)
+      .ThenInclude(x => x.Oids)
+      .Where(x => x.Hide == false && x.CidNavigation.Status == true)
+      .AsQueryable();
 
-            // Áp dụng bộ lọc theo BorrowDate từ dpFromDate2
-            if (dpFromDate2.SelectedDate.HasValue)
+            if (dpFromDate.SelectedDate.HasValue)
             {
-                DateTime fromDate = dpFromDate2.SelectedDate.Value;
-                cateThongKe = cateThongKe.Where(x => x.BookCopies
-                    .Any(bc => bc.Oids
-                        .Any(bi => bi.BorrowDate >= fromDate))); // Lọc theo BorrowDate từ BorrowInformations
+                DateTime fromDate = dpFromDate.SelectedDate.Value;
+                cateThongKe = cateThongKe
+                    .Where(x => x.BookCopies
+                        .Any(bc => bc.Oids
+                            .Any(bi => bi.BorrowDate >= fromDate)));
             }
 
-            // Áp dụng bộ lọc theo BorrowDate từ dpToDate2
-            if (dpToDate2.SelectedDate.HasValue)
+            if (dpToDate.SelectedDate.HasValue)
             {
-                DateTime toDate = dpToDate2.SelectedDate.Value;
-                cateThongKe = cateThongKe.Where(x => x.BookCopies
-                    .Any(bc => bc.Oids
-                        .Any(bi => bi.BorrowDate <= toDate))); // Lọc theo BorrowDate từ BorrowInformations
+                DateTime toDate = dpToDate.SelectedDate.Value;
+                cateThongKe = cateThongKe
+                    .Where(x => x.BookCopies
+                        .Any(bc => bc.Oids
+                            .Any(bi => bi.BorrowDate <= toDate)));
             }
 
-            // Cập nhật PieSeriesCollection với dữ liệu đã lọc
-            if (PieSeriesCollection != null) // Kiểm tra nếu khác null
+            var filteredStudents = cateThongKe.Select(x => new
+            {
+                Id = x.CidNavigation.Id,
+                CName = x.CidNavigation.Cname,
+                NotAvailableCount = x.BookCopies.Count(bc => bc.Status == false),
+                Rate = totalNotAvailableCount > 0
+                    ? Math.Round(((double)x.BookCopies.Count(bc => bc.Status == false) / totalNotAvailableCount) * 100, 2)
+                    : 0
+            }).ToList();
+
+            lvDisplay.ItemsSource = filteredStudents;
+
+            if (PieSeriesCollection != null)
             {
                 PieSeriesCollection.Clear();
             }
-
+            foreach (var item in filteredStudents)
+            {
+                PieSeriesCollection.Add(new PieSeries
+                {
+                    Title = item.CName,
+                    Values = new ChartValues<double> { item.Rate },
+                    DataLabels = true
+                });
+            }
         }
 
         private void dpToDate_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
