@@ -43,9 +43,10 @@ namespace LibraryCustomerSite.Pages.Books
             BorrowInformation = new BorrowInformation
             {
                 Uid = userId,
+                BorrowDate = DateTime.Now,
                 CheckoutDate = DateTime.Now,
-                DueDate = DateTime.Now.AddDays(7), // Giả sử thời hạn mượn sách là 14 ngày
-                Status = true,
+                DueDate = DateTime.Now.AddDays(7), // Giả sử thời hạn mượn sách là 7 ngày
+                Status = 1,
             };
 
             BookName = book.Bname;
@@ -73,7 +74,7 @@ namespace LibraryCustomerSite.Pages.Books
             }
 
             BorrowInformation.Uid = userId;
-            BorrowInformation.Status = true; 
+            BorrowInformation.Status = 1; 
 
             // Lấy ID lớn nhất hiện có trong bảng BookCopies
             //var lastBookCopy = _context.BookCopies.OrderByDescending(bc => bc.Id).FirstOrDefault();

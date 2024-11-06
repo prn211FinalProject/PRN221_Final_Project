@@ -7,14 +7,8 @@ namespace LibraryCustomerSite.Models
 {
     public partial class LMS_PRN221Context : DbContext
     {
-        public static LMS_PRN221Context Ins = new LMS_PRN221Context();
-
         public LMS_PRN221Context()
         {
-            if (Ins == null)
-            {
-                Ins = this;
-            }
         }
 
         public LMS_PRN221Context(DbContextOptions<LMS_PRN221Context> options)
@@ -35,14 +29,11 @@ namespace LibraryCustomerSite.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            //            if (!optionsBuilder.IsConfigured)
-            //            {
-            //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-            //                optionsBuilder.UseSqlServer("Data Source=HUNGNGO\\HUNGNGO;Initial Catalog=PRN211_1; Trusted_Connection=SSPI;Encrypt=false;TrustServerCertificate=true");
-            //            }
-            var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
-
-            if (!optionsBuilder.IsConfigured) { optionsBuilder.UseSqlServer(config.GetConnectionString("value")); }
+            if (!optionsBuilder.IsConfigured)
+            {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                optionsBuilder.UseSqlServer("Data Source=HUNGNGO\\HUNGNGO;Initial Catalog=LMS_PRN221; Trusted_Connection=SSPI;Encrypt=false;TrustServerCertificate=true");
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -50,7 +41,7 @@ namespace LibraryCustomerSite.Models
             modelBuilder.Entity<Blog>(entity =>
             {
                 entity.HasKey(e => e.Bid)
-                    .HasName("PK__Blog__C6D111C9E02D2A51");
+                    .HasName("PK__Blog__C6D111C9156FD8F9");
 
                 entity.ToTable("Blog");
 
@@ -114,13 +105,17 @@ namespace LibraryCustomerSite.Models
             modelBuilder.Entity<BorrowInformation>(entity =>
             {
                 entity.HasKey(e => e.Oid)
-                    .HasName("PK__BorrowIn__CB3E4F314B12AC52");
+                    .HasName("PK__BorrowIn__CB3E4F31B483400D");
 
                 entity.ToTable("BorrowInformation");
 
                 entity.Property(e => e.BorrowDate).HasColumnType("datetime");
 
+                entity.Property(e => e.CheckoutDate).HasColumnType("datetime");
+
                 entity.Property(e => e.DueDate).HasColumnType("datetime");
+
+                entity.Property(e => e.ReturnDate).HasColumnType("datetime");
 
                 entity.Property(e => e.TotalAmount).HasColumnType("decimal(10, 2)");
 
@@ -137,7 +132,7 @@ namespace LibraryCustomerSite.Models
                         r => r.HasOne<BorrowInformation>().WithMany().HasForeignKey("Oid").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK__BorrowDetai__Oid__4316F928"),
                         j =>
                         {
-                            j.HasKey("Oid", "Bid").HasName("PK__BorrowDe__47535E2D556A768F");
+                            j.HasKey("Oid", "Bid").HasName("PK__BorrowDe__47535E2DDCDEEF29");
 
                             j.ToTable("BorrowDetail");
 
@@ -196,11 +191,11 @@ namespace LibraryCustomerSite.Models
             modelBuilder.Entity<User>(entity =>
             {
                 entity.HasKey(e => e.Uid)
-                    .HasName("PK__User__C5B69A4A115E9514");
+                    .HasName("PK__User__C5B69A4A8FF26A1B");
 
                 entity.ToTable("User");
 
-                entity.HasIndex(e => e.Email, "UQ__User__A9D10534EA466FD2")
+                entity.HasIndex(e => e.Email, "UQ__User__A9D105344009F57C")
                     .IsUnique();
 
                 entity.Property(e => e.Email).HasMaxLength(255);
@@ -240,7 +235,7 @@ namespace LibraryCustomerSite.Models
                         r => r.HasOne<Wishlist>().WithMany().HasForeignKey("Wid").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK__WishlistIte__WId__3C69FB99"),
                         j =>
                         {
-                            j.HasKey("Wid", "Bid").HasName("PK__Wishlist__D75A85F5C82E816D");
+                            j.HasKey("Wid", "Bid").HasName("PK__Wishlist__D75A85F56BB8531A");
 
                             j.ToTable("WishlistItem");
 

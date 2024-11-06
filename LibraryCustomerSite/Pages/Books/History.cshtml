@@ -1,0 +1,94 @@
+﻿@page
+@model LibraryCustomerSite.Pages.Books.HistoryModel
+@{
+    ViewData["Title"] = "Lịch Sử mượn";
+}
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Table 06</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,100,300,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/style1.css">
+</head>
+<body>
+    <section class="ftco-section">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-6 text-center mb-4">
+                    <h2 class="heading-section">Table #06</h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <h3 class="h5 mb-4 text-center">Table Accordion</h3>
+                    <div class="table-wrap">
+                        <table class="table">
+                            <thead class="thead-primary">
+                                <tr>
+                                    <th>&nbsp;</th>
+                                    <th>&nbsp;</th>
+                                    <th>Tác Giả</th>
+                                    <th>Ngày mượn</th>
+                                    <th>Ngày trả sách</th>
+                                    <th>Trạng thái</th>
+                                    <th>&nbsp;</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var bi in Model.BorrowInformation)
+                                {
+                                    <tr class="alert" role="alert">
+                                        <td>
+                                            <label class="checkbox-wrap checkbox-primary">
+                                                <input type="checkbox" checked>
+                                                <span class="checkmark"></span>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <div class="email">
+                                                <span></span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="email">
+                                                <span>@Model.UserName</span>
+                                            </div>
+                                        </td>
+                                        <td>@bi.BorrowDate</td> 
+                                        <td>@bi.DueDate</td>
+
+                                        @if (bi.ReturnDate > bi.DueDate)
+                                        {
+                                            <td><span style="color:red">Quá hạn</span></td>
+                                            }else if(bi.ReturnDate == null)
+                                        {
+                                            <td><span class="">Chưa trả</span></td>
+                                        }else if(bi.ReturnDate <= bi.DueDate)
+                                        {
+                                            <td><span class="text-success">Đã trả</span></td>
+                                        }
+                                        <td>
+                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                <span aria-hidden="true"><i class="fa fa-close"></i></span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/popper.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

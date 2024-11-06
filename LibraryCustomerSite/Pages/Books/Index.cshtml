@@ -265,36 +265,78 @@
             window.location.href = '/Books/SignUp'; // Chuyển hướng đến trang đăng nhập
         }, sessionTimeout);
     </script>
+    <!-- bootstrap css -->
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    <!-- style css -->
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <!-- Responsive-->
+    <link rel="stylesheet" href="css/responsive.css">
+    <!-- fevicon -->
+    <link rel="icon" href="images/fevicon.png" type="image/gif" />
+    <!-- Scrollbar Custom CSS -->
+    <link rel="stylesheet" href="css/jquery.mCustomScrollbar.min.css">
+    <!-- Tweaks for older IEs-->
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
+    <!-- owl stylesheets -->
+    <link rel="stylesheet" href="css/owl.carousel.min.css">
+    <link rel="stylesoeet" href="css/owl.theme.default.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen">
 </head>
 <body>
     <!-- Top Navigation -->
-    <div class="top-nav">
-        <div class="container top-nav__container">
-            <div class="top-nav__links">
-                <div class="cart-icon">
-                    <a href="@(string.IsNullOrEmpty(HttpContext.Session.GetString("UserEmail")) ? "/Books/SignUp" : "/Books/WishList")">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z" />
-                    </svg>
-                    </a>
+    <!-- header section start -->
+    <div class="header_section">
+        <div class="container-fluid header_main">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light" style="margin-bottom:1rem">
+                <a class="logo" href="/Books"><img style="width: 15%" src="~/images/logo.jpg"></a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent" style="width: 37rem;">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Books">Trang chủ</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Books/Blog">Blog</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="@(string.IsNullOrEmpty(HttpContext.Session.GetString("UserEmail")) ? "/Books/SignUp" : "/Books/WishList")">
+                                WishList
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            @{
+                                var userId = HttpContext.Session.GetInt32("UserId");
+                                if (userId != null)
+                                {
+                                    <a class="nav-link" href="/Books/History?id=@userId">Lịch Sử</a>
+                                }
+                                else
+                                {
+                                    <a class="nav-link" href="/Books/SignUp">Lịch Sử</a>
+                                }
+                            }
+                        </li>
+                        <li class="nav-item">
+                            @if (string.IsNullOrEmpty(HttpContext.Session.GetString("UserEmail")))
+                            {
+                                <a class="nav-link" href="/Books/SignUp">Đăng Nhập</a>
+                            }
+                            else
+                            {
+                                <form id="logoutForm" method="post" asp-page-handler="Logout" style="display: none;">
+                                </form>
+                                <a class="nav-link" href="javascript:void(0);" onclick="document.getElementById('logoutForm').submit();">Đăng Xuất</a>
+                                @* <span>Xin chào, @HttpContext.Session.GetString("UserEmail")</span>  *@
+                            }
+                        </li>
+                    </ul>
                 </div>
-                @if (string.IsNullOrEmpty(HttpContext.Session.GetString("UserEmail")))
-                {
-                    <a href="/Books/SignUp">Đăng Ký</a>
-                    <a href="/Books/SignUp">Đăng Nhập</a>
-                }
-                else
-                {
-                    <span>Xin chào, @HttpContext.Session.GetString("UserEmail")</span>
-                    <form method="post" asp-page-handler="Logout" style="display: inline;">
-                        @* <input type="hidden" name="FormAction" value="Logout" /> *@
-                        <button class="btn btn-primary" type="submit">Đăng Xuất</button>
-                    </form>
-                }
-            </div>
-            
+            </nav>
         </div>
     </div>
+    
     @if (TempData["SuccessMessage"] != null)
     {
         <div class="alert alert-success">
@@ -303,7 +345,7 @@
     }
     <!-- Main Content -->
     <main class="main">
-        <div class="container main__container">
+        <div class="container main__container" style="    margin-top: 10rem;">
             <!-- Sidebar -->
             <aside class="sidebar">
                 <h2 class="sidebar__title">BỘ LỌC TÌM KIẾM</h2>
