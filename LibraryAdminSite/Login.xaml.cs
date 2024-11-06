@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LibraryAdminSite.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,6 +23,31 @@ namespace LibraryAdminSite
         public Login()
         {
             InitializeComponent();
+        }
+
+        private void btnLogin_Click(object sender, RoutedEventArgs e)
+        {
+            if (txtEmail != null && txtPass != null)
+            {
+                string email = txtEmail.Text;
+                string pass = txtPass.Password;
+                var user = LMS_PRN221Context.Ins.Users.FirstOrDefault(x => x.Email.Equals(email));
+                if (user != null)
+                {
+                    if (user.RoleId == 1)
+                    {
+                        if (user.Password == pass)
+                        {
+                            MainWindow mainWindow = new MainWindow();
+                            mainWindow.Show();
+                            this.Close();
+                            return;
+                        }
+                    }
+                }
+
+                    MessageBox.Show("Email hoặc mật khẩu không chính xác. Vui lòng thử lại.", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
     }
 }

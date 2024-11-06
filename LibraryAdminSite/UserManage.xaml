@@ -58,7 +58,11 @@
                 <Border Background="White" Margin="20" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" BorderBrush="#bdc3c7" BorderThickness="1" Padding="10" CornerRadius="10">
                     <StackPanel>
                         <TextBlock x:Name="txtTitle" Text="Quản lý người dùng" HorizontalAlignment="Center" FontSize="25"></TextBlock>
-                        <TextBox x:Name="txtSearch" Text="Nhập tên người dùng..." Margin="0,0,0,20"/>
+                        <WrapPanel Margin="0,20,0,20">
+                            
+                        <Label Content="Tìm kiếm:"/>
+                        <TextBox x:Name="txtSearch" Width="271" SelectionChanged="txtSearch_SelectionChanged"/>
+                        </WrapPanel>
 
                         <ListView Name="lvDisplay" Margin="0,0,0,20" SelectionChanged="lvDisplay_SelectionChanged">
                             <ListView.View>

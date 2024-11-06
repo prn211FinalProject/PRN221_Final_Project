@@ -7,14 +7,8 @@ namespace LibraryCustomerSite.Models
 {
     public partial class LMS_PRN221Context : DbContext
     {
-        public static LMS_PRN221Context Ins = new LMS_PRN221Context();
-
         public LMS_PRN221Context()
         {
-            if (Ins == null)
-            {
-                Ins = this;
-            }
         }
 
         public LMS_PRN221Context(DbContextOptions<LMS_PRN221Context> options)
@@ -35,11 +29,6 @@ namespace LibraryCustomerSite.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            //            if (!optionsBuilder.IsConfigured)
-            //            {
-            //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-            //                optionsBuilder.UseSqlServer("Data Source=HUNGNGO\\HUNGNGO;Initial Catalog=PRN211_1; Trusted_Connection=SSPI;Encrypt=false;TrustServerCertificate=true");
-            //            }
             var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
 
             if (!optionsBuilder.IsConfigured) { optionsBuilder.UseSqlServer(config.GetConnectionString("value")); }
@@ -50,7 +39,7 @@ namespace LibraryCustomerSite.Models
             modelBuilder.Entity<Blog>(entity =>
             {
                 entity.HasKey(e => e.Bid)
-                    .HasName("PK__Blog__C6D111C9E02D2A51");
+                    .HasName("PK__Blog__C6D111C94B0FC716");
 
                 entity.ToTable("Blog");
 
@@ -61,7 +50,7 @@ namespace LibraryCustomerSite.Models
                 entity.HasOne(d => d.UidNavigation)
                     .WithMany(p => p.Blogs)
                     .HasForeignKey(d => d.Uid)
-                    .HasConstraintName("FK__Blog__Uid__46E78A0C");
+                    .HasConstraintName("FK__Blog__Uid__59FA5E80");
             });
 
             modelBuilder.Entity<BookCopy>(entity =>
@@ -77,7 +66,7 @@ namespace LibraryCustomerSite.Models
                 entity.HasOne(d => d.BookTitle)
                     .WithMany(p => p.BookCopies)
                     .HasForeignKey(d => d.BookTitleId)
-                    .HasConstraintName("FK__BookCopy__BookTi__32E0915F");
+                    .HasConstraintName("FK__BookCopy__BookTi__45F365D3");
             });
 
             modelBuilder.Entity<BookTitle>(entity =>
@@ -103,41 +92,45 @@ namespace LibraryCustomerSite.Models
                 entity.HasOne(d => d.CidNavigation)
                     .WithMany(p => p.BookTitles)
                     .HasForeignKey(d => d.Cid)
-                    .HasConstraintName("FK__BookTitle__CId__2E1BDC42");
+                    .HasConstraintName("FK__BookTitle__CId__412EB0B6");
 
                 entity.HasOne(d => d.Publisher)
                     .WithMany(p => p.BookTitles)
                     .HasForeignKey(d => d.PublisherId)
-                    .HasConstraintName("FK__BookTitle__Publi__300424B4");
+                    .HasConstraintName("FK__BookTitle__Publi__4316F928");
             });
 
             modelBuilder.Entity<BorrowInformation>(entity =>
             {
                 entity.HasKey(e => e.Oid)
-                    .HasName("PK__BorrowIn__CB3E4F314B12AC52");
+                    .HasName("PK__BorrowIn__CB3E4F31CC88F981");
 
                 entity.ToTable("BorrowInformation");
 
                 entity.Property(e => e.BorrowDate).HasColumnType("datetime");
 
+                entity.Property(e => e.CheckoutDate).HasColumnType("datetime");
+
                 entity.Property(e => e.DueDate).HasColumnType("datetime");
+
+                entity.Property(e => e.ReturnDate).HasColumnType("datetime");
 
                 entity.Property(e => e.TotalAmount).HasColumnType("decimal(10, 2)");
 
                 entity.HasOne(d => d.UidNavigation)
                     .WithMany(p => p.BorrowInformations)
                     .HasForeignKey(d => d.Uid)
-                    .HasConstraintName("FK__BorrowInfor__Uid__403A8C7D");
+                    .HasConstraintName("FK__BorrowInfor__Uid__534D60F1");
 
                 entity.HasMany(d => d.Bids)
                     .WithMany(p => p.Oids)
                     .UsingEntity<Dictionary<string, object>>(
                         "BorrowDetail",
-                        l => l.HasOne<BookCopy>().WithMany().HasForeignKey("Bid").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK__BorrowDetai__Bid__440B1D61"),
-                        r => r.HasOne<BorrowInformation>().WithMany().HasForeignKey("Oid").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK__BorrowDetai__Oid__4316F928"),
+                        l => l.HasOne<BookCopy>().WithMany().HasForeignKey("Bid").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK__BorrowDetai__Bid__571DF1D5"),
+                        r => r.HasOne<BorrowInformation>().WithMany().HasForeignKey("Oid").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK__BorrowDetai__Oid__5629CD9C"),
                         j =>
                         {
-                            j.HasKey("Oid", "Bid").HasName("PK__BorrowDe__47535E2D556A768F");
+                            j.HasKey("Oid", "Bid").HasName("PK__BorrowDe__47535E2D6C560374");
 
                             j.ToTable("BorrowDetail");
 
@@ -163,12 +156,12 @@ namespace LibraryCustomerSite.Models
                 entity.HasOne(d => d.BidNavigation)
                     .WithMany(p => p.Feedbacks)
                     .HasForeignKey(d => d.Bid)
-                    .HasConstraintName("FK__Feedback__Bid__35BCFE0A");
+                    .HasConstraintName("FK__Feedback__Bid__48CFD27E");
 
                 entity.HasOne(d => d.UidNavigation)
                     .WithMany(p => p.Feedbacks)
                     .HasForeignKey(d => d.Uid)
-                    .HasConstraintName("FK__Feedback__Uid__36B12243");
+                    .HasConstraintName("FK__Feedback__Uid__49C3F6B7");
             });
 
             modelBuilder.Entity<Publisher>(entity =>
@@ -196,11 +189,11 @@ namespace LibraryCustomerSite.Models
             modelBuilder.Entity<User>(entity =>
             {
                 entity.HasKey(e => e.Uid)
-                    .HasName("PK__User__C5B69A4A115E9514");
+                    .HasName("PK__User__C5B69A4AF284BAF6");
 
                 entity.ToTable("User");
 
-                entity.HasIndex(e => e.Email, "UQ__User__A9D10534EA466FD2")
+                entity.HasIndex(e => e.Email, "UQ__User__A9D105349423F8FA")
                     .IsUnique();
 
                 entity.Property(e => e.Email).HasMaxLength(255);
@@ -220,7 +213,7 @@ namespace LibraryCustomerSite.Models
                 entity.HasOne(d => d.Role)
                     .WithMany(p => p.Users)
                     .HasForeignKey(d => d.RoleId)
-                    .HasConstraintName("FK__User__RoleId__276EDEB3");
+                    .HasConstraintName("FK__User__RoleId__3A81B327");
             });
 
             modelBuilder.Entity<Wishlist>(entity =>
@@ -230,17 +223,17 @@ namespace LibraryCustomerSite.Models
                 entity.HasOne(d => d.UidNavigation)
                     .WithMany(p => p.Wishlists)
                     .HasForeignKey(d => d.Uid)
-                    .HasConstraintName("FK__Wishlist__Uid__398D8EEE");
+                    .HasConstraintName("FK__Wishlist__Uid__4CA06362");
 
                 entity.HasMany(d => d.Bids)
                     .WithMany(p => p.Wids)
                     .UsingEntity<Dictionary<string, object>>(
                         "WishlistItem",
-                        l => l.HasOne<BookCopy>().WithMany().HasForeignKey("Bid").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK__WishlistIte__BId__3D5E1FD2"),
-                        r => r.HasOne<Wishlist>().WithMany().HasForeignKey("Wid").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK__WishlistIte__WId__3C69FB99"),
+                        l => l.HasOne<BookCopy>().WithMany().HasForeignKey("Bid").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK__WishlistIte__BId__5070F446"),
+                        r => r.HasOne<Wishlist>().WithMany().HasForeignKey("Wid").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK__WishlistIte__WId__4F7CD00D"),
                         j =>
                         {
-                            j.HasKey("Wid", "Bid").HasName("PK__Wishlist__D75A85F5C82E816D");
+                            j.HasKey("Wid", "Bid").HasName("PK__Wishlist__D75A85F56E13CFE3");
 
                             j.ToTable("WishlistItem");
 

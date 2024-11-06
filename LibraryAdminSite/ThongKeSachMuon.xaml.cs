@@ -25,15 +25,25 @@ namespace LibraryAdminSite
 
         private void LoadCateThongKe()
         {
+            // Lọc các bản sao sách không có sẵn
             totalNotAvailableCount = LMS_PRN221Context.Ins.BookCopies
-                .Include(x => x.BookTitle).Where(x => x.BookTitle.Hide == false)
+                .Include(x => x.BookTitle)
+                .Where(x => x.BookTitle.Hide == false)
                 .Count(bc => bc.Status == false);
 
-            // Bước 1: Tính số lần mượn của từng sách
+            // Lọc các sách được mượn trong tháng này
+            var currentMonth = DateTime.Now.Month;
+            var currentYear = DateTime.Now.Year;
+
             var bookThongKe = LMS_PRN221Context.Ins.BookTitles
                 .Include(x => x.CidNavigation)
                 .Include(x => x.BookCopies)
                 .Where(x => x.Hide == false && x.CidNavigation.Status == true)
+                .Where(x => x.BookCopies
+                    .Any(bc => bc.Oids
+                        .Any(borrowInfo => borrowInfo.BorrowDate.Value.Month == currentMonth
+                                        && borrowInfo.BorrowDate.Value.Year == currentYear))
+                )
                 .Select(x => new
                 {
                     Id = x.CidNavigation.Id,
@@ -42,7 +52,7 @@ namespace LibraryAdminSite
                 })
                 .ToList();
 
-            // Bước 2: Nhóm theo thể loại và tính tổng số lần mượn cho từng thể loại
+            // Tính toán thống kê theo từng thể loại
             var cateThongKe = bookThongKe
                 .GroupBy(x => new { x.Id, x.CName })
                 .Select(g => new
@@ -56,10 +66,11 @@ namespace LibraryAdminSite
                 })
                 .ToList();
 
+            // Hiển thị kết quả trên ListView
             lvDisplay.ItemsSource = cateThongKe;
 
-            // Cập nhật PieSeriesCollection cho biểu đồ
-            if (PieSeriesCollection != null) // Kiểm tra nếu khác null
+            // Cập nhật dữ liệu cho PieChart
+            if (PieSeriesCollection != null)
             {
                 PieSeriesCollection.Clear();
             }
@@ -100,48 +111,36 @@ namespace LibraryAdminSite
         private void FilterThongKe()
         {
             var cateThongKe = LMS_PRN221Context.Ins.BookTitles
-                .Include(x => x.CidNavigation)
-                .Include(x => x.BookCopies)
-                .ThenInclude(x => x.Oids)
-                .Where(x => x.Hide == false && x.CidNavigation.Status == true).AsQueryable();
+        .Include(x => x.CidNavigation)
+        .Include(x => x.BookCopies)
+            .ThenInclude(x => x.Oids) // Liên kết với BorrowInformations
+        .Where(x => x.Hide == false && x.CidNavigation.Status == true)
+        .AsQueryable();
 
-            if (dpFromDate.SelectedDate.HasValue)
+            // Áp dụng bộ lọc theo BorrowDate từ dpFromDate2
+            if (dpFromDate2.SelectedDate.HasValue)
             {
-                DateTime fromDate = dpFromDate.SelectedDate.Value;
-                cateThongKe = cateThongKe.Where(x => x.PublishDate >= fromDate);
+                DateTime fromDate = dpFromDate2.SelectedDate.Value;
+                cateThongKe = cateThongKe.Where(x => x.BookCopies
+                    .Any(bc => bc.Oids
+                        .Any(bi => bi.BorrowDate >= fromDate))); // Lọc theo BorrowDate từ BorrowInformations
             }
-            if (dpToDate.SelectedDate.HasValue)
+
+            // Áp dụng bộ lọc theo BorrowDate từ dpToDate2
+            if (dpToDate2.SelectedDate.HasValue)
             {
-                DateTime toDate = dpToDate.SelectedDate.Value;
-                cateThongKe = cateThongKe.Where(x => x.PublishDate <= toDate);
+                DateTime toDate = dpToDate2.SelectedDate.Value;
+                cateThongKe = cateThongKe.Where(x => x.BookCopies
+                    .Any(bc => bc.Oids
+                        .Any(bi => bi.BorrowDate <= toDate))); // Lọc theo BorrowDate từ BorrowInformations
             }
-
-            var filteredStudents = cateThongKe.Select(x => new
-            {
-                Id = x.CidNavigation.Id,
-                CName = x.CidNavigation.Cname,
-                NotAvailableCount = x.BookCopies.Count(bc => bc.Status == false),
-                Rate = totalNotAvailableCount > 0
-                    ? Math.Round(((double)x.BookCopies.Count(bc => bc.Status == false) / totalNotAvailableCount) * 100, 2)
-                    : 0
-            }).ToList();
-
-            lvDisplay.ItemsSource = filteredStudents;
 
             // Cập nhật PieSeriesCollection với dữ liệu đã lọc
             if (PieSeriesCollection != null) // Kiểm tra nếu khác null
             {
                 PieSeriesCollection.Clear();
             }
-            foreach (var item in filteredStudents)
-            {
-                PieSeriesCollection.Add(new PieSeries
-                {
-                    Title = item.CName,
-                    Values = new ChartValues<double> { item.Rate },
-                    DataLabels = true
-                });
-            }
+
         }
 
         private void dpToDate_SelectedDateChanged(object sender, SelectionChangedEventArgs e)

@@ -45,7 +45,7 @@ namespace LibraryCustomerSite.Pages.Books
                 Uid = userId,
                 CheckoutDate = DateTime.Now,
                 DueDate = DateTime.Now.AddDays(7), // Giả sử thời hạn mượn sách là 14 ngày
-                Status = true,
+                Status = 2,
             };
 
             BookName = book.Bname;
@@ -73,7 +73,7 @@ namespace LibraryCustomerSite.Pages.Books
             }
 
             BorrowInformation.Uid = userId;
-            BorrowInformation.Status = true; 
+            BorrowInformation.Status = 2; 
 
             // Lấy ID lớn nhất hiện có trong bảng BookCopies
             //var lastBookCopy = _context.BookCopies.OrderByDescending(bc => bc.Id).FirstOrDefault();
@@ -97,7 +97,7 @@ namespace LibraryCustomerSite.Pages.Books
             var bookCopy = _context.BookCopies.Where(x=>x.Status == true).FirstOrDefault(x => x.Id.Contains(newId));
             if (bookCopy != null)
             {
-                bookCopy.Status = false;
+                bookCopy.Status = true;
             }
 
             // Thêm bản sao sách vào thông tin mượn

@@ -1,9 +1,11 @@
 ﻿using LibraryAdminSite.Models;
+using LibraryAdminSite.Services;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -35,6 +37,9 @@ namespace LibraryAdminSite
             cbxFilterStatus.Items.Add("Tất cả");
             cbxFilterStatus.Items.Add("Đã mượn");
             cbxFilterStatus.Items.Add("Chưa mượn");
+            cbxFilterStatus.Items.Add("Đã trả");
+            cbxFilterStatus.Items.Add("Trễ hạn");
+            LoadcboChangeStatus();
         }
         private void LoadBorrowInfor()
         {
@@ -47,16 +52,26 @@ namespace LibraryAdminSite
                 CheckoutDate = x.CheckoutDate,
                 BorrowDate = x.BorrowDate,
                 DueDate = x.DueDate,
-                Status = x.Status == false ? "Đã mượn" : "Chưa mượn",
+                ReturnDate = x.ReturnDate,
+                Status = x.Status == 1 ? "Đã mượn" : (x.Status == 2 ? "Chưa mượn" : (x.Status == 3 ? "Đã trả" : "Trễ hạn")),
                 Phone = x.UidNavigation.Phone,
-                bookCopy = x.Bids
+                bookCopy = x.Bids,
+                IsOverDue = x.DueDate < DateTime.Now ? "true" : "false",
             }).ToList();
             lvDisplay.ItemsSource = borrow;
         }
         private ObservableCollection<object> bookDisplayList = new ObservableCollection<object>();
+        private void LoadcboChangeStatus()
+        {
+            cbxChangeStatus.Items.Clear();
+            cbxChangeStatus.Items.Add("Đã mượn");
+            cbxChangeStatus.Items.Add("Chưa mượn");
+            cbxChangeStatus.Items.Add("Đã trả");
+            cbxChangeStatus.Items.Add("Trễ hạn");
+        }
         private void lvDisplay_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
+            LoadcboChangeStatus();
             bookDisplayList.Clear();
             var selectedItem = lvDisplay.SelectedItem;
             if (selectedItem != null)
@@ -68,17 +83,29 @@ namespace LibraryAdminSite
                     LoadBook(bid);
                 }
                 var status = (string)selectedItem.GetType().GetProperty("Status").GetValue(selectedItem);
-                rdbBorrowed.IsChecked = status.Equals("Đã mượn");
-                rdbNotBorrow.IsChecked = status.Equals("Chưa mượn");
-                if (status.Equals("Đã mượn"))
+                switch (status)
                 {
-                    rdbNotBorrow.IsEnabled = false;
-                    rdbBorrowed.IsEnabled = false;
-                    stackChangeStatus.Visibility = Visibility.Hidden;
-                }
-                else
-                {
-                    stackChangeStatus.Visibility = Visibility.Visible;
+                    case "Đã mượn":
+                        cbxChangeStatus.Items.Remove("Chưa mượn");
+                        cbxChangeStatus.Text = status;
+                        break;
+                    case "Chưa mượn":
+                        cbxChangeStatus.Items.Remove("Đã trả");
+                        cbxChangeStatus.Items.Remove("Trễ hạn");
+                        cbxChangeStatus.Text = status;
+                        break;
+                    case "Đã trả":
+                        cbxChangeStatus.Items.Remove("Chưa mượn");
+                        cbxChangeStatus.Items.Remove("Trễ hạn");
+                        cbxChangeStatus.Items.Remove("Đã mượn");
+                        cbxChangeStatus.Text = status;
+                        break;
+                    case "Trễ hạn":
+                        cbxChangeStatus.Items.Remove("Chưa mượn");
+                        cbxChangeStatus.Items.Remove("Đã trả");
+                        cbxChangeStatus.Items.Remove("Đã mượn");
+                        cbxChangeStatus.Text = status;
+                        break;
                 }
             }
         }
@@ -111,16 +138,65 @@ namespace LibraryAdminSite
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-
-            var selectedItem = lvDisplay.SelectedItem;
-            if (selectedItem != null)
+            try
             {
-                var borrowId = (int)selectedItem.GetType().GetProperty("Id").GetValue(selectedItem);
-                var borrow = LMS_PRN221Context.Ins.BorrowInformations.FirstOrDefault(x => x.Oid == borrowId);
-                borrow.Status = rdbNotBorrow.IsChecked;
-                borrow.BorrowDate = DateTime.Now;
-                LMS_PRN221Context.Ins.SaveChanges();
-                LoadBorrowInfor();
+
+                var selectedItem = lvDisplay.SelectedItem;
+                if (selectedItem != null)
+                {
+                    var borrowId = (int)selectedItem.GetType().GetProperty("Id").GetValue(selectedItem);
+                    var borrow = LMS_PRN221Context.Ins.BorrowInformations.Include(x => x.Bids).FirstOrDefault(x => x.Oid == borrowId);
+                    var statusUpdate = cbxChangeStatus.SelectedItem;
+                    switch (statusUpdate)
+                    {
+                        case "Đã mượn":
+                            if (borrow.Status != 1)
+                            {
+                                borrow.BorrowDate = DateTime.Now;
+                                borrow.DueDate = DateTime.Now.AddDays(7);
+                                borrow.Status = 1;
+                                MessageBox.Show("Cập nhật thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+                            }
+                            break;
+                        case "Đã trả":
+                            if (borrow.Status != 2)
+                            {
+                                foreach (var bid in borrow.Bids)
+                                {
+                                    bid.Status = false;
+                                }
+                                borrow.ReturnDate = DateTime.Now;
+                                borrow.Status = 3;
+                                MessageBox.Show("Cập nhật thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                            }
+                            break;
+                        case "Trễ hạn":
+                            if (borrow.Status != 4)
+                            {
+                                var user = LMS_PRN221Context.Ins.Users.FirstOrDefault(x => x.Uid == borrow.Uid);
+                                if (user != null)
+                                {
+                                    //var book = LMS_PRN221Context.Ins.BorrowInformations.Include(b => b.Bids)
+                                    // .ThenInclude(copy => copy.BookTitle)
+                                    // .FirstOrDefault(x => x.Oid == borrowId);
+                                    var bookNames = borrow.Bids.Select(copy => copy.BookTitle.Bname).ToList();
+                                    SendEmailService sendEmail = new SendEmailService();
+                                    sendEmail.SendEmail(user.Email, "Thông báo trễ hạn trả sách", "Thư viện xin thông báo bạn đã quá hạn trả sách." +
+                                        "Bạn vui lòng đến thư viện để trả lại sách: "+bookNames);
+                                    MessageBox.Show("Thông báo đã được gửi đến người dùng thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+                                }
+                                borrow.Status = 4;
+                            }
+                            break;
+                    }
+                    LMS_PRN221Context.Ins.SaveChanges();
+                    LoadBorrowInfor();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
 
 
@@ -139,7 +215,7 @@ namespace LibraryAdminSite
             }
             if (dpFromDate.SelectedDate.HasValue)
             {
-                query = query.Where(x=> x.BorrowDate >= dpFromDate.SelectedDate.Value
+                query = query.Where(x => x.BorrowDate >= dpFromDate.SelectedDate.Value
                     || x.DueDate >= dpFromDate.SelectedDate.Value
                     || x.CheckoutDate >= dpFromDate.SelectedDate.Value);
             }
@@ -149,14 +225,29 @@ namespace LibraryAdminSite
                     || x.DueDate <= dpToDate.SelectedDate.Value
                     || x.CheckoutDate <= dpToDate.SelectedDate.Value);
             }
-            if(cbxFilterStatus.SelectedIndex != null)
+            if (cbxFilterStatus.SelectedIndex != null)
             {
-                if(!cbxFilterStatus.SelectedItem.Equals("Tất cả"))
+                var selectedStatus = cbxFilterStatus.SelectedItem;
+                if (selectedStatus.Equals("Tất cả"))
                 {
-                    var selectedStatus = cbxFilterStatus.SelectedItem.Equals("Chưa mượn") ? true : false;
-                    query = query.Where(x => x.Status == selectedStatus);
+                    query = query;
                 }
-
+                if (selectedStatus.Equals("Đã mượn"))
+                {
+                    query = query.Where(x => x.Status == 1);
+                }
+                if (selectedStatus.Equals("Chưa mượn"))
+                {
+                    query = query.Where(x => x.Status == 2);
+                }
+                if (selectedStatus.Equals("Đã trả"))
+                {
+                    query = query.Where(x => x.Status == 3);
+                }
+                if (selectedStatus.Equals("Trễ hạn"))
+                {
+                    query = query.Where(x => x.Status == 4);
+                }
             }
             var query1 = query.Select(x => new
             {
@@ -167,9 +258,11 @@ namespace LibraryAdminSite
                 CheckoutDate = x.CheckoutDate,
                 BorrowDate = x.BorrowDate,
                 DueDate = x.DueDate,
-                Status = x.Status == false ? "Đã mượn" : "Chưa mượn",
+                Status = x.Status == 1 ? "Đã mượn" : (x.Status == 2 ? "Chưa mượn" : (x.Status == 3 ? "Đã trả" : "Trễ hạn")),
                 Phone = x.UidNavigation.Phone,
-                bookCopy = x.Bids
+                bookCopy = x.Bids,
+                IsOverDue = x.DueDate < DateTime.Now ? "true" : "false",
+
             }).ToList();
             lvDisplay.ItemsSource = query1;
         }
@@ -180,7 +273,7 @@ namespace LibraryAdminSite
 
         private void dpFromDate_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
         {
-            
+
             Filter();
         }
 
