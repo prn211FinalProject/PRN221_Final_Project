@@ -12,6 +12,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product Detail</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.11/signalr.min.js"></script>
+    <script src="~/js/site.js"></script>
     <style>
         * {
             margin: 0;
@@ -213,12 +215,116 @@
             background-color: blue;
             color: white;
         }
-        
+
+        #ecb21f;
+        border-color: #a88734 #9c7e31 #846a29;
+        color: black;
+        border-width: 1px;
+        border-style: solid;
+        border-radius: 13px;
+        }
+
+        #profile {
+            background-color: unset;
+        }
+
+        #post {
+            margin: 10px;
+            padding: 6px;
+            padding-top: 2px;
+            padding-bottom: 2px;
+            text-align: center;
+            background-color: #ecb21f;
+            border-color: #a88734 #9c7e31 #846a29;
+            color: black;
+            border-width: 1px;
+            border-style: solid;
+            border-radius: 13px;
+            width: 50%;
+        }
+        #nav-items li a, #profile {
+            text-decoration: none;
+            color: rgb(224, 219, 219);
+            background-color: black;
+        }
+
+
+        .comments {
+            margin-top: 5%;
+            margin-left: 20px;
+        }
+
+        .darker {
+            border: 1px solid #ecb21f;
+            background-color: black;
+            float: right;
+            border-radius: 5px;
+            padding-left: 40px;
+            padding-right: 30px;
+            padding-top: 10px;
+        }
+
+        .comment {
+            border: 1px solid rgba(16, 46, 46, 1);
+            background-color: rgba(16, 46, 46, 0.973);
+            float: left;
+            border-radius: 5px;
+            padding-left: 40px;
+            padding-right: 30px;
+            padding-top: 10px;
+        }
+
+            .comment h4, .comment span, .darker h4, .darker span {
+                display: inline;
+            }
+
+            .comment p, .comment span, .darker p, .darker span {
+                color: rgb(184, 183, 183);
+            }
+
+        h1, h4 {
+            color: white;
+            font-weight: bold;
+        }
+
+        label {
+            color: rgb(212, 208, 208);
+        }
+
+        #align-form {
+            margin-top: 20px;
+        }
+
+        .form-group p a {
+            color: white;
+        }
+
+        #checkbx {
+            background-color: black;
+        }
+
+        #darker img {
+            margin-right: 15px;
+            position: static;
+        }
+
+        .form-group input, .form-group textarea {
+            background-color: black;
+            border: 1px solid rgba(16, 46, 46, 1);
+            border-radius: 12px;
+        }
+
+        form {
+            border: 1px solid rgba(16, 46, 46, 1);
+            background-color: rgba(16, 46, 46, 0.973);
+            border-radius: 5px;
+            /* padding: 20px; */
+        }
     </style>
 </head>
 <body>
     <button class="btn btn-primary">
-        <a style="color: white; text-decoration: none;" href="/Books">Back to List</a>
+        <a style="color: white; text-decoration: none;" href="/Books">Quay về</a>
     </button>
     <div class="container">
         <div class="product-grid">
@@ -293,7 +399,57 @@
     {
         <div id="error-message" style="display:none;">@TempData["ErrorMessage"]</div>
     }
-
+    <nav class="navbar navbar-expand-sm navbar-dark">
+        <img src="https://i.imgur.com/CFpa3nK.jpg" width="20" height="20" class="d-inline-block align-top rounded-circle" alt="">
+        <a class="navbar-brand ml-2" href="#" data-abc="true">Rib Simpson</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="end">
+            <div class="collapse navbar-collapse" id="navbarColor02">
+                <ul class="navbar-nav">
+                    <li class="nav-item"> <a class="nav-link" href="#" data-abc="true">Work</a> </li>
+                    <li class="nav-item"> <a class="nav-link" href="#" data-abc="true">Capabilities</a> </li>
+                    <li class="nav-item "> <a class="nav-link" href="#" data-abc="true">Articles</a> </li>
+                    <li class="nav-item active"> <a class="nav-link mt-2" href="#" data-abc="true" id="clicked">Contact<span class="sr-only">(current)</span></a> </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- Main Body -->
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-5 col-md-6 col-12 pb-4">
+                    @foreach(var fb in Model.Feedback)
+                    {
+                    <h1>Comments</h1>
+                    <div class="comment mt-4 text-justify float-left">
+                        <img src="https://i.imgur.com/yTFUilP.jpg" alt="" class="rounded-circle" width="40" height="40">
+                        <h4>@fb.UidNavigation.FullName</h4>
+                            <span class="comment-time" data-created-date="@fb.CreatedDate?.ToString("o")">
+                                @(fb.CreatedDate?.ToString("dd/MM/yyyy HH:mm") ?? "N/A")
+                            </span>
+                        <br>
+                        <p>@fb.Content</p>
+                    </div>
+                    }
+                </div>
+                <div class="col-lg-4 col-md-5 col-sm-4 offset-md-1 offset-sm-1 col-12 mt-4">
+                    <form style="padding: 20px;" id="algin-form" method="post" asp-page-handler="AddFeedback" asp-route-id="@Model.Book.Id">
+                        <div class="form-group">
+                            <h4>Leave a comment</h4>
+                            <label for="message">Message</label>
+                            <textarea name="content" id="message" msg cols="30" rows="5" class="form-control"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" id="post" class="btn btn-primary">Post Comment</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             var successMessage = document.getElementById("success-message");
@@ -306,6 +462,33 @@
                 alert(errorMessage.innerText);
             }
         });
+    </script>
+    <script>
+        function getTimeAgo(createdDate) {
+            const now = new Date();
+            const created = new Date(createdDate);
+            const diff = Math.floor((now - created) / 1000); // tính số giây chênh lệch
+
+            if (diff < 60) return "Just now";
+            if (diff < 3600) return `${Math.floor(diff / 60)} minutes ago`;
+            if (diff < 86400) return `${Math.floor(diff / 3600)} hours ago`;
+            if (diff < 604800) return `${Math.floor(diff / 86400)} days ago`;
+            if (diff < 2592000) return `${Math.floor(diff / 604800)} weeks ago`;
+            if (diff < 31536000) return `${Math.floor(diff / 2592000)} months ago`;
+
+            return `${Math.floor(diff / 31536000)} years ago`;
+        }
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const commentTimes = document.querySelectorAll(".comment-time");
+
+            commentTimes.forEach(function (element) {
+                const createdDate = element.getAttribute("data-created-date");
+                element.textContent += " - " + getTimeAgo(createdDate);
+            });
+        });
+
     </script>
 </body>
 </html>

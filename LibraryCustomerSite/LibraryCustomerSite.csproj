@@ -29,6 +29,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Include="wwwroot\css\.DS_Store" />
 	  <None Include="wwwroot\images\453292365_1542626573128749_6681107019617422834_n.jpg" />
+	  <None Include="wwwroot\js\.DS_Store" />
 	</ItemGroup>
 </Project>

@@ -43,8 +43,9 @@ namespace LibraryCustomerSite.Pages.Books
             BorrowInformation = new BorrowInformation
             {
                 Uid = userId,
+                BorrowDate = DateTime.Now,
                 CheckoutDate = DateTime.Now,
-                DueDate = DateTime.Now.AddDays(7), // Giả sử thời hạn mượn sách là 14 ngày
+                DueDate = DateTime.Now.AddDays(7), // Giả sử thời hạn mượn sách là 7 ngày
                 Status = 2,
             };
 

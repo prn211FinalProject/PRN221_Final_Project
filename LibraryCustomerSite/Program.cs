@@ -1,4 +1,5 @@
-﻿using LibraryCustomerSite.Models;
+﻿using LibraryCustomerSite.Hubs;
+using LibraryCustomerSite.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -10,6 +11,7 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true; // Bắt buộc session cookie
 });
+builder.Services.AddSignalR();
 var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -38,4 +40,5 @@ app.Use(async (context, next) =>
         await next();
     }
 });
+app.MapHub<ServerHub>("/hub");
 app.Run();
