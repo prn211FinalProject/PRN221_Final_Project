@@ -118,6 +118,12 @@ CREATE TABLE Blog (
     Status BIT,
 	Uid INT FOREIGN KEY REFERENCES [User](Uid)
 );
+Create table PasswordResetToken(
+ Id int primary key NOT NULL IDENTITY(1,1),
+ UserId int foreign key references [User](UId),
+ Token varchar(255),
+ Expiration DateTime
+ )
 --- Thêm dữ liệu vào bảng Role (vai trò của user)
 INSERT INTO Role (Name, Status)
 VALUES 
