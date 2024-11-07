@@ -131,6 +131,7 @@ ALTER TABLE BorrowInformation
 ADD PenaltyAmount DECIMAL(10, 2) DEFAULT 0; 
 ALTER TABLE BorrowInformation
 ADD PenaltyStatus BIT DEFAULT 1;
+ALTER TABLE BookTitle
 CREATE TRIGGER trg_CalculatePenalty
 ON BorrowInformation
 AFTER UPDATE
@@ -161,6 +162,19 @@ BEGIN
         WHERE Oid = @Oid;
     END
 END;
+Create table PasswordResetToken(
+ Id int primary key NOT NULL IDENTITY(1,1),
+ UserId int foreign key references [User](UId),
+ Token varchar(255),
+ Expiration DateTime
+ )
+CREATE TABLE LibrarianOrder (
+    Id INT PRIMARY KEY IDENTITY,
+    LibrarianId INT FOREIGN KEY REFERENCES [User](Uid),  -- User ID của Librarian
+    BorrowOrderId INT FOREIGN KEY REFERENCES BorrowInformation(Oid),  -- ID của đơn mượn sách
+    AssignmentDate DATETIME DEFAULT GETDATE(),  -- Ngày tiếp nhận đơn mượn
+    Status BIT  -- Trạng thái xử lý đơn mượn (0: Đang xử lý, 1: Đã hoàn thành)
+);
 --- Thêm dữ liệu vào bảng Role (vai trò của user)
 INSERT INTO Role (Name, Status)
 VALUES 
