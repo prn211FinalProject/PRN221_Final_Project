@@ -12,12 +12,12 @@ namespace LibraryAdminSite
     public partial class ThongKeSachMuon : UserControl
     {
         private int totalNotAvailableCount;
-        public SeriesCollection PieSeriesCollection { get; set; } 
+        public SeriesCollection PieSeriesCollection { get; set; }
 
         public ThongKeSachMuon()
         {
             InitializeComponent();
-            PieSeriesCollection = new SeriesCollection(); 
+            PieSeriesCollection = new SeriesCollection();
             LoadCateThongKe();
             DataContext = this;
             LoadTopBook();
@@ -25,13 +25,12 @@ namespace LibraryAdminSite
 
         private void LoadCateThongKe()
         {
+            var currentMonth = DateTime.Now.Month;
+            var currentYear = DateTime.Now.Year;
             totalNotAvailableCount = LMS_PRN221Context.Ins.BookCopies
                 .Include(x => x.BookTitle)
                 .Where(x => x.BookTitle.Hide == false)
                 .Count(bc => bc.Status == false);
-
-            var currentMonth = DateTime.Now.Month;
-            var currentYear = DateTime.Now.Year;
 
             var bookThongKe = LMS_PRN221Context.Ins.BookTitles
                 .Include(x => x.CidNavigation)
@@ -39,8 +38,7 @@ namespace LibraryAdminSite
                 .Where(x => x.Hide == false && x.CidNavigation.Status == true)
                 .Where(x => x.BookCopies
                     .Any(bc => bc.Oids
-                        .Any(borrowInfo => borrowInfo.BorrowDate.Value.Month == currentMonth
-                                        && borrowInfo.BorrowDate.Value.Year == currentYear))
+                        .Any(borrowInfo => borrowInfo.BorrowDate != null))
                 )
                 .Select(x => new
                 {
@@ -48,6 +46,7 @@ namespace LibraryAdminSite
                     CName = x.CidNavigation.Cname,
                     NotAvailableCount = x.BookCopies.Count(bc => bc.Status == false)
                 })
+                .Where(x => x.NotAvailableCount > 0)
                 .ToList();
 
             var cateThongKe = bookThongKe
@@ -61,6 +60,8 @@ namespace LibraryAdminSite
                         ? Math.Round(((double)g.Sum(x => x.NotAvailableCount) / totalNotAvailableCount) * 100, 2)
                         : 0
                 })
+                // Sắp xếp theo tỷ lệ giảm dần
+                .OrderByDescending(x => x.Rate)
                 .ToList();
 
             lvDisplay.ItemsSource = cateThongKe;
@@ -69,6 +70,7 @@ namespace LibraryAdminSite
             {
                 PieSeriesCollection.Clear();
             }
+
             foreach (var item in cateThongKe)
             {
                 PieSeriesCollection.Add(new PieSeries
@@ -81,11 +83,8 @@ namespace LibraryAdminSite
         }
 
 
-
         private void LoadTopBook()
         {
-            int currentMonth = DateTime.Now.Month;  
-
             var cateThongKe = LMS_PRN221Context.Ins.BookTitles
                 .Include(x => x.CidNavigation)
                 .Include(x => x.BookCopies)
@@ -96,122 +95,17 @@ namespace LibraryAdminSite
                     Id = x.CidNavigation.Id,
                     Title = x.Bname,
                     NotAvailableCount = x.BookCopies.Count(bc => bc.Status == false),
-                    BorrowedInCurrentMonth = x.BookCopies
-                        .Any(bc => bc.Oids
-                            .Any(bi => bi.BorrowDate.HasValue && bi.BorrowDate.Value.Month == currentMonth))
+                    HasBeenBorrowed = x.BookCopies
+                        .Any(bc => bc.Oids.Any(bi => bi.BorrowDate != null))
                 })
-                .Where(x => x.BorrowedInCurrentMonth)  
+                .Where(x => x.HasBeenBorrowed)
+                  .Where(x => x.NotAvailableCount > 0)
+                .OrderByDescending(x => x.NotAvailableCount)
                 .ToList();
 
             lvDisplay2.ItemsSource = cateThongKe;
         }
 
-        private void FilterThongKe()
-        {
-            var cateThongKe = LMS_PRN221Context.Ins.BookTitles
-         .Include(x => x.CidNavigation)
-         .Include(x => x.BookCopies)
-         .ThenInclude(x => x.Oids)
-         .Where(x => x.Hide == false && x.CidNavigation.Status == true)
-         .AsQueryable();
 
-            if (dpFromDate2.SelectedDate.HasValue)
-            {
-                DateTime fromDate = dpFromDate2.SelectedDate.Value;
-                cateThongKe = cateThongKe.Where(x => x.BookCopies
-                    .Any(bc => bc.Oids
-                        .Any(bi => bi.BorrowDate.HasValue && bi.BorrowDate.Value >= fromDate)));
-            }
-
-            if (dpToDate2.SelectedDate.HasValue)
-            {
-                DateTime toDate = dpToDate2.SelectedDate.Value;
-                cateThongKe = cateThongKe.Where(x => x.BookCopies
-                    .Any(bc => bc.Oids
-                        .Any(bi => bi.BorrowDate.HasValue && bi.BorrowDate.Value <= toDate)));
-            }
-
-            if (PieSeriesCollection != null)
-            {
-                PieSeriesCollection.Clear();
-            }
-
-            var filteredBooks = cateThongKe
-                .Select(x => new
-                {
-                    Id = x.CidNavigation.Id,
-                    Title = x.Bname,
-                    NotAvailableCount = x.BookCopies.Count(bc => bc.Status == false),
-                    BorrowedCount = x.BookCopies.Count(bc => bc.Oids
-                        .Any(bi => bi.BorrowDate.HasValue &&
-                                    bi.BorrowDate.Value.Month == DateTime.Now.Month)) 
-                })
-                .ToList();
-
-            lvDisplay2.ItemsSource = filteredBooks;
-
-        }
-
-
-        private void FilterBook()
-        {
-
-            int currentMonth = DateTime.Now.Month;
-            int currentYear = DateTime.Now.Year;
-
-            var cateThongKe = LMS_PRN221Context.Ins.BookTitles
-                .Include(x => x.CidNavigation)
-                .Include(x => x.BookCopies)
-                .ThenInclude(x => x.Oids)
-                .Where(x => x.Hide == false && x.CidNavigation.Status == true)
-                .AsQueryable();
-
-            if (dpFromDate2.SelectedDate.HasValue)
-            {
-                DateTime fromDate = dpFromDate2.SelectedDate.Value;
-                cateThongKe = cateThongKe.Where(x => x.BookCopies
-                    .Any(bc => bc.Oids
-                        .Any(bi => bi.BorrowDate.HasValue && bi.BorrowDate.Value >= fromDate)));
-            }
-
-            if (dpToDate2.SelectedDate.HasValue)
-            {
-                DateTime toDate = dpToDate2.SelectedDate.Value;
-                cateThongKe = cateThongKe.Where(x => x.BookCopies
-                    .Any(bc => bc.Oids
-                        .Any(bi => bi.BorrowDate.HasValue && bi.BorrowDate.Value <= toDate)));
-            }
-
-            cateThongKe = cateThongKe.Where(x => x.BookCopies
-                .Any(bc => bc.Oids
-                    .Any(bi => bi.BorrowDate.HasValue &&
-                               bi.BorrowDate.Value.Month == currentMonth &&
-                               bi.BorrowDate.Value.Year == currentYear)));
-
-            var filteredBooks = cateThongKe
-                .Select(x => new
-                {
-                    Id = x.CidNavigation.Id,
-                    Title = x.Bname,
-                    NotAvailableCount = x.BookCopies.Count(bc => bc.Status == false),
-                    BorrowedCount = x.BookCopies.Count(bc => bc.Oids
-                        .Any(bi => bi.BorrowDate.HasValue &&
-                                    bi.BorrowDate.Value.Month == currentMonth)) 
-                })
-                .ToList();
-
-            lvDisplay2.ItemsSource = filteredBooks;
-        }
-
-
-        private void dpToDate_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
-        {
-            FilterThongKe();
-        }
-
-        private void dpToDate_SelectedDateChanged2(object sender, SelectionChangedEventArgs e)
-        {
-            FilterBook();
-        }
     }
 }

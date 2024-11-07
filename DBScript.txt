@@ -118,12 +118,49 @@ CREATE TABLE Blog (
     Status BIT,
 	Uid INT FOREIGN KEY REFERENCES [User](Uid)
 );
-Create table PasswordResetToken(
- Id int primary key NOT NULL IDENTITY(1,1),
- UserId int foreign key references [User](UId),
- Token varchar(255),
- Expiration DateTime
- )
+CREATE TABLE Penalty (
+    Id INT PRIMARY KEY IDENTITY,
+    Oid INT FOREIGN KEY REFERENCES BorrowInformation(Oid), -- liên kết đến bảng BorrowInformation
+    Uid INT FOREIGN KEY REFERENCES [User](Uid), -- người dùng bị phạt
+    Amount DECIMAL(10, 2) NOT NULL, -- số tiền phạt
+    Reason NVARCHAR(255), -- lý do phạt (ví dụ: "Trả sách muộn")
+    CreatedDate DATETIME DEFAULT GETDATE(), -- ngày phạt
+    Status BIT NOT NULL DEFAULT 1 -- trạng thái của phạt (1: chưa thanh toán, 0: đã thanh toán)
+);
+ALTER TABLE BorrowInformation
+ADD PenaltyAmount DECIMAL(10, 2) DEFAULT 0; 
+ALTER TABLE BorrowInformation
+ADD PenaltyStatus BIT DEFAULT 1;
+CREATE TRIGGER trg_CalculatePenalty
+ON BorrowInformation
+AFTER UPDATE
+AS
+BEGIN
+    DECLARE @Oid INT, @Uid INT, @ReturnDate DATETIME, @DueDate DATETIME, @LateDays INT, @PenaltyAmount DECIMAL(10, 2);
+    SET @PenaltyAmount = 0; -- Khoản phạt khởi điểm
+    
+    -- Lấy các thông tin của giao dịch mượn sách bị cập nhật
+    SELECT @Oid = INSERTED.Oid, @Uid = INSERTED.Uid, @ReturnDate = INSERTED.ReturnDate, @DueDate = INSERTED.DueDate
+    FROM INSERTED
+    WHERE INSERTED.ReturnDate IS NOT NULL; -- Chỉ tính khi sách đã được trả
+
+    -- Kiểm tra xem người dùng có trả sách muộn không
+    IF (@ReturnDate > @DueDate)
+    BEGIN
+        -- Tính số ngày trả muộn và tiền phạt (giả sử phạt 5000 VND/ngày)
+        SET @LateDays = DATEDIFF(DAY, @DueDate, @ReturnDate);
+        SET @PenaltyAmount = @LateDays * 5000; -- Mức phạt cho mỗi ngày trả muộn
+
+        -- Thêm khoản phạt vào bảng Penalty
+        INSERT INTO Penalty (Oid, Uid, Amount, Reason, CreatedDate, Status)
+        VALUES (@Oid, @Uid, @PenaltyAmount, N'Trả sách muộn', GETDATE(), 1);
+
+        -- Cập nhật tổng tiền phạt vào BorrowInformation
+        UPDATE BorrowInformation
+        SET PenaltyAmount = @PenaltyAmount
+        WHERE Oid = @Oid;
+    END
+END;
 --- Thêm dữ liệu vào bảng Role (vai trò của user)
 INSERT INTO Role (Name, Status)
 VALUES 
@@ -184,9 +221,6 @@ VALUES
 INSERT INTO BorrowInformation (Uid, BorrowDate, CheckoutDate, DueDate, TotalAmount, Note, Status)
 VALUES
     (2, '2024-03-01', '2024-03-02', '2024-03-15', 15.99, N'First-time borrow', 1);
-	INSERT INTO BorrowInformation (Uid, BorrowDate, CheckoutDate, DueDate, TotalAmount, Note, Status)
-VALUES
-    (1, '2024-03-01', '2024-03-02', '2024-03-15', 15.99, N'First-time borrow', 1);
 -- Thêm dữ liệu vào bảng BorrowDetail (chi tiết mượn sách)
 INSERT INTO BorrowDetail (Oid, Bid)
 VALUES

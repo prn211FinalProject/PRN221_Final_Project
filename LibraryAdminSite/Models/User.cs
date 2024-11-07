@@ -10,6 +10,7 @@ namespace LibraryAdminSite.Models
             Blogs = new HashSet<Blog>();
             BorrowInformations = new HashSet<BorrowInformation>();
             Feedbacks = new HashSet<Feedback>();
+            Penalties = new HashSet<Penalty>();
             Wishlists = new HashSet<Wishlist>();
         }
 
@@ -27,6 +28,7 @@ namespace LibraryAdminSite.Models
         public virtual ICollection<Blog> Blogs { get; set; }
         public virtual ICollection<BorrowInformation> BorrowInformations { get; set; }
         public virtual ICollection<Feedback> Feedbacks { get; set; }
+        public virtual ICollection<Penalty> Penalties { get; set; }
         public virtual ICollection<Wishlist> Wishlists { get; set; }
     }
 }

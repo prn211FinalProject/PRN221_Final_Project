@@ -7,6 +7,7 @@ namespace LibraryAdminSite.Models
     {
         public BorrowInformation()
         {
+            Penalties = new HashSet<Penalty>();
             Bids = new HashSet<BookCopy>();
         }
 
@@ -19,8 +20,11 @@ namespace LibraryAdminSite.Models
         public decimal? TotalAmount { get; set; }
         public string? Note { get; set; }
         public int? Status { get; set; }
+        public decimal? PenaltyAmount { get; set; }
+        public bool? PenaltyStatus { get; set; }
 
         public virtual User? UidNavigation { get; set; }
+        public virtual ICollection<Penalty> Penalties { get; set; }
 
         public virtual ICollection<BookCopy> Bids { get; set; }
     }

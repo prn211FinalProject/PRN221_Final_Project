@@ -13,7 +13,7 @@ namespace LibraryAdminSite
     public partial class AddNewBook : Window
     {
         private LMS_PRN221Context _context;
-        private string _selectedImagePath; 
+        private string _selectedImagePath;
         public event Action BookAdded;
         public AddNewBook()
         {
@@ -27,41 +27,39 @@ namespace LibraryAdminSite
         {
             var publishers = _context.Publishers.ToList();
             cbxNXB.ItemsSource = publishers;
-            cbxNXB.DisplayMemberPath = "Pname"; 
-            cbxNXB.SelectedValuePath = "Id"; 
+            cbxNXB.DisplayMemberPath = "Pname";
+            cbxNXB.SelectedValuePath = "Id";
         }
 
         private void LoadGenres()
         {
             var genres = _context.Categories.ToList();
             cmbGenre.ItemsSource = genres;
-            cmbGenre.DisplayMemberPath = "Cname"; 
-            cmbGenre.SelectedValuePath = "Id"; 
+            cmbGenre.DisplayMemberPath = "Cname";
+            cmbGenre.SelectedValuePath = "Id";
         }
         private string imagePath;
         private void btnUploadImage_Click(object sender, RoutedEventArgs e)
         {
             Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
-            openFileDialog.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.bmp"; 
+            openFileDialog.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.bmp";
             if (openFileDialog.ShowDialog() == true)
             {
-                imagePath = openFileDialog.FileName; 
-                                                   
+                imagePath = openFileDialog.FileName;
+
                 imgBookCover.Source = new BitmapImage(new Uri(imagePath));
             }
         }
 
         private void btnAdd_Click(object sender, RoutedEventArgs e)
         {
-            // Tiến hành lưu sách mới
             var newBook = new BookTitle
             {
                 Bname = txtBookName.Text,
                 Author = txtAuthor.Text,
                 PublishDate = dpPublishDate.SelectedDate,
-                Cid = (cmbGenre.SelectedItem as Category)?.Id, // Giả sử Category có thuộc tính Id
+                Cid = (cmbGenre.SelectedItem as Category)?.Id,
                 PublisherId = (cbxNXB.SelectedItem as Publisher)?.Id,
-                Image = imagePath, // Đảm bảo đây là đường dẫn hợp lệ
                 Status = true,
                 Hide = false,
                 Quantity = int.Parse(txtQuantity.Text),
@@ -69,17 +67,42 @@ namespace LibraryAdminSite
                 Price = decimal.Parse(txtPrice.Text)
             };
 
+            if (!string.IsNullOrEmpty(imagePath))
+            {
+                try
+                {
+                    string projectDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..", @"..", @"..", "BookImage");
+
+                    if (!Directory.Exists(projectDirectory))
+                    {
+                        Directory.CreateDirectory(projectDirectory);
+                    }
+
+                    string fileName = $"{Guid.NewGuid()}{Path.GetExtension(imagePath)}";
+                    string destPath = Path.Combine(projectDirectory, fileName);
+
+                    File.Copy(imagePath, destPath, true);
+
+                    newBook.Image = fileName;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Lỗi khi lưu ảnh: {ex.Message}");
+                    return;
+                }
+            }
+
             _context.BookTitles.Add(newBook);
             _context.SaveChanges();
 
             for (int i = 1; i <= newBook.Quantity; i++)
             {
-                string copyId = $"BC{newBook.Id}-{i:D3}"; // Tạo ID cho bản sao
+                string copyId = $"BC{newBook.Id}-{i:D3}";
                 BookCopy newCopy = new BookCopy
                 {
                     Id = copyId,
-                    BookTitleId = newBook.Id ,// Liên kết bản sao với sách
-                    Status = true ,
+                    BookTitleId = newBook.Id,
+                    Status = true,
                     Note = "New"
                 };
                 _context.BookCopies.Add(newCopy);
@@ -90,42 +113,6 @@ namespace LibraryAdminSite
             BookAdded?.Invoke();
             this.Close();
         }
-
-
-
-
-        private string SaveImageToDirectory(string imagePath)
-        {
-            if (string.IsNullOrEmpty(imagePath))
-            {
-                MessageBox.Show("Bạn chưa chọn ảnh.");
-                return null;
-            }
-
-            string directoryPath = @"D:\Dai Hoc FBT\Ki_7_Fall2024\PRN221\PRN221_Final_Project.git\LibraryAdminSite\BookImage";
-
-            try
-            {
-                if (!Directory.Exists(directoryPath))
-                {
-                    Directory.CreateDirectory(directoryPath);
-                }
-                string fileName = $"{Guid.NewGuid()}{Path.GetExtension(imagePath)}"; 
-                string destPath = Path.Combine(directoryPath, fileName);
-
-                File.Copy(imagePath, destPath, true); 
-
-                MessageBox.Show("Lưu ảnh thành công!");
-                return fileName; 
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Lỗi khi lưu ảnh: {ex.Message}");
-                return null;
-            }
-        }
-
-
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {

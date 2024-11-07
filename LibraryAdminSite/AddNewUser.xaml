@@ -30,11 +30,7 @@
             <ComboBox x:Name="cbxRole" Margin="0,0,0,10" Height="30" Padding="5" FontSize="14" BorderBrush="#ccc" BorderThickness="1" SelectionChanged="cbxRole_SelectionChanged"/>
             <TextBlock Text="Mật khẩu:" FontWeight="Medium"  x:Name="lblPassword" Visibility="Collapsed" />
             <PasswordBox x:Name="pwdBox" Margin="0,0,0,10" Height="30" Padding="5" FontSize="14" BorderBrush="#ccc" BorderThickness="1" Visibility="Collapsed"/>
-            <TextBlock Text="Ảnh:" FontWeight="Medium" />
-            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                <Image x:Name="imgBookCover" Width="100" Height="150" Margin="0,0,10,0" />
-                <Button Content="Chọn Ảnh" Click="btnUploadImage_Click" Width="100" Height="30" Background="#2196F3" Foreground="White" FontWeight="Bold" BorderThickness="0"/>
-            </StackPanel>
+            
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0">
                 <Button Content="Thêm" Click="btnAdd_Click" Width="100" Height="30" Margin="5" Background="#4CAF50" Foreground="White" FontWeight="Bold" BorderThickness="0"/>
