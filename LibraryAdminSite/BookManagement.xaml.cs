@@ -96,6 +96,7 @@ namespace LibraryAdminSite
         {
             BitmapImage image = new BitmapImage();
             string projectDirectory = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..", @"..", @"..", "BookImage");
+           
             string fullImagePath = System.IO.Path.Combine(projectDirectory, relativeImagePath);
             if (File.Exists(fullImagePath)) 
             {

@@ -82,5 +82,11 @@ namespace LibraryAdminSite
             var borrowManage = new BorrowManage();
             MainContentControl.Content = borrowManage;
 		}
-	}
+
+        private void btnPunishManage_Click(object sender, RoutedEventArgs e)
+        {
+            var punishManage = new PunishManage();
+            MainContentControl.Content = punishManage;
+        }
+    }
 }

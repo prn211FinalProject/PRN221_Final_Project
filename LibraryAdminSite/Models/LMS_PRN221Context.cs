@@ -122,6 +122,14 @@ namespace LibraryAdminSite.Models
 
                 entity.Property(e => e.DueDate).HasColumnType("datetime");
 
+                entity.Property(e => e.PenaltyAmount)
+                    .HasColumnType("decimal(10, 2)")
+                    .HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.PenaltyStatus).HasDefaultValueSql("((1))");
+
+                entity.Property(e => e.ReturnDate).HasColumnType("datetime");
+
                 entity.Property(e => e.TotalAmount).HasColumnType("decimal(10, 2)");
 
                 entity.HasOne(d => d.UidNavigation)

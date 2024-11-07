@@ -5,8 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:LibraryAdminSite"
              mc:Ignorable="d" 
-             d:DesignHeight="770" d:DesignWidth="1200" Loaded="UserControl_Loaded">
-    <Grid Background="#f0f0f0">
+             d:DesignHeight="770" Loaded="UserControl_Loaded" Width="1725" HorizontalAlignment="Left">
+    <Grid Background="#f0f0f0" Margin="0,0,-234,0">
         <!-- Main Content -->
         <StackPanel Grid.Row="1" Grid.Column="1">
             <StackPanel Orientation="Horizontal" Background="BlanchedAlmond">
@@ -39,7 +39,7 @@
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
                             <Label Content="Email:" Width="100"/>
-                            <TextBox Name="txbEmail" Text="{Binding ElementName=lvDisplay, Path=SelectedItem.Email, Mode=OneWay}" Width="175"/>
+                            <TextBox Name="txbEmail" Text="{Binding ElementName=lvDisplay, Path=SelectedItem.Email, Mode=OneWay}" Width="175" IsEnabled="False"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
                             <Label Content="Vai trò:" Width="100"/>
@@ -59,9 +59,9 @@
                     <StackPanel>
                         <TextBlock x:Name="txtTitle" Text="Quản lý người dùng" HorizontalAlignment="Center" FontSize="25"></TextBlock>
                         <WrapPanel Margin="0,20,0,20">
-                            
-                        <Label Content="Tìm kiếm:"/>
-                        <TextBox x:Name="txtSearch" Width="271" SelectionChanged="txtSearch_SelectionChanged"/>
+
+                            <Label Content="Tìm kiếm:"/>
+                            <TextBox x:Name="txtSearch" Width="271" SelectionChanged="txtSearch_SelectionChanged"/>
                         </WrapPanel>
 
                         <ListView Name="lvDisplay" Margin="0,0,0,20" SelectionChanged="lvDisplay_SelectionChanged">
@@ -73,6 +73,22 @@
                                     <GridViewColumn Header="Email" DisplayMemberBinding="{Binding Email}" Width="150"/>
                                     <GridViewColumn Header="Giới tính" DisplayMemberBinding="{Binding Gender}" Width="100"/>
                                     <GridViewColumn Header="Vai trò" DisplayMemberBinding="{Binding Role}" Width="100"/>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                    </StackPanel>
+                </Border>
+                <Border Background="White" BorderBrush="#bdc3c7" VerticalAlignment="Stretch" BorderThickness="1" Padding="10" CornerRadius="10" Width="594" Height="664">
+                    <StackPanel>
+                        <TextBlock Text="Lịch sử mượn sách" HorizontalAlignment="Center" FontWeight="Bold" FontSize="16"/>
+                        <ListView Name="lvBorowListDisplay" Margin="0,0,0,20" SelectionChanged="lvDisplay_SelectionChanged">
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Header="Mã số sách" DisplayMemberBinding="{Binding Id}" Width="100"/>
+                                    <GridViewColumn Header="Ngày Mượn" DisplayMemberBinding="{Binding BorrowDate}" Width="100"/>
+                                    <GridViewColumn Header="Ngày trả" DisplayMemberBinding="{Binding ReturnDate}" Width="100"/>
+                                    <GridViewColumn Header="Tiền phạt" DisplayMemberBinding="{Binding Punish}" Width="100"/>
+                                    <GridViewColumn Header="Trạng thái" DisplayMemberBinding="{Binding Status}" Width="100"/>
                                 </GridView>
                             </ListView.View>
                         </ListView>

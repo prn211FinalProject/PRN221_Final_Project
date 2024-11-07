@@ -1,4 +1,5 @@
 ﻿using LibraryAdminSite.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -89,6 +90,25 @@ namespace LibraryAdminSite
                 string gender = (string)selectedItem.GetType().GetProperty("Gender").GetValue(selectedItem);
                 rdbMale.IsChecked = gender.Equals("Nam") ? true : false;
                 rdbFemale.IsChecked = gender.Equals("Nữ") ? true : false;
+                string role = (string)selectedItem.GetType().GetProperty("Role").GetValue(selectedItem);
+                if (role.Equals("Admin"))
+                {
+                    cbxRole.IsEnabled = false;
+                }
+                else
+                {
+                    cbxRole.IsEnabled = true;
+                }
+                int uId = (int)selectedItem.GetType().GetProperty("Id").GetValue(selectedItem);
+                var borrow = LMS_PRN221Context.Ins.BorrowInformations.Include(x=> x.UidNavigation).Include(x=> x.Bids).Where(x=> x.Uid == uId)
+                    .Select(x=> new {
+                        Id = x.Bids.First().Id,
+                        BorrowDate = x.BorrowDate,
+                        ReturnDate = x.ReturnDate,
+                        Punish = x.PenaltyAmount,
+                        Status = x.Status == 1 ? "Đã mượn" : (x.Status == 2 ? "Chưa mượn" : (x.Status == 3 ? "Đã trả" : (x.Status == 4 ? "Trễ hạn" : "Đã hủy"))),
+                    }).ToList();
+                lvBorowListDisplay.ItemsSource = borrow;
             }
         }
 

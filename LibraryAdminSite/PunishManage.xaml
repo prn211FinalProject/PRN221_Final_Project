@@ -1,0 +1,39 @@
+﻿<UserControl x:Class="LibraryAdminSite.PunishManage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:LibraryAdminSite"
+             mc:Ignorable="d" Height="536" Width="823">
+    <Grid Background="#f0f0f0" Margin="0,0,-234,0">
+        <!-- Main Content -->
+        <StackPanel Grid.Row="1" Grid.Column="1">
+            <StackPanel Orientation="Horizontal" Background="BlanchedAlmond" Height="534">
+                <Border Background="White" Margin="20" VerticalAlignment="Stretch" BorderBrush="#bdc3c7" BorderThickness="1" Padding="10" CornerRadius="10" Width="824">
+                    <StackPanel>
+                        <TextBlock x:Name="txtTitle" Text="Quản lý tiền phạt" HorizontalAlignment="Center" FontSize="25"></TextBlock>
+                        <WrapPanel Margin="0,20,0,20">
+
+                            <Label Content="Tìm kiếm:"/>
+                            <TextBox x:Name="txtSearch" Width="271" SelectionChanged="txtSearch_SelectionChanged"/>
+                        </WrapPanel>
+
+                        <ListView Name="lvDisplay" Margin="0,0,0,20" >
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Header="Mã số" DisplayMemberBinding="{Binding Id}" Width="40"/>
+                                    <GridViewColumn Header="Tên người dùng" DisplayMemberBinding="{Binding FullName}" Width="150"/>
+                                    <GridViewColumn Header="" DisplayMemberBinding="{Binding Phone}" Width="100"/>
+                                    <GridViewColumn Header="Email" DisplayMemberBinding="{Binding Email}" Width="150"/>
+                                    <GridViewColumn Header="Giới tính" DisplayMemberBinding="{Binding Gender}" Width="100"/>
+                                    <GridViewColumn Header="Vai trò" DisplayMemberBinding="{Binding Role}" Width="100"/>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </StackPanel>
+
+    </Grid>
+</UserControl>

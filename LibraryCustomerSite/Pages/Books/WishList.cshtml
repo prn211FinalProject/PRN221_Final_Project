@@ -5,8 +5,8 @@
 }
 <h1>Danh sách yêu thích</h1>
 <div class="cart-container">
-    <div class="cart-header">
-        <input type="checkbox">
+    <div class="cart-header modern-header">
+        <input type="checkbox" class="modern-checkbox">
         <div>Sản Phẩm</div>
         <div>Tác giả</div>
         <div>Số Lượng còn lại</div>
@@ -16,50 +16,51 @@
 
     @foreach (var bookCopy in Model.BookCopies)
     {
-        <div class="cart-item">
-            <input type="checkbox">
+        <div class="cart-item modern-item">
+            <input type="checkbox" class="modern-checkbox">
             <div>
                 <div class="shop-name">
-                    @bookCopy.BookTitle.Bname
+                    @bookCopy.BookTitle?.Bname
                 </div>
                 <div class="product-info">
-                    <a asp-page="./Details" asp-route-id="@bookCopy.BookTitle.Id" class="product-card-link" style="text-decoration: none">
-                        <img src="~/images/@bookCopy.BookTitle.Image" style="width: 40%" alt="Product" class="product-image">
+                    <a asp-page="./Details" asp-route-id="@bookCopy.BookTitle?.Id" class="product-card-link" style="text-decoration: none">
+                        <img src="~/images/@bookCopy.BookTitle?.Image" class="product-image modern-image" alt="Product">
                     </a>
                 </div>
             </div>
 
             <div>
-                <div class="price">@bookCopy.BookTitle.Author</div>
+                <div class="price">@bookCopy.BookTitle?.Author</div>
             </div>
 
             <div class="quantity-controls">
-                <input type="text" value="@bookCopy.BookTitle.UnitInStock" class="quantity-input" readonly>
+                <input type="text" value="@bookCopy.BookTitle?.UnitInStock" class="quantity-input modern-input" readonly>
             </div>
 
             <div class="price">
-                @if (bookCopy.BookTitle.Status == true)
+                @if (bookCopy.BookTitle?.Quantity >= 1)
                 {
-                    <span class="shipping-badge">Còn Hàng</span>
+                    <span class="shipping-badge in-stock">Còn Hàng</span>
                 }
                 else
                 {
-                    <span style="color: red;">Hết Hàng</span>
+                    <span class="shipping-badge out-of-stock">Hết Hàng</span>
                 }
             </div>
 
             <div class="actions">
                 <form method="post" asp-page-handler="RemoveFromWishlist">
                     <input type="hidden" name="id" value="@bookCopy.BookTitleId" />
-                    <button type="submit" class="action-btn">Xóa khỏi WishList</button>
+                    <button type="submit" class="action-btn modern-btn">Xóa khỏi WishList</button>
                 </form>
                 <form method="get" asp-page="/Books/Borrow" asp-page-handler="Post">
                     <input type="hidden" name="id" value="@bookCopy.BookTitleId" />
-                    <button type="submit" class="action-btn">Mượn Ngay</button>
+                    <button type="submit" class="action-btn modern-btn">Mượn Ngay</button>
                 </form>
             </div>
         </div>
     }
+    <a href="/Books" class="btn btn-primary modern-back-btn">Quay về</a>
     @if (TempData["SuccessMessage"] != null)
     {
         <div id="success-message" style="display:none;">@TempData["SuccessMessage"]</div>
@@ -84,3 +85,56 @@
         });
     </script>
 </div>
+
+<style>
+    .modern-header, .modern-item {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+    }
+    .modern-checkbox {
+        margin-right: 10px;
+    }
+    .modern-image {
+        width: 40%;
+        border-radius: 5px;
+    }
+    .modern-input {
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        padding: 5px;
+    }
+    .in-stock {
+        color: green;
+    }
+    .out-of-stock {
+        color: red;
+    }
+    .modern-btn {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    .modern-btn:hover {
+        background-color: #0056b3;
+    }
+    .modern-back-btn {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        border-radius: 5px;
+        text-align: center;
+        text-decoration: none;
+        transition: background-color 0.3s;
+    }
+    .modern-back-btn:hover {
+        background-color: #0056b3;
+    }
+</style>
