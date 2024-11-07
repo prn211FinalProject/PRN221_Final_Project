@@ -61,7 +61,9 @@ namespace LibraryCustomerSite.Pages.Books
                     Message = "Email already exists.";
                     return Page();
                 }
-                NewUser.Password = HashPassword(Password); // Mã hóa mật khẩu
+                string before;
+                before = NewUser.Password;
+                NewUser.Password = HashPassword(before);
                 NewUser.Status = true; // Activate user
                 NewUser.RoleId = 2; // Đặt RoleId mặc định
                 _context.Users.Add(NewUser);
@@ -75,6 +77,11 @@ namespace LibraryCustomerSite.Pages.Books
 
         private string HashPassword(string password)
         {
+            if (string.IsNullOrEmpty(password))
+            {
+                throw new ArgumentNullException(nameof(password), "Password cannot be null or empty.");
+            }
+
             using (var sha256 = System.Security.Cryptography.SHA256.Create())
             {
                 var hashedBytes = sha256.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
