@@ -1,0 +1,15 @@
+﻿@page "{id:int}"
+@model LibraryCustomerSite.Pages.Books.ScheduleReturnModel
+@{
+    ViewData["Title"] = "Hẹn trả sách";
+}
+
+<h2>Hẹn trả sách</h2>
+
+<form method="post">
+    <div class="form-group">
+        <label for="ReturnDate">Ngày hẹn trả sách</label>
+        <input type="date" class="form-control" id="ReturnDate" name="ReturnDate" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Xác nhận</button>
+</form>

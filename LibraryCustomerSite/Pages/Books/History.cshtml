@@ -22,6 +22,7 @@
                     <h2 class="heading-section">Lịch Sử Mượn</h2>
                 </div>
             </div>
+            
             <div class="row">
                 <div class="col-md-12">
                     <div class="table-wrap">
@@ -71,9 +72,9 @@
                                             <td><span class="text-success">Đã trả</span></td>
                                         }
                                         <td>
-                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                                <span aria-hidden="true"><i class="fa fa-close"></i></span>
-                                            </button>
+                                            <form method="post" asp-page-handler="RedirectToScheduleReturn" asp-route-borrowId="@bi.Oid">
+                                                <button type="submit" class="btn btn-primary">Hẹn trả sách</button>
+                                            </form>
                                         </td>
                                     </tr>
                                 }
