@@ -20,15 +20,7 @@
 
         <Border Grid.Row="0" Grid.Column="0" Background="White" BorderBrush="#bdc3c7" BorderThickness="1" Padding="20" CornerRadius="10" Margin="10">
             <StackPanel>
-                <TextBlock Text="Báo cáo thống kê mượn sách theo thể loại" FontSize="25" FontWeight="Bold" Margin="0,0,0,10"/>
-                <WrapPanel Margin="0,10,0,10">
-                    <Label Content="Từ Ngày:" Width="100"/>
-                    <DatePicker SelectedDateChanged="dpToDate_SelectedDateChanged" x:Name="dpFromDate" Width="150"/>
-                </WrapPanel>
-                <WrapPanel Margin="0,10,0,20">
-                    <Label Content="Đến Ngày:" Width="100"/>
-                    <DatePicker SelectedDateChanged="dpToDate_SelectedDateChanged" x:Name="dpToDate" Width="150"/>
-                </WrapPanel>
+                <TextBlock Text="Báo cáo thống kê thể loại sách đang được mượn" FontSize="25" FontWeight="Bold" Margin="0,0,0,10"/>
                 <ListView x:Name="lvDisplay" Margin="0,0,0,20" Height="200">
                     <ListView.View>
                         <GridView>
@@ -53,14 +45,7 @@
 
         <Border Grid.Row="1" Grid.Column="0" Background="White" BorderBrush="#bdc3c7" BorderThickness="1" Padding="20" CornerRadius="10" Margin="10,10,10,10" Grid.ColumnSpan="2">
             <StackPanel>
-                <TextBlock Text="Báo cáo thống kê Số Sách Mượn Nhiều Nhất" FontSize="16" FontWeight="Bold"/>
-                <WrapPanel Margin="0,10,0,20">
-                    <Label Content="Từ Ngày:" Width="100" VerticalAlignment="Center"/>
-                    <DatePicker SelectedDateChanged="dpToDate_SelectedDateChanged2" x:Name="dpFromDate2" Width="150" Margin="0,0,10,0"/>
-
-                    <Label Content="Đến Ngày:" Width="100" VerticalAlignment="Center"/>
-                    <DatePicker SelectedDateChanged="dpToDate_SelectedDateChanged2" x:Name="dpToDate2" Width="150"/>
-                </WrapPanel>
+                <TextBlock Text="Báo cáo thống kê Số Sách đang được Mượn Nhiều Nhất" FontSize="16" FontWeight="Bold"/>
                 <ListView x:Name="lvDisplay2" Margin="0,0,0,20" Height="200">
                     <ListView.View>
                         <GridView>

@@ -16,6 +16,7 @@ namespace LibraryAdminSite.Models
         public string? Phone { get; set; }
         public string? Email { get; set; }
         public bool? Status { get; set; }
+        public string? PublisherCode { get; set; }
 
         public virtual ICollection<BookTitle> BookTitles { get; set; }
     }

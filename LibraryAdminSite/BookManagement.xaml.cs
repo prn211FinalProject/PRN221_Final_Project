@@ -34,11 +34,11 @@ namespace LibraryAdminSite
         public BookManagement()
         {
             InitializeComponent();
-
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            LoadBook();
             LoadGenres();
             LoadStatus();
             LoadNXB();
@@ -64,6 +64,7 @@ namespace LibraryAdminSite
             var books = LMS_PRN221Context.Ins.BookTitles.Include(x => x.Publisher).Include(x => x.CidNavigation).Where(x => x.Hide == false).Where(x => x.CidNavigation.Status == true).Select(x => new
             {
                 Id = x.Id,
+                ISBN = x.Isbn,
                 Name = x.Bname,
                 Genre = x.CidNavigation.Cname,
                 Publisher = x.Publisher.Pname,
@@ -94,7 +95,7 @@ namespace LibraryAdminSite
         public static BitmapImage ConvertToImage(string relativeImagePath)
         {
             BitmapImage image = new BitmapImage();
-            string projectDirectory = @"D:\Dai Hoc FBT\Ki_7_Fall2024\PRN221\PRN221_Final_Project.git\LibraryAdminSite\BookImage";
+            string projectDirectory = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..", @"..", @"..", "BookImage");
             string fullImagePath = System.IO.Path.Combine(projectDirectory, relativeImagePath);
             if (File.Exists(fullImagePath)) 
             {
@@ -123,16 +124,7 @@ namespace LibraryAdminSite
         }
 
 
-        private void UpdateBookImage(int bookId, string imagePath)
-        {
-            var book = LMS_PRN221Context.Ins.BookTitles.FirstOrDefault(b => b.Id == bookId);
-
-            if (book != null)
-            {
-                book.Image = imagePath; 
-                LMS_PRN221Context.Ins.SaveChanges(); 
-            }
-        }
+     
 
         private void OpenAddForm(object sender, RoutedEventArgs e)
         {
@@ -179,7 +171,7 @@ namespace LibraryAdminSite
                     int currentQuantity = existingBook.Quantity; // Lấy số lượng hiện tại từ đối tượng existingBook
 
                     // Cập nhật số lượng sách trong cơ sở dữ liệu
-                    existingBook.Quantity = newQuantity; // Cập nhật số lượng sách
+                    existingBook.Quantity = newQuantity; 
 
                     // Kiểm tra xem số lượng mới có lớn hơn số lượng hiện có không
                     if (newQuantity > currentQuantity)
@@ -295,6 +287,7 @@ namespace LibraryAdminSite
             {
                 Id = x.Id,
                 Name = x.Bname,
+                ISBN = x.Isbn,
                 Genre = x.CidNavigation.Cname,
                 Publisher = x.Publisher.Pname,
                 Author = x.Author,

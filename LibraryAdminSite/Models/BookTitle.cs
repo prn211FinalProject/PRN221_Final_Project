@@ -24,6 +24,7 @@ namespace LibraryAdminSite.Models
         public bool Hide { get; set; }
         public int? PublisherId { get; set; }
         public DateTime? PublishDate { get; set; }
+        public string? Isbn { get; set; }
 
         public virtual Category? CidNavigation { get; set; }
         public virtual Publisher? Publisher { get; set; }

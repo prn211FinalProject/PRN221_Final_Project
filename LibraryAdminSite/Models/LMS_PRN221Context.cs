@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using LibraryAdminSite.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Configuration;
@@ -12,10 +11,7 @@ namespace LibraryAdminSite.Models
         public static LMS_PRN221Context Ins = new LMS_PRN221Context();
         public LMS_PRN221Context()
         {
-            if (Ins == null)
-            {
-                Ins = this;
-            }
+            if (Ins == null) Ins = this;
         }
 
         public LMS_PRN221Context(DbContextOptions<LMS_PRN221Context> options)
@@ -29,6 +25,7 @@ namespace LibraryAdminSite.Models
         public virtual DbSet<BorrowInformation> BorrowInformations { get; set; } = null!;
         public virtual DbSet<Category> Categories { get; set; } = null!;
         public virtual DbSet<Feedback> Feedbacks { get; set; } = null!;
+        public virtual DbSet<LibrarianOrder> LibrarianOrders { get; set; } = null!;
         public virtual DbSet<Publisher> Publishers { get; set; } = null!;
         public virtual DbSet<Role> Roles { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; } = null!;
@@ -39,7 +36,6 @@ namespace LibraryAdminSite.Models
             var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
 
             if (!optionsBuilder.IsConfigured) { optionsBuilder.UseSqlServer(config.GetConnectionString("value")); }
-
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -47,7 +43,7 @@ namespace LibraryAdminSite.Models
             modelBuilder.Entity<Blog>(entity =>
             {
                 entity.HasKey(e => e.Bid)
-                    .HasName("PK__Blog__C6D111C9FF0126A5");
+                    .HasName("PK__Blog__C6D111C99695D9CF");
 
                 entity.ToTable("Blog");
 
@@ -93,6 +89,11 @@ namespace LibraryAdminSite.Models
 
                 entity.Property(e => e.Image).HasMaxLength(255);
 
+                entity.Property(e => e.Isbn)
+                    .HasMaxLength(20)
+                    .IsUnicode(false)
+                    .HasColumnName("ISBN");
+
                 entity.Property(e => e.Price).HasColumnType("decimal(10, 2)");
 
                 entity.Property(e => e.PublishDate).HasColumnType("datetime");
@@ -111,7 +112,7 @@ namespace LibraryAdminSite.Models
             modelBuilder.Entity<BorrowInformation>(entity =>
             {
                 entity.HasKey(e => e.Oid)
-                    .HasName("PK__BorrowIn__CB3E4F31C5CCE5CF");
+                    .HasName("PK__BorrowIn__CB3E4F31F2D95EA4");
 
                 entity.ToTable("BorrowInformation");
 
@@ -136,7 +137,7 @@ namespace LibraryAdminSite.Models
                         r => r.HasOne<BorrowInformation>().WithMany().HasForeignKey("Oid").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK__BorrowDetai__Oid__5629CD9C"),
                         j =>
                         {
-                            j.HasKey("Oid", "Bid").HasName("PK__BorrowDe__47535E2D37424DBD");
+                            j.HasKey("Oid", "Bid").HasName("PK__BorrowDe__47535E2D8834CC1A");
 
                             j.ToTable("BorrowDetail");
 
@@ -170,6 +171,25 @@ namespace LibraryAdminSite.Models
                     .HasConstraintName("FK__Feedback__Uid__49C3F6B7");
             });
 
+            modelBuilder.Entity<LibrarianOrder>(entity =>
+            {
+                entity.ToTable("LibrarianOrder");
+
+                entity.Property(e => e.AssignmentDate)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.HasOne(d => d.BorrowOrder)
+                    .WithMany(p => p.LibrarianOrders)
+                    .HasForeignKey(d => d.BorrowOrderId)
+                    .HasConstraintName("FK__Librarian__Borro__70DDC3D8");
+
+                entity.HasOne(d => d.Librarian)
+                    .WithMany(p => p.LibrarianOrders)
+                    .HasForeignKey(d => d.LibrarianId)
+                    .HasConstraintName("FK__Librarian__Libra__6FE99F9F");
+            });
+
             modelBuilder.Entity<Publisher>(entity =>
             {
                 entity.ToTable("Publisher");
@@ -183,6 +203,10 @@ namespace LibraryAdminSite.Models
                 entity.Property(e => e.Pname)
                     .HasMaxLength(255)
                     .HasColumnName("PName");
+
+                entity.Property(e => e.PublisherCode)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<Role>(entity =>
@@ -195,11 +219,11 @@ namespace LibraryAdminSite.Models
             modelBuilder.Entity<User>(entity =>
             {
                 entity.HasKey(e => e.Uid)
-                    .HasName("PK__User__C5B69A4A562F2BED");
+                    .HasName("PK__User__C5B69A4AA458B07F");
 
                 entity.ToTable("User");
 
-                entity.HasIndex(e => e.Email, "UQ__User__A9D10534FCB7EE8D")
+                entity.HasIndex(e => e.Email, "UQ__User__A9D105345C735A61")
                     .IsUnique();
 
                 entity.Property(e => e.Email).HasMaxLength(255);
@@ -239,7 +263,7 @@ namespace LibraryAdminSite.Models
                         r => r.HasOne<Wishlist>().WithMany().HasForeignKey("Wid").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK__WishlistIte__WId__4F7CD00D"),
                         j =>
                         {
-                            j.HasKey("Wid", "Bid").HasName("PK__Wishlist__D75A85F5C13BD11B");
+                            j.HasKey("Wid", "Bid").HasName("PK__Wishlist__D75A85F538E64B6C");
 
                             j.ToTable("WishlistItem");
 

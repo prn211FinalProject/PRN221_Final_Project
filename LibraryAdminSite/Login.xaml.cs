@@ -32,22 +32,36 @@ namespace LibraryAdminSite
                 string email = txtEmail.Text;
                 string pass = txtPass.Password;
                 var user = LMS_PRN221Context.Ins.Users.FirstOrDefault(x => x.Email.Equals(email));
+
                 if (user != null)
                 {
-                    if (user.RoleId == 1)
+                    if (user.RoleId == 1) // Kiểm tra quyền admin
                     {
-                        if (user.Password == pass)
+                        if (user.Password == pass) // Kiểm tra mật khẩu
                         {
-                            MainWindow mainWindow = new MainWindow();
+                            // Lưu thông tin người dùng vào Application.Current.Properties
+                            Application.Current.Properties["LibrarianId"] = user.Uid;
+                            Application.Current.Properties["FullName"] = user.FullName;
+                            Application.Current.Properties["Email"] = user.Email;
+
+                            // Mở cửa sổ chính sau khi đăng nhập thành công
+                            LoadAdmin mainWindow = new LoadAdmin();
                             mainWindow.Show();
-                            this.Close();
+                            this.Close(); // Đóng cửa sổ đăng nhập
                             return;
+                        }
+                        else
+                        {
+                            MessageBox.Show("Email hoặc mật khẩu không chính xác. Vui lòng thử lại.", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Warning);
                         }
                     }
                 }
-
+                else
+                {
                     MessageBox.Show("Email hoặc mật khẩu không chính xác. Vui lòng thử lại.", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
             }
         }
+
     }
 }
