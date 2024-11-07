@@ -1,5 +1,6 @@
 ﻿using LibraryCustomerSite.Hubs;
 using LibraryCustomerSite.Models;
+using Microsoft.AspNetCore.Identity;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -12,6 +13,11 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true; // Bắt buộc session cookie
 });
 builder.Services.AddSignalR();
+builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+        .AddEntityFrameworkStores<LMS_PRN221Context>()
+        .AddDefaultTokenProviders();
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+builder.Services.AddTransient<IEmailSender, EmailSender>();
 var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

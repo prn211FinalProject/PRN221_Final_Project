@@ -10,6 +10,7 @@ namespace LibraryCustomerSite.Models
             Blogs = new HashSet<Blog>();
             BorrowInformations = new HashSet<BorrowInformation>();
             Feedbacks = new HashSet<Feedback>();
+            PasswordResetTokens = new HashSet<PasswordResetToken>();
             Wishlists = new HashSet<Wishlist>();
         }
 
@@ -27,6 +28,7 @@ namespace LibraryCustomerSite.Models
         public virtual ICollection<Blog> Blogs { get; set; }
         public virtual ICollection<BorrowInformation> BorrowInformations { get; set; }
         public virtual ICollection<Feedback> Feedbacks { get; set; }
+        public virtual ICollection<PasswordResetToken> PasswordResetTokens { get; set; }
         public virtual ICollection<Wishlist> Wishlists { get; set; }
     }
 }
