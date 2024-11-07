@@ -176,6 +176,15 @@ namespace LibraryAdminSite
                                 borrow.BorrowDate = DateTime.Now;
                                 borrow.DueDate = DateTime.Now.AddDays(7);
                                 borrow.Status = 1;
+
+                                var librarianOrder = new LibrarianOrder
+                                {
+                                    LibrarianId = (int)Application.Current.Properties["LibrarianId"], // Dùng LibrarianId từ lớp CurrentUser
+                                BorrowOrderId = borrowId,
+                                    AssignmentDate = DateTime.Now,
+                                    Status = true // Hoặc giá trị khác tùy thuộc vào logic của bạn
+                                };
+                                LMS_PRN221Context.Ins.LibrarianOrders.Add(librarianOrder);
                                 MessageBox.Show("Cập nhật thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
                             }
                             break;

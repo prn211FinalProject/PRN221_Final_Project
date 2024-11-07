@@ -17,12 +17,9 @@ namespace LibraryAdminSite.Models
         public DateTime? BorrowDate { get; set; }
         public DateTime? CheckoutDate { get; set; }
         public DateTime? DueDate { get; set; }
-        public DateTime? ReturnDate { get; set; }
         public decimal? TotalAmount { get; set; }
         public string? Note { get; set; }
-        public int? Status { get; set; }
-        public decimal? PenaltyAmount { get; set; }
-        public bool? PenaltyStatus { get; set; }
+        public bool? Status { get; set; }
 
         public virtual User? UidNavigation { get; set; }
         public virtual ICollection<LibrarianOrder> LibrarianOrders { get; set; }

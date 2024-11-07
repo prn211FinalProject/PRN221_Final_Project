@@ -12,12 +12,12 @@ namespace LibraryAdminSite
     public partial class ThongKeSachMuon : UserControl
     {
         private int totalNotAvailableCount;
-        public SeriesCollection PieSeriesCollection { get; set; }
+        public SeriesCollection PieSeriesCollection { get; set; } 
 
         public ThongKeSachMuon()
         {
             InitializeComponent();
-            PieSeriesCollection = new SeriesCollection();
+            PieSeriesCollection = new SeriesCollection(); 
             LoadCateThongKe();
             DataContext = this;
             LoadTopBook();
@@ -25,8 +25,7 @@ namespace LibraryAdminSite
 
         private void LoadCateThongKe()
         {
-            var currentMonth = DateTime.Now.Month;
-            var currentYear = DateTime.Now.Year;
+           
             totalNotAvailableCount = LMS_PRN221Context.Ins.BookCopies
                 .Include(x => x.BookTitle)
                 .Where(x => x.BookTitle.Hide == false)
@@ -96,11 +95,11 @@ namespace LibraryAdminSite
                     Title = x.Bname,
                     NotAvailableCount = x.BookCopies.Count(bc => bc.Status == false),
                     HasBeenBorrowed = x.BookCopies
-                        .Any(bc => bc.Oids.Any(bi => bi.BorrowDate != null))
+                        .Any(bc => bc.Oids.Any(bi => bi.BorrowDate != null)) 
                 })
-                .Where(x => x.HasBeenBorrowed)
-                  .Where(x => x.NotAvailableCount > 0)
-                .OrderByDescending(x => x.NotAvailableCount)
+                .Where(x => x.HasBeenBorrowed) 
+                  .Where(x => x.NotAvailableCount>0) 
+                .OrderByDescending(x => x.NotAvailableCount) 
                 .ToList();
 
             lvDisplay2.ItemsSource = cateThongKe;

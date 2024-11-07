@@ -19,6 +19,10 @@
                         <TextBox IsReadOnly="True" Name="txbID" Text="{Binding ElementName=lvDisplay, Path=SelectedItem.Id, Mode=OneWay}" Width="175"/>
                     </StackPanel>
 
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                        <Label Content="ISBN:" Width="80"/>
+                        <TextBox  IsReadOnly="True" Name="txbISBN" Text="{Binding ElementName=lvDisplay, Path=SelectedItem.ISBN, Mode=OneWay}" Width="175"/>
+                    </StackPanel>
                     <!-- Name Field -->
                     <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
                         <Label Content="Tên sách:" Width="80"/>
@@ -83,6 +87,7 @@
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn Header="Mã số" DisplayMemberBinding="{Binding Id}" Width="40"/>
+                                <GridViewColumn Header="ISBN" DisplayMemberBinding="{Binding ISBN}" Width="40"/>
                                 <GridViewColumn Header="Tên sách" DisplayMemberBinding="{Binding Name}" Width="120"/>
                                 <GridViewColumn Header="Thể loại" DisplayMemberBinding="{Binding Genre}" Width="70"/>
                                 <GridViewColumn Header="NXB" DisplayMemberBinding="{Binding Publisher}" Width="100"/>
