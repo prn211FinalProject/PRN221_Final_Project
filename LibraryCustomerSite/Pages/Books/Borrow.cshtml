@@ -95,14 +95,57 @@
             transition: background-color 0.3s ease;
         }
 
-            .submit-btn:hover {
-                background: #d81557;
-            }
+        .submit-btn:hover {
+            background: #d81557;
+        }
 
         .form-input:focus,
         .form-textarea:focus {
             outline: none;
             box-shadow: 0 0 0 2px rgba(233, 30, 99, 0.3);
+        }
+
+        .alert {
+            padding: 15px;
+            background-color: #f44336;
+            color: white;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+
+        .alert-success {
+            background-color: #4CAF50;
+        }
+
+        .alert-danger {
+            background-color: #f44336;
+        }
+
+        .form-group .alert p {
+            margin: 0;
+        }
+
+        .form-group .alert {
+            margin-bottom: 20px;
+        }
+
+        .form-group .alert p {
+            margin: 0;
+        }
+
+        .back-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+            text-align: center;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .back-btn:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
@@ -168,9 +211,15 @@
                 </label>
                 <textarea class="form-textarea" asp-for="BorrowInformation.Note" required></textarea>
             </div>
-            <div style="display: flex; justify-content: space-between; flex-direction: row-reverse;">
-                <a href="/Books" style="width:30rem; text-decoration:none" class="submit-btn">Quay về</a>
-                <button type="submit" class="submit-btn" style="margin-right: 12rem; width:30rem">Mượn ngay</button>
+            <div style="display: flex;
+    justify-content: space-evenly;
+    flex-direction: row;
+    flex-wrap: nowrap;">
+                <a href="/Books" class="back-btn">Quay về</a>
+                <button type="submit" class="submit-btn" style="width: 7rem;
+    height: 3rem">
+                    Mượn ngay
+                </button>
             </div>
         </form>
     </div>
