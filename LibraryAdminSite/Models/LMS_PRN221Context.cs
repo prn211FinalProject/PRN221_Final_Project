@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using LibraryAdminSite.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Configuration;
@@ -12,7 +11,7 @@ namespace LibraryAdminSite.Models
         public static LMS_PRN221Context Ins = new LMS_PRN221Context();
         public LMS_PRN221Context()
         {
-            if (Ins == null)
+            if(Ins == null)
             {
                 Ins = this;
             }
@@ -29,6 +28,7 @@ namespace LibraryAdminSite.Models
         public virtual DbSet<BorrowInformation> BorrowInformations { get; set; } = null!;
         public virtual DbSet<Category> Categories { get; set; } = null!;
         public virtual DbSet<Feedback> Feedbacks { get; set; } = null!;
+        public virtual DbSet<Penalty> Penalties { get; set; } = null!;
         public virtual DbSet<Publisher> Publishers { get; set; } = null!;
         public virtual DbSet<Role> Roles { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; } = null!;
@@ -39,7 +39,6 @@ namespace LibraryAdminSite.Models
             var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
 
             if (!optionsBuilder.IsConfigured) { optionsBuilder.UseSqlServer(config.GetConnectionString("value")); }
-
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -47,7 +46,7 @@ namespace LibraryAdminSite.Models
             modelBuilder.Entity<Blog>(entity =>
             {
                 entity.HasKey(e => e.Bid)
-                    .HasName("PK__Blog__C6D111C9FF0126A5");
+                    .HasName("PK__Blog__C6D111C993563185");
 
                 entity.ToTable("Blog");
 
@@ -111,7 +110,7 @@ namespace LibraryAdminSite.Models
             modelBuilder.Entity<BorrowInformation>(entity =>
             {
                 entity.HasKey(e => e.Oid)
-                    .HasName("PK__BorrowIn__CB3E4F31C5CCE5CF");
+                    .HasName("PK__BorrowIn__CB3E4F31392DC3CC");
 
                 entity.ToTable("BorrowInformation");
 
@@ -120,6 +119,14 @@ namespace LibraryAdminSite.Models
                 entity.Property(e => e.CheckoutDate).HasColumnType("datetime");
 
                 entity.Property(e => e.DueDate).HasColumnType("datetime");
+
+                entity.Property(e => e.PenaltyAmount)
+                    .HasColumnType("decimal(10, 2)")
+                    .HasDefaultValueSql("((0))");
+
+                entity.Property(e => e.PenaltyStatus).HasDefaultValueSql("((1))");
+
+                entity.Property(e => e.ReturnDate).HasColumnType("datetime");
 
                 entity.Property(e => e.TotalAmount).HasColumnType("decimal(10, 2)");
 
@@ -136,7 +143,7 @@ namespace LibraryAdminSite.Models
                         r => r.HasOne<BorrowInformation>().WithMany().HasForeignKey("Oid").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK__BorrowDetai__Oid__5629CD9C"),
                         j =>
                         {
-                            j.HasKey("Oid", "Bid").HasName("PK__BorrowDe__47535E2D37424DBD");
+                            j.HasKey("Oid", "Bid").HasName("PK__BorrowDe__47535E2DE2E9DB07");
 
                             j.ToTable("BorrowDetail");
 
@@ -170,6 +177,33 @@ namespace LibraryAdminSite.Models
                     .HasConstraintName("FK__Feedback__Uid__49C3F6B7");
             });
 
+            modelBuilder.Entity<Penalty>(entity =>
+            {
+                entity.ToTable("Penalty");
+
+                entity.Property(e => e.Amount).HasColumnType("decimal(10, 2)");
+
+                entity.Property(e => e.CreatedDate)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.Reason).HasMaxLength(255);
+
+                entity.Property(e => e.Status)
+                    .IsRequired()
+                    .HasDefaultValueSql("((1))");
+
+                entity.HasOne(d => d.OidNavigation)
+                    .WithMany(p => p.Penalties)
+                    .HasForeignKey(d => d.Oid)
+                    .HasConstraintName("FK__Penalty__Oid__6754599E");
+
+                entity.HasOne(d => d.UidNavigation)
+                    .WithMany(p => p.Penalties)
+                    .HasForeignKey(d => d.Uid)
+                    .HasConstraintName("FK__Penalty__Uid__68487DD7");
+            });
+
             modelBuilder.Entity<Publisher>(entity =>
             {
                 entity.ToTable("Publisher");
@@ -195,11 +229,11 @@ namespace LibraryAdminSite.Models
             modelBuilder.Entity<User>(entity =>
             {
                 entity.HasKey(e => e.Uid)
-                    .HasName("PK__User__C5B69A4A562F2BED");
+                    .HasName("PK__User__C5B69A4A6E59B9D4");
 
                 entity.ToTable("User");
 
-                entity.HasIndex(e => e.Email, "UQ__User__A9D10534FCB7EE8D")
+                entity.HasIndex(e => e.Email, "UQ__User__A9D105348761DFEA")
                     .IsUnique();
 
                 entity.Property(e => e.Email).HasMaxLength(255);
@@ -239,7 +273,7 @@ namespace LibraryAdminSite.Models
                         r => r.HasOne<Wishlist>().WithMany().HasForeignKey("Wid").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK__WishlistIte__WId__4F7CD00D"),
                         j =>
                         {
-                            j.HasKey("Wid", "Bid").HasName("PK__Wishlist__D75A85F5C13BD11B");
+                            j.HasKey("Wid", "Bid").HasName("PK__Wishlist__D75A85F57D274243");
 
                             j.ToTable("WishlistItem");
 

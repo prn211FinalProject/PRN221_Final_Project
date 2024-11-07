@@ -94,7 +94,8 @@ namespace LibraryAdminSite
         public static BitmapImage ConvertToImage(string relativeImagePath)
         {
             BitmapImage image = new BitmapImage();
-            string projectDirectory = @"D:\Dai Hoc FBT\Ki_7_Fall2024\PRN221\PRN221_Final_Project.git\LibraryAdminSite\BookImage";
+            string projectDirectory = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..", @"..", @"..", "BookImage");
+           
             string fullImagePath = System.IO.Path.Combine(projectDirectory, relativeImagePath);
             if (File.Exists(fullImagePath)) 
             {

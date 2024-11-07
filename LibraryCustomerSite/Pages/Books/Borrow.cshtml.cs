@@ -98,7 +98,7 @@ namespace LibraryCustomerSite.Pages.Books
             var bookCopy = _context.BookCopies.Where(x=>x.Status == true).FirstOrDefault(x => x.Id.Contains(newId));
             if (bookCopy != null)
             {
-                bookCopy.Status = true;
+                bookCopy.Status = false;
             }
 
             // Thêm bản sao sách vào thông tin mượn
