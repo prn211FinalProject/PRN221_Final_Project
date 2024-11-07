@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.Extensions.Configuration;
 
 namespace LibraryAdminSite.Models
 {
@@ -11,7 +10,7 @@ namespace LibraryAdminSite.Models
         public static LMS_PRN221Context Ins = new LMS_PRN221Context();
         public LMS_PRN221Context()
         {
-            if(Ins == null)
+            if (Ins == null)
             {
                 Ins = this;
             }
@@ -28,6 +27,8 @@ namespace LibraryAdminSite.Models
         public virtual DbSet<BorrowInformation> BorrowInformations { get; set; } = null!;
         public virtual DbSet<Category> Categories { get; set; } = null!;
         public virtual DbSet<Feedback> Feedbacks { get; set; } = null!;
+        public virtual DbSet<LibrarianOrder> LibrarianOrders { get; set; } = null!;
+        public virtual DbSet<PasswordResetToken> PasswordResetTokens { get; set; } = null!;
         public virtual DbSet<Penalty> Penalties { get; set; } = null!;
         public virtual DbSet<Publisher> Publishers { get; set; } = null!;
         public virtual DbSet<Role> Roles { get; set; } = null!;
@@ -36,9 +37,11 @@ namespace LibraryAdminSite.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
-
-            if (!optionsBuilder.IsConfigured) { optionsBuilder.UseSqlServer(config.GetConnectionString("value")); }
+            if (!optionsBuilder.IsConfigured)
+            {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                optionsBuilder.UseSqlServer("Data Source=MINH-PC\\MINHPC;Initial Catalog=LMS_PRN221;Trusted_Connection=SSPI;Encrypt=false;TrustServerCertificate=true");
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -91,6 +94,10 @@ namespace LibraryAdminSite.Models
                 entity.Property(e => e.Description).HasMaxLength(255);
 
                 entity.Property(e => e.Image).HasMaxLength(255);
+
+                entity.Property(e => e.Isbn)
+                    .IsUnicode(false)
+                    .HasColumnName("ISBN");
 
                 entity.Property(e => e.Price).HasColumnType("decimal(10, 2)");
 
@@ -175,6 +182,41 @@ namespace LibraryAdminSite.Models
                     .WithMany(p => p.Feedbacks)
                     .HasForeignKey(d => d.Uid)
                     .HasConstraintName("FK__Feedback__Uid__49C3F6B7");
+            });
+
+            modelBuilder.Entity<LibrarianOrder>(entity =>
+            {
+                entity.ToTable("LibrarianOrder");
+
+                entity.Property(e => e.AssignmentDate)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.HasOne(d => d.BorrowOrder)
+                    .WithMany(p => p.LibrarianOrders)
+                    .HasForeignKey(d => d.BorrowOrderId)
+                    .HasConstraintName("FK__Librarian__Borro__73BA3083");
+
+                entity.HasOne(d => d.Librarian)
+                    .WithMany(p => p.LibrarianOrders)
+                    .HasForeignKey(d => d.LibrarianId)
+                    .HasConstraintName("FK__Librarian__Libra__72C60C4A");
+            });
+
+            modelBuilder.Entity<PasswordResetToken>(entity =>
+            {
+                entity.ToTable("PasswordResetToken");
+
+                entity.Property(e => e.Expiration).HasColumnType("datetime");
+
+                entity.Property(e => e.Token)
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.PasswordResetTokens)
+                    .HasForeignKey(d => d.UserId)
+                    .HasConstraintName("FK__PasswordR__UserI__6FE99F9F");
             });
 
             modelBuilder.Entity<Penalty>(entity =>
