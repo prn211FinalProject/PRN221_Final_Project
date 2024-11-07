@@ -135,7 +135,6 @@
 
         .back-btn {
             display: inline-block;
-            margin-top: 20px;
             padding: 10px 20px;
             background-color: #007bff;
             color: white;
@@ -212,9 +211,15 @@
                 </label>
                 <textarea class="form-textarea" asp-for="BorrowInformation.Note" required></textarea>
             </div>
-            <div style="display: flex; justify-content: space-between; flex-direction: row-reverse;">
+            <div style="display: flex;
+    justify-content: space-evenly;
+    flex-direction: row;
+    flex-wrap: nowrap;">
                 <a href="/Books" class="back-btn">Quay về</a>
-                <button type="submit" class="submit-btn" style="margin-right: 12rem; width:30rem">Mượn ngay</button>
+                <button type="submit" class="submit-btn" style="width: 7rem;
+    height: 3rem">
+                    Mượn ngay
+                </button>
             </div>
         </form>
     </div>
